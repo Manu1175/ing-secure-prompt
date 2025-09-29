@@ -1,0 +1,14 @@
+external_root: external/SecurePrompt
+inputs:
+  prompts:
+    - "${external_root}/PROMPTS/**/*.{xlsx,csv,jsonl,txt}"
+  data:
+    - "${external_root}/DATA/**/*.{xlsx,csv,jsonl,txt,pdf}"
+policy_hints:
+  - "${external_root}/DATA/**/*c2*polic*.*"
+  - "${external_root}/DATA/**/*c3*polic*.*"
+  - "${external_root}/DATA/**/*c4*polic*.*"
+output:
+  golden_dir: data/golden
+  eval_dir: data/eval
+  policy_dir: policy/manifests
