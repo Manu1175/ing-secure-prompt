@@ -1,8 +1,11 @@
 # SecurePrompt — Handoff Pack
 
-Open in VS Code, run:
-1. `make setup`
-2. Drop your external folders into `external/SecurePrompt/DATA` and `external/SecurePrompt/PROMPTS` (or set `EXTERNAL_ROOT`).
-3. `make ingest-secureprompt`
-4. `make test-fast`
-5. `make run-api` and POST to `/scrub`.
+## Quick start
+```bash
+bash scripts/setup_venv.sh
+source .venv/bin/activate
+make ingest-secureprompt
+make test-fast
+make run-api
+```
+Then POST to `http://127.0.0.1:8000/scrub` with `{"text":"IBAN BE71 0961 2345 6769","c_level":"C3"}`.

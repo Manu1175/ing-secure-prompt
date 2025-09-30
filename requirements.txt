@@ -6,3 +6,7 @@ pytest>=8.2
 black>=24.8
 ruff>=0.5
 mypy>=1.11
+pillow>=10.4
+pytesseract>=0.3.10
+pdfminer.six>=20231228
+pypdf>=4.2

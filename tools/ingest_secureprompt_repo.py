@@ -1,5 +1,6 @@
+\
 #!/usr/bin/env python3
-import argparse, json, os, re, sys, base64, hashlib
+import argparse, json, os, re, base64
 from pathlib import Path
 from typing import Dict, Any, List
 import pandas as pd
@@ -12,7 +13,9 @@ def _read_config(path: str) -> Dict[str, Any]:
 def _iter_files(patterns: List[str]) -> List[Path]:
     out = []
     for pat in patterns:
-        out.extend(Path().glob(pat.replace("${external_root}", os.environ.get("EXTERNAL_ROOT", "external/SecurePrompt"))))
+        root = os.environ.get("EXTERNAL_ROOT", "external/SecurePrompt")
+        pat = pat.replace("${external_root}", root)
+        out.extend(Path().glob(pat))
     return [p for p in out if p.is_file()]
 
 def _sniff_delim(p: Path) -> str:
@@ -48,7 +51,7 @@ def _map_headers(cols: List[str]) -> Dict[str, str]:
 def _record_id(base: str, idx: int) -> str:
     return f"{base}:{idx}"
 
-def read_tabular(path: Path) -> pd.DataFrame:
+def read_tabular(path: Path):
     if path.suffix.lower() == ".csv":
         try:
             return pd.read_csv(path)
@@ -89,7 +92,6 @@ def normalize_prompts(files: List[Path]) -> List[Dict[str, Any]]:
                 "entities": row.get(next((k for k,v in header_map.items() if v=="entities"), None), None),
                 "notes": None,
             }
-            # If both prompt and sanitized prompt are present, keep as golden
             if rec["raw_text"] or rec["expected_scrub"]:
                 records.append(rec)
     return records
@@ -98,7 +100,6 @@ def normalize_data(files: List[Path]) -> List[Dict[str, Any]]:
     records = []
     for p in files:
         if p.suffix.lower() in [".pdf", ".png", ".jpg", ".jpeg"]:
-            # keep only reference; tests may open bytes lazily
             with open(p, "rb") as f:
                 blob = base64.b64encode(f.read()).decode("ascii")
             records.append({
@@ -119,7 +120,6 @@ def normalize_data(files: List[Path]) -> List[Dict[str, Any]]:
         header_map = _map_headers(df.columns.tolist())
         base = p.stem
         for i, row in df.iterrows():
-            # build a concatenated text payload for eval when no single prompt column exists
             raw = row.get(next((k for k,v in header_map.items() if v=="raw_text"), None), None)
             if raw is None:
                 try:
@@ -146,54 +146,53 @@ def write_jsonl(path: Path, rows: List[Dict[str, Any]]):
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-def ensure_policy_manifests(policy_files: List[Path], outdir: Path):
+def ensure_policy_manifests(outdir: Path):
     outdir.mkdir(parents=True, exist_ok=True)
-    # minimal default manifests
-    defaults = {
-        "c2.yml": [
-            {"id": "EMAIL_basic", "label": "EMAIL", "pattern": r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}", "validator": "none", "action": "mask", "explanation": "email address", "confidence": 0.9},
-            {"id": "PHONE_basic", "label": "PHONE", "pattern": r"\\+?\\d[\\d\\s().-]{7,}", "validator": "none", "action": "mask", "explanation": "phone number", "confidence": 0.85},
-        ],
-        "c3.yml": [
-            {"id": "IBAN_basic", "label": "IBAN", "pattern": r"[A-Z]{2}\\d{2}[A-Z0-9]{1,30}", "validator": "iban_checksum", "action": "redact", "explanation": "bank account IBAN", "confidence": 0.95},
-            {"id": "PAN_basic", "label": "PAN", "pattern": r"\\b(?:\\d[ -]*?){13,19}\\b", "validator": "luhn", "action": "redact", "explanation": "payment card number", "confidence": 0.95},
-        ],
-        "c4.yml": [
-            {"id": "NID_basic", "label": "NATIONAL_ID", "pattern": r"\\b[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}-[0-9]{3}\\.\\b|\\b[0-9]{11}\\b", "validator": "none", "action": "redact", "explanation": "national id", "confidence": 0.9},
-            {"id": "AUTH_secret", "label": "AUTH_TOKEN", "pattern": r"(api[_-]?key|secret|token)\\s*[:=]\\s*[A-Za-z0-9_\\-]{16,}", "validator": "none", "action": "redact", "explanation": "auth secrets", "confidence": 0.9},
-        ]
-    }
-    # try to enrich from provided policy-like spreadsheets (if any)
-    for name, rules in defaults.items():
+    c2 = [
+      {"id":"EMAIL_basic","label":"EMAIL","pattern":r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}","validator":"none","action":"mask","explanation":"email address","confidence":0.9},
+      {"id":"PHONE_e164","label":"PHONE","pattern":r"\+?[1-9]\d{1,14}","validator":"none","action":"mask","explanation":"E.164 phone","confidence":0.85},
+      {"id":"IPV4_basic","label":"IPV4","pattern":r"\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)(?:\.|$)){4}\b","validator":"none","action":"mask","explanation":"IPv4 address","confidence":0.85},
+      {"id":"IPV6_basic","label":"IPV6","pattern":r"\b([0-9a-fA-F]{1,4}:){2,7}[0-9a-fA-F]{1,4}\b","validator":"none","action":"mask","explanation":"IPv6 address","confidence":0.8},
+      {"id":"BIC_basic","label":"BIC","pattern":r"\b[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?\b","validator":"none","action":"mask","explanation":"SWIFT/BIC code","confidence":0.9},
+    ]
+    c3 = [
+      {"id":"IBAN_generic","label":"IBAN","pattern":r"\b[A-Z]{2}\d{2}[A-Z0-9]{1,30}\b","validator":"iban_checksum","action":"redact","explanation":"bank account IBAN","confidence":0.95},
+      {"id":"IBAN_BE","label":"IBAN","pattern":r"\bBE\d{2}\s?(?:\d{4}\s?){3}\b","validator":"iban_checksum","action":"redact","explanation":"Belgian IBAN","confidence":0.96},
+      {"id":"PAN_luhn","label":"PAN","pattern":r"\b(?:\d[ -]*?){13,19}\b","validator":"luhn","action":"redact","explanation":"payment card number","confidence":0.96},
+      {"id":"ACCOUNT_ID_generic","label":"ACCOUNT_ID","pattern":r"\bACC[_-]?\d{6,}\b","validator":"none","action":"redact","explanation":"internal account id","confidence":0.8},
+      {"id":"ADDRESS_be_like","label":"ADDRESS","pattern":r"(?i)\b([A-ZÀ-ÿ][a-zÀ-ÿ'\- ]+)\s+(straat|laan|lei|weg|steenweg|plein|dreef|kaai|ring)\s+\d+\w?\b","validator":"none","action":"redact","explanation":"street + number (BE style)","confidence":0.75},
+    ]
+    c4 = [
+      {"id":"NATIONAL_ID_BE","label":"NATIONAL_ID","pattern":r"\b\d{2}[.\- ]?\d{2}[.\- ]?\d{2}[.\- ]?\d{3}[.\- ]?\d{2}\b","validator":"be_nrn","action":"redact","explanation":"Belgian national register number","confidence":0.9},
+      {"id":"VAT_BE","label":"VAT_ID","pattern":r"\bBE0?\d{9}\b","validator":"none","action":"redact","explanation":"Belgian VAT number","confidence":0.9},
+      {"id":"AUTH_secret","label":"AUTH_TOKEN","pattern":r"(?i)\b(api[_-]?key|secret|token|bearer)\b\s*[:=]\s*[A-Za-z0-9_\-]{16,}","validator":"none","action":"redact","explanation":"auth secret/token","confidence":0.9},
+      {"id":"PASSWORD_inline","label":"PASSWORD","pattern":r"(?i)\b(pass(word)?|pwd)\b\s*[:=]\s*[^ \t\r\n]{6,}","validator":"none","action":"redact","explanation":"inline password","confidence":0.9},
+      {"id":"DOB_generic","label":"DOB","pattern":r"\b(?:\d{4}[-/]\d{2}[-/]\d{2}|\d{2}[-/]\d{2}[-/]\d{4})\b","validator":"date","action":"redact","explanation":"date of birth","confidence":0.7},
+    ]
+    import yaml
+    for name, rules in [("c2.yml", c2), ("c3.yml", c3), ("c4.yml", c4)]:
         with open(outdir / name, "w") as f:
-            yaml.safe_dump(rules, f, sort_keys=False)
+            yaml.safe_dump(rules, f, sort_keys=False, allow_unicode=True)
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="config/datasets.yml")
     args = ap.parse_args()
-
     cfg = _read_config(args.config)
+
     prompts_files = _iter_files(cfg["inputs"]["prompts"])
     data_files = _iter_files(cfg["inputs"]["data"])
 
-    # Normalize
     prom_recs = normalize_prompts(prompts_files)
     data_recs = normalize_data(data_files)
 
-    # Split: golden = have expected_scrub; eval = others
     golden = [r for r in prom_recs if r.get("expected_scrub")]
     evals  = [r for r in prom_recs if not r.get("expected_scrub")] + data_recs
 
-    # Write
-    out_golden = Path(cfg["output"]["golden_dir"])
-    out_eval = Path(cfg["output"]["eval_dir"])
-    out_policy = Path(cfg["output"]["policy_dir"])
+    out_golden = Path(cfg["output"]["golden_dir"]); out_golden.mkdir(parents=True, exist_ok=True)
+    out_eval = Path(cfg["output"]["eval_dir"]); out_eval.mkdir(parents=True, exist_ok=True)
+    out_policy = Path(cfg["output"]["policy_dir"]); out_policy.mkdir(parents=True, exist_ok=True)
 
-    out_golden.mkdir(parents=True, exist_ok=True)
-    out_eval.mkdir(parents=True, exist_ok=True)
-
-    # shard golden by file base
     by_file = {}
     for r in golden:
         base = Path(r["source_path"]).stem
@@ -202,25 +201,19 @@ def main():
         for base, rows in by_file.items():
             write_jsonl(out_golden / f"{base}.jsonl", rows)
     else:
-        # ensure at least one file exists
         write_jsonl(out_golden / "empty.jsonl", [])
 
-    # eval data single file
     write_jsonl(out_eval / "eval.jsonl", evals)
+    ensure_policy_manifests(out_policy)
 
-    # policies
-    ensure_policy_manifests(_iter_files(cfg.get("policy_hints", [])), Path(cfg["output"]["policy_dir"]))
-
-    # simple report
-    report = {
+    print(json.dumps({
         "counts": {
             "prompts_files": len(prompts_files),
             "data_files": len(data_files),
             "golden_records": sum(len(v) for v in by_file.values()),
             "eval_records": len(evals),
         }
-    }
-    print(json.dumps(report, indent=2))
+    }, indent=2))
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,5 @@
 import os, hashlib
-from typing import Dict, Any
+from typing import Dict, Any, List
 from ..entities.detectors import detect
 
 def _salt() -> str:
@@ -12,17 +12,13 @@ def _identifier(label: str, value: str, c_level: str) -> str:
 def scrub_text(text: str, c_level: str="C3") -> Dict[str, Any]:
     hits = detect(text)
     out = text
-    explanations = []
-    # replace from end to start to keep indices valid
+    explanations: List[Dict[str, Any]] = []
     for h in sorted(hits, key=lambda x: x["start"], reverse=True):
         ident = _identifier(h["label"], h["value"], c_level)
         out = out[:h["start"]] + ident + out[h["end"]:]
         explanations.append({
-            "label": h["label"],
-            "span": [h["start"], h["end"]],
-            "detector": h["rule_id"],
-            "confidence": h["confidence"],
-            "c_level": c_level,
-            "identifier": ident
+            "label": h["label"], "span": [h["start"], h["end"]],
+            "detector": h["rule_id"], "confidence": h["confidence"],
+            "c_level": c_level, "identifier": ident
         })
     return {"original_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(), "scrubbed": out, "entities": explanations}

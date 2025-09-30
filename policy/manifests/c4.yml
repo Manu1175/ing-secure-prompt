@@ -1,0 +1,35 @@
+- id: NATIONAL_ID_BE
+  label: NATIONAL_ID
+  pattern: \b\d{2}[.\- ]?\d{2}[.\- ]?\d{2}[.\- ]?\d{3}[.\- ]?\d{2}\b
+  validator: be_nrn
+  action: redact
+  explanation: Belgian national register number
+  confidence: 0.9
+- id: VAT_BE
+  label: VAT_ID
+  pattern: \bBE0?\d{9}\b
+  validator: none
+  action: redact
+  explanation: Belgian VAT number
+  confidence: 0.9
+- id: AUTH_secret
+  label: AUTH_TOKEN
+  pattern: (?i)\b(api[_-]?key|secret|token|bearer)\b\s*[:=]\s*[A-Za-z0-9_\-]{16,}
+  validator: none
+  action: redact
+  explanation: auth secret/token
+  confidence: 0.9
+- id: PASSWORD_inline
+  label: PASSWORD
+  pattern: (?i)\b(pass(word)?|pwd)\b\s*[:=]\s*[^ \t\r\n]{6,}
+  validator: none
+  action: redact
+  explanation: inline password
+  confidence: 0.9
+- id: DOB_generic
+  label: DOB
+  pattern: \b(?:\d{4}[-/]\d{2}[-/]\d{2}|\d{2}[-/]\d{2}[-/]\d{4})\b
+  validator: date
+  action: redact
+  explanation: date of birth
+  confidence: 0.7

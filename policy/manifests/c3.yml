@@ -1,0 +1,35 @@
+- id: IBAN_generic
+  label: IBAN
+  pattern: \b[A-Z]{2}\d{2}[A-Z0-9]{1,30}\b
+  validator: iban_checksum
+  action: redact
+  explanation: bank account IBAN
+  confidence: 0.95
+- id: IBAN_BE
+  label: IBAN
+  pattern: \bBE\d{2}\s?(?:\d{4}\s?){3}\b
+  validator: iban_checksum
+  action: redact
+  explanation: Belgian IBAN
+  confidence: 0.96
+- id: PAN_luhn
+  label: PAN
+  pattern: \b(?:\d[ -]*?){13,19}\b
+  validator: luhn
+  action: redact
+  explanation: payment card number
+  confidence: 0.96
+- id: ACCOUNT_ID_generic
+  label: ACCOUNT_ID
+  pattern: \bACC[_-]?\d{6,}\b
+  validator: none
+  action: redact
+  explanation: internal account id
+  confidence: 0.8
+- id: ADDRESS_be_like
+  label: ADDRESS
+  pattern: (?i)\b([A-ZÀ-ÿ][a-zÀ-ÿ'\- ]+)\s+(straat|laan|lei|weg|steenweg|plein|dreef|kaai|ring)\s+\d+\w?\b
+  validator: none
+  action: redact
+  explanation: street + number (BE style)
+  confidence: 0.75
