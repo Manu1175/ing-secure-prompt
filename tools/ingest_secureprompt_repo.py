@@ -11,19 +11,21 @@ def _read_config(path: str) -> Dict[str, Any]:
         return yaml.safe_load(f)
 
 def _iter_files(patterns: List[str]) -> List[Path]:
+    # robust, recursive globbing using glob.glob
+    import glob
     out = []
     for pat in patterns:
         root = os.environ.get("EXTERNAL_ROOT", "external/SecurePrompt")
         pat = pat.replace("${external_root}", root)
-        out.extend(Path().glob(pat))
-    return [p for p in out if p.is_file()]
+        out.extend(Path(x) for x in glob.glob(pat, recursive=True))
+    return [p for p in out if p.is_file() and not p.name.startswith('~$')]
 
 def _sniff_delim(p: Path) -> str:
     sample = p.read_text(errors="ignore")[:2000]
     if sample.count(";") > sample.count(","): return ";"
     return ","
 
-def _norm_header(s: str) -> str:
+def norm_header(s: str) -> str:
     s = s.strip().lower()
     s = re.sub(r"[_\-\s]+", " ", s)
     return s
@@ -31,7 +33,7 @@ def _norm_header(s: str) -> str:
 def _map_headers(cols: List[str]) -> Dict[str, str]:
     mapping = {}
     for c in cols:
-        n = _norm_header(str(c))
+        n = norm_header(str(c))
         if re.search(r"^original prompt$|^prompt$|^text$|^input$", n):
             mapping[c] = "raw_text"
         elif re.search(r"^sanitized prompt$|^sanitized$", n):

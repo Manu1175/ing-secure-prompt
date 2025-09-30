@@ -1,13 +1,36 @@
 external_root: external/SecurePrompt
+
 inputs:
   prompts:
-    - "${external_root}/PROMPTS/**/*.{xlsx,csv,jsonl,txt}"
+    # match files directly under PROMPTS and in any subfolders
+    - "${external_root}/PROMPTS/*.xlsx"
+    - "${external_root}/PROMPTS/**/*.xlsx"
+    - "${external_root}/PROMPTS/*.csv"
+    - "${external_root}/PROMPTS/**/*.csv"
+    - "${external_root}/PROMPTS/*.jsonl"
+    - "${external_root}/PROMPTS/**/*.jsonl"
+    - "${external_root}/PROMPTS/*.txt"
+    - "${external_root}/PROMPTS/**/*.txt"
   data:
-    - "${external_root}/DATA/**/*.{xlsx,csv,jsonl,txt,pdf}"
-policy_hints:
-  - "${external_root}/DATA/**/*c2*polic*.*"
-  - "${external_root}/DATA/**/*c3*polic*.*"
-  - "${external_root}/DATA/**/*c4*polic*.*"
+    - "${external_root}/DATA/*.xlsx"
+    - "${external_root}/DATA/**/*.xlsx"
+    - "${external_root}/DATA/*.csv"
+    - "${external_root}/DATA/**/*.csv"
+    - "${external_root}/DATA/*.jsonl"
+    - "${external_root}/DATA/**/*.jsonl"
+    - "${external_root}/DATA/*.txt"
+    - "${external_root}/DATA/**/*.txt"
+    - "${external_root}/DATA/*.pdf"
+    - "${external_root}/DATA/**/*.pdf"
+    - "${external_root}/DATA/*.png"
+    - "${external_root}/DATA/**/*.png"
+    - "${external_root}/DATA/*.jpg"
+    - "${external_root}/DATA/**/*.jpg"
+    - "${external_root}/DATA/*.jpeg"
+    - "${external_root}/DATA/**/*.jpeg"
+
+policy_hints: []
+
 output:
   golden_dir: data/golden
   eval_dir: data/eval
