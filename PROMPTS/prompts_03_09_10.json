@@ -1,0 +1,62 @@
+[
+  {
+    "text": "Please initiate retirement for App_31. It’s Installed / Operational in Production, IT Custodian Joseph Johnson, Asset Owner Mary Sims, Config group T34407, Cost Center 68805132. Reference IT Governance Policy (Approval Level: Compliance Officer, Status: Active, Last Reviewed 2024-11-16)."
+  },
+  {
+    "text": "Heads-up: Transaction Monitoring is marked Deprecated but still Fully Automated / Weekly (last run 2025-09-15). Can we clarify why it’s deprecated if it ran last week?"
+  },
+  {
+    "text": "Our KYC Verification process is Semi-Automated / Monthly, Deprecated, last executed 2025-09-14. Meanwhile KYC Policy is Active, review frequency Bi-Annual, last reviewed 2024-10-18. Please reconcile and propose next steps."
+  },
+  {
+    "text": "Please transfer custody of App_37 (Operational, Production) from Daniel Taylor to [new custodian TBD]. Asset Owner remains Miguel Fitzgerald. Update Config group T78221 and ensure paging references Cost Center B7018226."
+  },
+  {
+    "text": "Can we consolidate applications owned by Erin Johnson? I see App_10 (Installed, Non-Operational, Test; Config T20125; Cost 33276269) and App_73 (Retired, Non-Operational, Production; Config T64770; Cost B1730899). Suggest archiving both under a single closure CR."
+  },
+  {
+    "text": "Password Reset sits under HR Department as Semi-Automated / Daily / Active. Propose moving ownership to IT Department and increasing automation to reduce human touch."
+  },
+  {
+    "text": "Draft a comms note that Privacy Protection Policy is Retired (Responsible: Operations, Approval Level: Operations Head, last reviewed 2025-02-08). Include next steps for data handling."
+  },
+  {
+    "text": "Flag App_18: Installed / Non-Operational / Production. IT Custodian Alex Williams, Asset Owner Brian Schneider, Config T72471, Cost B6175983. Align with Operational Risk Policy (Under Review since 2025-04-18)."
+  },
+  {
+    "text": "Prepare a shortlist of Installed & Non-Operational apps in Acceptance for quick decommission: e.g., App_1, App_3, App_23, App_26, App_29. Include their config groups and cost centers (T17113/17936627, T45853/76137714, T84323/B4296144, T63875/87061849, T09360/56485233)."
+  },
+  {
+    "text": "Confirm that Mobile App Update (Fully Automated, Weekly, last 2025-09-15, Active) doesn’t depend on Customer Onboarding (On Demand, Deprecated) before we upgrade pipelines."
+  },
+  {
+    "text": "Why is AML Screening Deprecated (On Demand; last run 2025-08-31) while the AML Compliance Policy is Under Review (last reviewed 2024-12-18)? Escalate if needed."
+  },
+  {
+    "text": "Let’s pilot automation for Vendor Management (Manual, Monthly; IT Department; Active, last 2025-08-20). Outline scope and KPIs."
+  },
+  {
+    "text": "Data Backup is Manual / On Demand / Under Review with HR Department, last executed 2025-09-06. Please move it to IT Department and enforce weekly cadence until review closes."
+  },
+  {
+    "text": "Before we tweak jobs on Interest Calculation (IT Department; Fully Automated; Daily; Active; last 2025-09-02), estimate the risk of missed postings if one run fails."
+  },
+  {
+    "text": "Grant temporary read access to App_70 (Installed / Operational / Development). IT Custodian Donald Adams, Asset Owner Brian Schneider. Route approval under Customer Service Policy (Status Active, Approval Level Board, last reviewed 2024-12-27)."
+  },
+  {
+    "text": "Place a quarter-end freeze on App_53 (Installed / Operational / Production; Config T14899; Cost B8089966) and keep Transaction Monitoring (Deprecated) jobs disabled during the freeze."
+  },
+  {
+    "text": "Draft a 3-line update for the Board: Customer Complaint Handling is Fully Automated / On Demand / Active; last executed 2025-09-11. Highlight improved response times."
+  },
+  {
+    "text": "I’m noticing possible misclassification: Credit Risk Policy appears under Security and Data Security Policy appears under Credit. Can you open a data-quality ticket to correct categories?"
+  },
+  {
+    "text": "With Loan Approval Policy Retired (last reviewed 2025-02-18), verify impact on Loan Origination (Active, Weekly). Do we need a temporary standard?"
+  },
+  {
+    "text": "Ensure App_95 (Installed / Operational / Production) has paging set up for Cory Griffin (IT Custodian) and Wendy Mcneil (Asset Owner)."
+  }
+]

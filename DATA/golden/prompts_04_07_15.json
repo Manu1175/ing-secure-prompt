@@ -1,0 +1,130 @@
+[
+  {
+    "text": "Create an on-call roster for the payments incident bridge with primary Edward Richardson (+32 37 441 142, edward.richardson@ing.com) and backup Mary Sims (+32 42 361 650, mary.sims@ing.com). Include CorpKeys OE27VJ and NV26ZI.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Build a contact card for ‘CMDB Service Owner’ Mary Sims and ‘Service Desk Lead’ John Graham with phones (+32 42 361 650 / +32 31 603 900) and emails (mary.sims@ing.com / john.graham@ing.com).",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a request to create distribution list ‘payments-alerts@ing.com’ with initial members: Erin Johnson, Kristy Peterson, Shaun Stanley (include their ing.com emails).",
+    "labels": [
+      "EMAIL"
+    ]
+  },
+  {
+    "text": "Write an incident paging cascade SMS for Production: notify Daniel Taylor (+32 94 953 438) then Miguel Fitzgerald (+32 81 609 125) if no ack in 10 min.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Compose a security training reminder email to Heather Johnson (heather.johnson@ing.com) and Nicholas Wolf (nicolas.wolf@ing.com) including CorpKeys NS99DB and LW24YO.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft an ops email confirming transfer 7345e701-ff0d-4665-88ef-c45092fcf6e7 Completed (2025-08-14) for EUR 2,215.86 to IBAN BE75 4520 3760 8470.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Send a risk alert for high-value Pending transfer 178b1069-a98a-41d0-896a-5aae18544db4 (EUR 9,672.89) to IBAN BE55 2212 8041 3697.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Flag IBAN BE62 5474 2787 2767 for review after Failed transfer 93151103-357b-4b8f-8b92-ab7cdab7faaf (EUR 7,813.25) dated 2025-08-16.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Prepare a reconciliation note for Pending transfers: be41f293-ae1b-458e-b9d1-5266037b9332 (EUR 9,428.45 to BE14 8365 4959 2937), 717905b1-4d10-4bdb-af7e-3af1cfb9c203 (EUR 5,210.86 to BE15 8901 8689 5763), 4814960b-1640-4885-90db-1c1020d44350 (EUR 8,102.96 to BE60 6027 9010 9265).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Provide a compliance sample set: 03488215-4c4a-49aa-ae1c-b7f6ede56a4a (Pending), 7f244a6e-6042-4b1f-b1e4-aced4fc1087d (Completed), 5518158a-0d88-48fb-9ed9-db32800c5216 (Failed), 2fc89765-a638-4b6a-881a-83b5cfa4b877 (Pending), 36d0b951-2d3d-4161-abff-147784fb9e6d (Completed).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft an ops email confirming payment order PO-0038 (Wire Transfer) completed for USD 19,335.18 from Linda Lewis (linda.lewis@hotmail.com) to Supplier 207 at IBAN BE01390286750206 (Ref: Invoice 23294).",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Open a failure investigation for PO-0031 (Wire Transfer GBP 1,382.38) to Supplier 558 (IBAN BE27905874889097), Status: Failed. Ask for reason codes and retry window.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Prepare a Pending Standing Order digest: PO-0044 EUR 6,242.15 (Linda Smith), PO-0029 USD 19,031.16 (Tom Jones), PO-0041 EUR 14,825.92 (Linda Jones).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft an analysis of Direct Debit failures: PO-0047 (GBP 1,531.94 to Supplier 186, IBAN BE35825771477528) and PO-0049 (GBP 18,071.87 to Supplier 207, IBAN BE59083717722036).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a Cheque completion digest: PO-0013 GBP 13,990.49; PO-0014 USD 1,632.00; PO-0015 USD 12,595.45; PO-0034 EUR 5,835.07; PO-0054 USD 2,792.05.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a payer notification for PO-0040 (Direct Debit Completed, USD 2,090.09) initiated by Tom Clark to Supplier 776 (IBAN BE96081490396036).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a risk note for higher amounts: PO-0001 EUR 15,660.40 (Completed, Wire), PO-0011 EUR 19,686.97 (Failed, Standing Order), PO-0038 USD 19,335.18 (Completed, Wire).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Notify Asset Owner Mary Sims (mary.sims@ing.com) that payment order PO-0033 failed; ask to coordinate with Treasury Ops.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a data-minimization note: IBANs appearing in transfers or payment orders (e.g., BE75 4520 3760 8470; BE01390286750206) must be masked (show last 4) in analytics exports and restricted to least-privilege roles.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a data-minimization note: when exporting employee phone numbers/emails (e.g., mary.sims@ing.com, +32 42 361 650), use pseudonymous IDs in analytics and restrict direct-contact fields to HR roles.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  }
+]

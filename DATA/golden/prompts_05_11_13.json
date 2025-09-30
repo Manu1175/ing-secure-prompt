@@ -1,0 +1,136 @@
+[
+  {
+    "text": "Write a formal memo summarizing two guidelines: 'Risk Governance Framework' (Issuing Body: National Regulator; Applicability: All Branches; Review Frequency: Bi-Annual; Last Reviewed: 2024-12-04; Status: Deprecated) and 'Cybersecurity Controls' (Issuing Body: Basel Committee; Applicability: HQ Only; Review Frequency: Bi-Annual; Last Reviewed: 2025-04-03; Status: Advisory). Provide next steps for each.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Post a short Slack reminder: 'AML Screening Guidelines' for Digital Services are currently Status: Deprecated; Review Frequency: Annual; Last Reviewed: 2025-01-29. Ask teams to pause any new control rollouts pending replacement.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a risk-acceptance note referencing 'Third-Party Risk Management' (Basel Committee; Applicability: Digital Services; Review Frequency: Bi-Annual; Last Reviewed: 2025-04-09; Status: Deprecated). Propose a temporary control until successor guidance is adopted.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a product launch blurb for 'INGBA4' (Business Account) — Supported Currencies: GBP; Interest Rate: 2.64; Fees: $43 annual fee; Distribution: Online; Regulatory Tags: KYC, FATCA; Operational Status: Active; Version: v2.2; Product Code: BPRL9KDW.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Propose a channel expansion plan for 'INGCC7' (Credit Card) — Supported Currencies: USD, AUD; Interest Rate: 2.20; Fees: $99 annual fee; Distribution: Branch; Regulatory Tags: AML; Operational Status: Active; Version: v1.9; Product Code: BP9VP6DR.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a short promo caption for 'INGSA7' (Savings Account) — Currencies: JPY; Interest Rate: 2.24; Fees: $35 annual fee; Channels: Online; Regulatory Tags: GDPR, KYC; Status: Active; Version: v3.0; Product Code: BPOXTYWJ.",
+    "labels": [
+      "BIC",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Provide a mortgage comparison: 'INGM1' (EUR; 4.27; $64 annual; Mobile, ATM, Branch; FATCA; Active; v2.9; Code BPWY73HD) vs 'INGM4' (JPY, EUR; 1.58; $68 annual; Mobile, Online; KYC, FATCA; Active; v3.1; Code BPNPY80L). Include a one-line recommendation.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Compile a 'GDPR tag' audit list for two active products: 'INGBA6' (Active; GDPR, FATCA; Mobile, Online; v1.4; Code BP9S6249) and 'INGCC10' (Active; GDPR, AML; Mobile, Online; v2.2; Code BP4DCW3J). Include channels and versions.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write acceptance criteria for eligibility checks using a card product 'INGCC4' — Eligibility: 18+ years, valid ID, proof of income; Reg Tags: FATCA, KYC; Status: Active; Version: v1.0; Code: BPS7MXPN.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a version-management note for 'INGCC13' — Credit Card, GBP; Interest: 0.84; Fee: $74 annual; Channel: Online; Reg Tag: KYC; Status: Active; Version: v3.9; Code: BP825VJA. Include a rollback reference.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write a courteous support email to customer Emily Williams confirming her contact details: Email emily.williams@hotmail.com, Phone +32 23 361 947, Street 780 Main St, City Leuven, DOB 1999-11-05 (Age 26). Ask her to confirm if the address is still current.",
+    "labels": [
+      "DOB",
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a fraud-monitoring alert: flag Alex Williams (IP: 167.164.26.227, Email: alex.williams@skynet.be) after multiple device changes; also note Michael Smith (IP: 127.81.31.124, Email: michael.smith@gmail.com) for review due to localhost-range IP usage in logs.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Produce a micro-segmentation note for Brussels customers interested in Technology: include Katie Taylor (Email: katie.taylor@telenet.be, City: Brussels) and Tom Taylor (Email: tom.taylor@proximus.be, City: Brussels). Suggest a targeted offer for INGSA7 via Online channel.",
+    "labels": [
+      "EMAIL"
+    ]
+  },
+  {
+    "text": "Draft a GDPR data-access confirmation for John Brown (Email: john.brown@telenet.be, City: Brussels) acknowledging receipt of his request and confirming identity checks via phone +32 62 363 308.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a CRM correction ticket for Laura Miller (Email: laura.miller@telenet.be, City: Liège) to update household data to '1 members' and verify phone +32 55 269 285.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write a friendly welcome email for Savings Account 'INGSA7' to Emily Taylor (Email: emily.taylor@telenet.be; City: Charleroi) highlighting Interest Rate 2.24, Fee $35 annual, and Online channel.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Prepare a KYC checklist for Alex Johnson (ID: 95.12.08-389.87; Email: alex.johnson@skynet.be; City: Leuven): verify valid ID, proof of income, and age (DOB 1995-12-08, Age 30).",
+    "labels": [
+      "DOB",
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Compose a gentle contact-update nudge to Tom Jones: Phone +32 85 622 130 appears unreachable; ask him (Email: tom.jones@proximus.be; City: Liège) to confirm preferred number.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Send an outage notification to two Ghent customers — Robert Taylor (Email: robert.taylor@proximus.be) and Michael Miller (Email: michael.miller@telenet.be) — informing them of planned maintenance and suggesting Mobile channel for access.",
+    "labels": [
+      "EMAIL"
+    ]
+  },
+  {
+    "text": "Create a data-minimization audit note listing the following data points present in customer records for Michael Smith: Email michael.smith@gmail.com, IP 127.81.31.124, Age 22, City Liège. Recommend masking IPs in analytics.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "text": "What is the credit score and income of Jane Jones?",
+    "labels": []
+  },
+  {
+    "text": "Can you confirm the status of Investment Portfolio for John Miller?",
+    "labels": []
+  },
+  {
+    "text": "What is the masked PIN and biometric method for Michael Lewis?",
+    "labels": []
+  },
+  {
+    "text": "Provide the latest transaction for IBAN BE75573778827078.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What is the relationship type for Michael Garcia's Credit Card?",
+    "labels": []
+  },
+  {
+    "text": "What is the credit score and income of Jane Miller?",
+    "labels": []
+  },
+  {
+    "text": "Can you confirm the status of Life Insurance for Linda Clark?",
+    "labels": []
+  },
+  {
+    "text": "What is the masked PIN and biometric method for Chris Johnson?",
+    "labels": []
+  },
+  {
+    "text": "Provide the latest transaction for IBAN BE24699985452067.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What is the relationship type for Emily Johnson's Credit Card?",
+    "labels": []
+  },
+  {
+    "text": "What is the credit score and income of Robert Williams?",
+    "labels": []
+  },
+  {
+    "text": "Can you confirm the status of Savings Account for Katie Miller?",
+    "labels": []
+  },
+  {
+    "text": "What is the masked PIN and biometric method for Jane Brown?",
+    "labels": []
+  },
+  {
+    "text": "Provide the latest transaction for IBAN BE78676613260743.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What is the relationship type for Jane Clark's Life Insurance?",
+    "labels": []
+  },
+  {
+    "text": "What is the credit score and income of Anna Smith?",
+    "labels": []
+  },
+  {
+    "text": "Can you confirm the status of Personal Loan for Alex Clark?",
+    "labels": []
+  },
+  {
+    "text": "What is the masked PIN and biometric method for Anna Johnson?",
+    "labels": []
+  },
+  {
+    "text": "Provide the latest transaction for IBAN BE75412829419499.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What is the relationship type for Emily Walker's Life Insurance?",
+    "labels": []
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "text": "Draft a short LinkedIn post promoting the 2024 Annual Report with this link: https://assets.ing.com/m/6e8ace8ade094690/original/Annual-report-2024.pdf. Keep the tone professional and include a call to read the full report."
+  },
+  {
+    "text": "Prepare a one-paragraph investor brief linking to 2024 Pillar 3 Disclosures (https://assets.ing.com/m/5f710bfeff3364d0/original/ING-BE-Pillar-3-Disclosures-Q4-2024.xlsx) and the Additional Pillar III report (https://assets.ing.com/m/42e3b0d86ac55855/original/ING-Belgium-Additional-Pillar-III-Report-2024.pdf)."
+  },
+  {
+    "text": "Write a newsroom email that indexes two links: 2024 Full Year Results (https://newsroom.ing.be/ing-continues-to-deliver-strong-growth-in-2024-reinforcing-its-commitment-to-customers-and-society) and 2024 Half Year Results (https://newsroom.ing.be/ing-belgium-builds-on-strong-results-with-608-million-profit-after-first-half-of-2024)."
+  },
+  {
+    "text": "Create an archive index for 2021 Pillar 3 Disclosures Q1–Q4: Q1 https://assets.ing.com/m/1b95f821bd2bc0cc/original/2021-ING-Belgium-Pillar-III-Disclosures-1Q.xlsx ; Q2 https://assets.ing.com/m/362f3cfe7ce92619/original/2021-ING-Belgium-Pillar-III-Disclosures-2Q.xlsx ; Q3 https://assets.ing.com/m/1cccdb7e18606501/original/2021-ING-Belgium-Pillar-III-Disclosures-3Q.xlsx ; Q4 https://assets.ing.com/m/3e95b1f2f3d00a3d/original/2021-ING-Belgium-Pillar-III-Disclosures-4Q.xlsx."
+  },
+  {
+    "text": "Produce a compliance calendar entry to review Annual Reports (2018–2024) using these links: 2018 https://assets.ing.com/m/34995a3bd3ed078c/original/2018-Annual-report-ING-Belgium-SA-NV.pdf ; 2019 https://assets.ing.com/m/a9c76d878f9bce7/original/2019-Annual-report-ING-Belgium-SANV.pdf ; 2020 https://assets.ing.com/m/705f909b50f25c5a/original/2020-Annual-report-ING-Belgium-SANV.pdf ; 2021 https://assets.ing.com/m/44ec4a2eb627b6e4/original/2021-Annual-report-ING-Belgium-SANV.pdf ; 2022 https://assets.ing.com/m/68cd8d3b05d86ecf/original/2022-Annual-Report-ING-Belgium-SA.pdf ; 2023 http://assets.ing.com/m/38b726ce41627db/original/EN-2023-ING-Belgium-SA-NV-Annual-report.pdf ; 2024 https://assets.ing.com/m/6e8ace8ade094690/original/Annual-report-2024.pdf."
+  },
+  {
+    "text": "Draft a decommission plan for Retired but Operational Production apps: App_46 (IT Custodian Jonathan Perkins; Asset Owner Justin Andersen; Config T82542), App_61 (Karen Gutierrez; Justin Andersen; T13603), App_71 (Sean Taylor; Jeanette Joseph; T65276), App_89 (Joel Reed; Tara Doyle; T19734)."
+  },
+  {
+    "text": "Open incidents for Acceptance apps that are Installed but Non-Operational: App_1 (custodian Jimmy Phillips), App_3 (Tyler Fernandez), App_23 (Luis Montoya), App_41 (Edward Jones), App_47 (Thomas Stein)."
+  },
+  {
+    "text": "Propose a patch window for Acceptance apps that are Installed/Operational: App_63, App_72, App_79, App_88, App_96, App_97."
+  },
+  {
+    "text": "Create a UAT gate for Acceptance Operational apps: App_17, App_20, App_63, App_72. Include sign-off from custodians (Ashlee Smith, Melissa Navarro, Jonathan Perkins, Trevor Montgomery)."
+  },
+  {
+    "text": "Prepare a RACI note consolidating Asset Owner Mary Sims across App_4 (Test/Operational), App_31 (Production/Operational), App_35 (Development/Operational)."
+  },
+  {
+    "text": "Write a config-group alignment note: App_63 (T80534), App_28 (T45491), App_70 (T19882). Recommend standardizing monitoring and budget tagging by group."
+  },
+  {
+    "text": "Create a production-readiness checklist for Installed/Operational Production apps: App_31, App_37, App_53, App_95."
+  },
+  {
+    "text": "Write an engagement snapshot for Emily Jones: Mobile Banking (User, Active; last 2025-04-25) and Current Account (Holder, Active; last 2024-11-11)."
+  },
+  {
+    "text": "Draft a cross-sell note for Jane Miller: Life Insurance (Subscriber, Active), Savings Account (Holder, Active), Mortgage (Inactive). Offer a mortgage health check."
+  },
+  {
+    "text": "Compose gentle nudges to re-engage Online Banking users now Inactive: John Taylor (last 2025-03-19) and Katie Taylor (last 2025-05-04)."
+  },
+  {
+    "text": "Create a relationship matrix for Alex Johnson: Mobile Banking (User, Active), Mortgage (Borrower, Active), Personal Loan (Borrower, Active)."
+  },
+  {
+    "text": "Produce a microsegment for Mortgage borrowers (Active): John Lewis (last 2025-09-09), Jane Smith (last 2025-06-08), Tom Smith (last 2025-01-20). Suggest a rate alert campaign."
+  },
+  {
+    "text": "Draft a Mobile Banking (Active) microsegment with last interactions: Alex Williams (2025-03-02), Emily Jones (2025-04-25), Robert Williams (2025-08-08)."
+  },
+  {
+    "text": "Compose a consent & preferences audit note for Emily Smith: Online Banking (User, Active; last 2025-08-07), Investment Portfolio (Investor, Active; last 2025-07-09), Personal Loan (Borrower, Active; last 2024-10-19)."
+  },
+  {
+    "text": "Create a data-minimization note: for customer analytics exports referencing names like Jane Miller or John Taylor, use pseudonymous IDs and restrict raw-name access to least-privileged roles."
+  }
+]

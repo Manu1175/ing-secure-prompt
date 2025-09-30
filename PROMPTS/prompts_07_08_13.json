@@ -1,0 +1,62 @@
+[
+  {
+    "text": "Draft an ops email confirming transfer 490d1104-7e77-4bf6-9827-4022c36735a3 Completed on 2024-11-18 for EUR 1,173.73 to IBAN BE96 3296 4713 6802."
+  },
+  {
+    "text": "Send a risk alert for high-value Pending transfer ff2fcf47-4341-4729-86cd-ee1db7853be5 (EUR 9,573.90) to IBAN BE33 3644 9891 9701."
+  },
+  {
+    "text": "Prepare a reconciliation note for Pending transfers: be41f293-ae1b-458e-b9d1-5266037b9332 (EUR 9,428.45 to BE14 8365 4959 2937), 717905b1-4d10-4bdb-af7e-3af1cfb9c203 (EUR 5,210.86 to BE15 8901 8689 5763), 4814960b-1640-4885-90db-1c1020d44350 (EUR 8,102.96 to BE60 6027 9010 9265)."
+  },
+  {
+    "text": "Flag IBAN BE62 5474 2787 2767 for review after Failed transfer 93151103-357b-4b8f-8b92-ab7cdab7faaf (EUR 7,813.25) on 2025-08-16."
+  },
+  {
+    "text": "Provide a compliance sample set: 03488215-4c4a-49aa-ae1c-b7f6ede56a4a (Pending), 7f244a6e-6042-4b1f-b1e4-aced4fc1087d (Completed), 5518158a-0d88-48fb-9ed9-db32800c5216 (Failed), 2fc89765-a638-4b6a-881a-83b5cfa4b877 (Pending), 36d0b951-2d3d-4161-abff-147784fb9e6d (Completed)."
+  },
+  {
+    "text": "Draft a decommission plan for Production apps with Status Retired: PhysicalApp_2 (DOCSGBBFX), PhysicalApp_11 (DOC60V5MC), PhysicalApp_13 (DOCPWKE24)."
+  },
+  {
+    "text": "Propose a maintenance window for Production apps in Maintenance: PhysicalApp_3 (8 vCPU, 8 GB; DOCFGPAA4), PhysicalApp_4 (4 vCPU, 16 GB; DOC4MIYVZ), PhysicalApp_5 (4 vCPU, 32 GB; DOCN4DBRS), PhysicalApp_6 (8 vCPU, 8 GB; DOC3W7MGK)."
+  },
+  {
+    "text": "Create a capacity snapshot for Production Running: PhysicalApp_19 (Storage 1261 GB; 2 vCPU, 8 GB), PhysicalApp_25 (1890 GB; 8 vCPU, 16 GB), PhysicalApp_27 (1180 GB; 4 vCPU, 8 GB), PhysicalApp_30 (991 GB; 4 vCPU, 16 GB)."
+  },
+  {
+    "text": "Write a cost note: Physical fleet uses CapEx with Provider Internal IT; many Production apps in Maintenance (e.g., App_3, App_4, App_5, App_6, App_8, App_10, App_12). Recommend hardware refresh planning and lifecycle alignment."
+  },
+  {
+    "text": "Provide an environment overview: Production has Running (App_19, App_25, App_27, App_30) and Maintenance (App_3, App_4, App_5, App_6, App_8, App_10, App_12, App_15, App_16, App_22); Test shows Running (App_24, App_29) and Retired (App_18, App_21, App_26); Development has Running (App_23) and Maintenance (App_9, App_14, App_28) with some Retired (App_1, App_17)."
+  },
+  {
+    "text": "Write a profile completeness check for Emily Jones (Location Bruges; Email emily.jones@skynet.be; Phone +32 15 726 931). Ask to confirm postal address and marketing preferences."
+  },
+  {
+    "text": "Draft a cross-sell note for Jane Miller (Location Ghent; Income €93,522; Email jane.miller@proximus.be): suggest premium savings and advisory session."
+  },
+  {
+    "text": "Compose churn‑risk nudges for Brussels customers inactive in outreach: Katie Taylor (katie.taylor@telenet.be), John Johnson (john.johnson@proximus.be), Linda Jones (linda.jones@telenet.be)."
+  },
+  {
+    "text": "Create a microsegment: Technology‑interested customers in Leuven — Alex Johnson (alex.johnson@skynet.be), Jane Taylor (jane.taylor@hotmail.com), Michael Taylor (michael.taylor@telenet.be)."
+  },
+  {
+    "text": "Compose a consent & preferences audit note for Emily Smith (emily.smith@telenet.be): verify channels against profile (Location Mons; Interest Finance; Hobbies Traveling)."
+  },
+  {
+    "text": "Draft a customer‑data minimization note: fields like ID Number, Date of Birth, Postal Address, Phone, Email, IP Address, Income must be masked or tokenized in analytics exports and restricted to least‑privileged roles."
+  },
+  {
+    "text": "Prepare a contact update request for Alex Williams (Bruges): confirm phone +32 86 540 984 and email alex.williams@skynet.be; offer quick link to update address 360 Maple Dr, 8000."
+  },
+  {
+    "text": "Create a high‑income microsegment (≥ €90k): Katie Lewis (Bruges; €95,193), Jane Miller (Ghent; €93,522), Robert Lewis (Ghent; €99,675). Propose concierge outreach."
+  },
+  {
+    "text": "Draft a data‑quality ticket: inconsistent gender/age flags in several records (e.g., Michael Williams shows Gender Female and Age 27). Request validation rules and correction job."
+  },
+  {
+    "text": "Compose a privacy notice snippet: explain why we collect IP Address and Interest fields and how customers can manage preferences from the portal."
+  }
+]

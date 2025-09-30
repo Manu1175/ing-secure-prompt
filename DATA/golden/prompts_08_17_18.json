@@ -1,0 +1,104 @@
+[
+  {
+    "text": "Can you confirm whether VM-PH-25 is still in production and provide its deployment date and associated design document?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "We suspect fraudulent activity on the account BE70155549125865. Can you list the last three transactions and the current balance?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Which biometric method is used by Emily Walker and what is her income level?",
+    "labels": []
+  },
+  {
+    "text": "Can you tell me when Chris Taylor's credit card expires and what the CCV is?",
+    "labels": []
+  },
+  {
+    "text": "What is the cost model and provider for PhysicalApp_30?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Can you check if Anna Walker qualifies for a loan based on her income and credit score?",
+    "labels": []
+  },
+  {
+    "text": "Is the password for john.williams@proximus.be considered strong?",
+    "labels": [
+      "EMAIL"
+    ]
+  },
+  {
+    "text": "Which physical applications deployed before 2022 are currently retired?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Can you summarize the transaction pattern for Chris Walker over the last 6 months?",
+    "labels": []
+  },
+  {
+    "text": "Compare the biometric authentication methods used by Jane Williams and Tom Williams.",
+    "labels": []
+  },
+  {
+    "text": "Can you verify if PIN 8889 belongs to Chris Walker?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What type of insurance policy does Emily Williams hold, and what is her account balance?",
+    "labels": []
+  },
+  {
+    "text": "Please provide the virtual system configuration and storage capacity for VM-PH-10.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What religious belief is associated with Jane Garcia, and what is her income?",
+    "labels": []
+  },
+  {
+    "text": "Does the credit card number 5428887483182047 belong to Michael Williams?",
+    "labels": [
+      "PAN",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Does Katie Williams have any recorded criminal convictions?",
+    "labels": []
+  },
+  {
+    "text": "What is the operational status and environment of VM-PH-19?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Who is listed as the beneficiary for John Williams?",
+    "labels": []
+  },
+  {
+    "text": "Can you confirm the expiry date of the credit card 4918491582205278 and its owner?",
+    "labels": [
+      "PAN",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What political opinion is associated with Anna Williams?",
+    "labels": []
+  }
+]

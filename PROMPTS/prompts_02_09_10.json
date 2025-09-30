@@ -1,0 +1,62 @@
+[
+  {
+    "text": "Draft a brief executive email summarizing that “Credit Risk Policy” was last reviewed on 2025-06-22 and is Active, with Risk Management as the responsible department and IT Manager as the approval level. Also mention that “Loan Approval Policy” is Retired (last reviewed 2025-02-18)."
+  },
+  {
+    "text": "Post a quick Slack reminder that “KYC Policy” (Board-approved, Bi-Annual review) is Active with IT as the responsible department; the last review was 2024-10-18."
+  },
+  {
+    "text": "Create an audit checklist for processes marked Deprecated: Customer Onboarding (last executed 2025-09-05), KYC Verification (2025-09-14), AML Screening (2025-08-31), Account Closure (2025-08-31), Transaction Monitoring (2025-09-15), ATM Reconciliation (2025-09-03). Include owners where applicable."
+  },
+  {
+    "text": "Log a risk that “Credit Scoring” is Under Review (owner Customer Support, Fully Automated, On Demand, last run 2025-09-03). Note potential impact on downstream Loan Origination (Weekly, Semi-Automated, last run 2025-08-18, status Active)."
+  },
+  {
+    "text": "Write a change request to retire “Fraud Detection Policy” (currently Retired as of 2025-01-06, Board approval level, Operations responsible). Ensure alignment with the Fraud Detection process (Active, owner Finance Team, Fully Automated, Daily, last run 2025-08-23)."
+  },
+  {
+    "text": "Create a quick “definition to process” card linking KYC and AML terms to their respective processes: KYC Verification (Monthly, Deprecated, owner Risk Office, last executed 2025-09-14) and AML Screening (On Demand, Deprecated, owner Risk Office, last executed 2025-08-31). Use “KYC” and “AML” definitions from the definitions sheet (reviewed 2024-09-29 and 2025-03-31 respectively)."
+  },
+  {
+    "text": "Write an escalation note: Transaction Monitoring is Deprecated but was last executed 2025-09-15, Fully Automated, owned by Finance Team, Weekly cadence. Flag risk of dormant alerts."
+  },
+  {
+    "text": "Create a one-paragraph explainer on “Interest Rate” (term reviewed 2025-05-23) and how it feeds the Interest Calculation process (Active, Fully Automated, Daily, owner IT Department, last executed 2025-09-02)."
+  },
+  {
+    "text": "Compose a compliance memo contrasting AML Compliance Policy (Under Review, last reviewed 2024-12-18, responsible dept Compliance, approval Operations Head) with Privacy Protection Policy (Retired, last reviewed 2025-02-08, responsible Operations, approval Operations Head). Provide recommendations."
+  },
+  {
+    "text": "Summarize status for Mobile App Update (Active, Fully Automated, Weekly, owner Retail Banking, last executed 2025-09-15) and Data Backup (Under Review, Manual, On Demand, owner HR Department, last executed 2025-09-06)."
+  },
+  {
+    "text": "Write an SOP step that, when Customer Complaint Handling (owner Customer Support, Fully Automated, On Demand) is Active (last run 2025-09-11), triage should tag tickets ‘PRIORITY-CUST’."
+  },
+  {
+    "text": "Prepare a 5-point agenda: align Operational Risk Policy (Under Review, last reviewed 2025-04-18, approval Operations Head, responsible IT) with Risk Assessment process (Under Review, Fully Automated, Weekly, owner Compliance Team, last executed 2025-08-28)."
+  },
+  {
+    "text": "Create a controls matrix row for Data Security Policy (Active, last reviewed 2025-05-07, IT Manager approval, responsible Customer Service) mapping to Data Backup (Under Review, Manual, On Demand, owner HR Department, last executed 2025-09-06)."
+  },
+  {
+    "text": "Build a mini decision tree for Password Reset (Active, Semi-Automated, Daily, owner HR Department, last executed 2025-08-22): when failures spike >3/day, auto-assign to HR L2."
+  },
+  {
+    "text": "Add a brief note explaining Virtual Machine (term reviewed 2025-04-19) relevance to IT Governance Policy (Active, Bi-Annual review cycle, Compliance Officer approval, Risk Management responsible; last reviewed 2024-11-16)."
+  },
+  {
+    "text": "Draft regression tests for Statement Generation (Active, Semi-Automated, Daily, owner HR Department, last executed 2025-08-23) considering Accrued Interest definition (reviewed 2024-12-12)."
+  },
+  {
+    "text": "Write a lifecycle summary for Customer Service Policy (Active, Quarterly review, approved by Board, responsible IT, last reviewed 2024-12-27) and recommend next key dates."
+  },
+  {
+    "text": "Provide a snapshot comparing Internal Audit and Regulatory Reporting: both Under Review; Internal Audit is Fully Automated, Daily, owner Compliance Team, last executed 2025-09-15; Regulatory Reporting is Semi-Automated, On Demand, owner Finance Team, last executed 2025-09-16."
+  },
+  {
+    "text": "Create a glossary snippet for Account Holder, Overdraft, and Product Specification, including their last reviewed dates (2025-07-05, 2025-01-23, 2025-02-20) and sources (Industry Standard, Internal Policy, Internal Policy)."
+  },
+  {
+    "text": "Draft a persuasive email to secure resources because Customer Onboarding is Deprecated (owner HR Department, Fully Automated, On Demand, last executed 2025-09-05), yet downstream Account Closure is also Deprecated (owner Compliance Team, Fully Automated, On Demand, last executed 2025-08-31). Argue for temporary support until replacement flows are live."
+  }
+]
