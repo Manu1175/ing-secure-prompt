@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}SecurePrompt · Audit{% endblock %}
+
+{% block content %}
+<section class="space-y-4">
+  <h1 class="text-xl font-semibold text-slate-800">Audit Trail</h1>
+  {% if not has_entries %}
+  <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded">
+    No audit entries yet. Scrub text or files to populate the log.
+  </div>
+  {% else %}
+  <div class="bg-white rounded shadow">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-left text-sm">
+        <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
+          <tr>
+            <th class="px-3 py-2">Action</th>
+            <th class="px-3 py-2">Status</th>
+            <th class="px-3 py-2">Timestamp</th>
+            <th class="px-3 py-2">Message</th>
+            <th class="px-3 py-2">Hash</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+          <tr class="border-t border-slate-200">
+            <td class="px-3 py-2 text-xs">{{ entry.action or entry.get("action") }}</td>
+            <td class="px-3 py-2 text-xs">{{ entry.status or (entry.ok and "ok" or "") }}</td>
+            <td class="px-3 py-2 text-xs">{{ "{:.0f}".format(entry.ts) if entry.ts is defined else "" }}</td>
+            <td class="px-3 py-2 text-xs">{{ entry.justification or entry.message or entry.error or "" }}</td>
+            <td class="px-3 py-2 font-mono text-xs">{{ entry.short_hash }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

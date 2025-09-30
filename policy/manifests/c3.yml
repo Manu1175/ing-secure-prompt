@@ -19,13 +19,6 @@
   action: redact
   explanation: payment card number
   confidence: 0.96
-- id: PHONE_e164
-  label: PHONE
-  pattern: (?<!\\w)\\+\\d{8,15}(?!\\d)
-  validator: e164_ok
-  action: ignore
-  explanation: E.164 phone
-  confidence: 0.85
 - id: ACCOUNT_ID_generic
   label: ACCOUNT_ID
   pattern: \bACC[_-]?\d{6,}\b

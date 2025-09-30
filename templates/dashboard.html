@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}SecurePrompt · Dashboard{% endblock %}
+
+{% block content %}
+<section class="space-y-4">
+  <h1 class="text-xl font-semibold text-slate-800">Interactive Scrubbing</h1>
+  <p class="text-sm text-slate-600">Masking policy: mask entities where <code>entity.c_level</code> is strictly greater than the selected clearance.</p>
+
+  {% if error %}
+  <div class="bg-red-100 text-red-800 border border-red-300 px-4 py-3 rounded">{{ error }}</div>
+  {% endif %}
+
+  <form action="/ui/scrub" method="post" enctype="multipart/form-data" class="bg-white shadow rounded p-4 space-y-4">
+    <div class="flex flex-col md:flex-row md:items-center md:gap-6">
+      <label class="text-sm font-medium text-slate-700">Clearance</label>
+      <select name="clearance" class="mt-2 md:mt-0 border border-slate-300 rounded px-3 py-2">
+        {% for option in clearances %}
+        <option value="{{ option }}" {% if option == clearance %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="space-y-2">
+      <label for="text" class="text-sm font-medium text-slate-700">Free Text</label>
+      <textarea id="text" name="text" rows="6" class="w-full border border-slate-300 rounded px-3 py-2" placeholder="Paste prompt text here...">{{ original }}</textarea>
+    </div>
+
+    <div class="space-y-2">
+      <label for="upload" class="text-sm font-medium text-slate-700">Upload file</label>
+      <input id="upload" name="upload" type="file" accept=".txt,.text,.html,.csv,.pdf,.png" class="block w-full text-sm text-slate-600" />
+      <p class="text-xs text-slate-500">Supported types: .txt, .html, .csv, .pdf, .png</p>
+    </div>
+
+    <div class="flex gap-3">
+      <button type="submit" name="action" value="scrub" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded">Scrub Text</button>
+      <button type="submit" name="action" value="upload" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-4 py-2 rounded">Upload &amp; Scrub</button>
+    </div>
+  </form>
+
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="bg-white rounded shadow p-4">
+      <h2 class="text-sm font-semibold text-slate-700 mb-2">Input</h2>
+      {% if file_name %}
+      <p class="text-xs text-slate-500 mb-2">File: {{ file_name }}</p>
+      {% endif %}
+      <pre class="whitespace-pre-wrap text-sm text-slate-700">{{ original }}</pre>
+    </div>
+    <div class="bg-white rounded shadow p-4">
+      <h2 class="text-sm font-semibold text-slate-700 mb-2">Sanitized Output</h2>
+      <pre class="whitespace-pre-wrap text-sm text-slate-700">{{ sanitized }}</pre>
+      {% if saved_href %}
+      <p class="text-xs text-emerald-600 mt-3">Saved copy: <a href="{{ saved_href }}" class="underline" target="_blank" rel="noopener">{{ saved_path }}</a></p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="bg-white rounded shadow p-4">
+    <h2 class="text-sm font-semibold text-slate-700 mb-3">Detected Entities</h2>
+    {% if entities %}
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-left text-sm">
+        <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
+          <tr>
+            <th class="px-3 py-2">Label</th>
+            <th class="px-3 py-2">C-Level</th>
+            <th class="px-3 py-2">Detector</th>
+            <th class="px-3 py-2">Identifier</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entity in entities %}
+          <tr class="border-t border-slate-200">
+            <td class="px-3 py-2 font-mono text-xs">{{ entity.label }}</td>
+            <td class="px-3 py-2 text-xs">{{ entity.c_level or "C?" }}</td>
+            <td class="px-3 py-2 text-xs">{{ entity.detector }}</td>
+            <td class="px-3 py-2 font-mono text-xs break-all">{{ entity.identifier }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-sm text-slate-500">No entities detected.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
