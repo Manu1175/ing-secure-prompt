@@ -1,9 +1,9 @@
 SHELL := /bin/bash
 
-.PHONY: help setup dev-install ingest-secureprompt slides lint format typecheck test test-fast run-cli run-api clean env check watch-tests
+.PHONY: help setup dev-install ingest-secureprompt slides lint format typecheck test test-fast run-cli run-api clean env check watch-tests release
 
 help:
-	@echo "setup | dev-install | ingest-secureprompt | test-fast | test | lint | format | typecheck | run-cli | run-api | slides | env | clean | check | watch-tests"
+	@echo "setup | dev-install | ingest-secureprompt | test-fast | test | lint | format | typecheck | run-cli | run-api | slides | env | clean | check | watch-tests | release"
 
 setup:
 	python -m pip install -U pip
@@ -65,3 +65,7 @@ metrics:
 metrics-open: metrics
 	@echo "Opening reports/metrics.md…"
 	@/usr/bin/open reports/metrics.md 2>/dev/null || true
+
+release:
+	mkdir -p dist
+	zip -r dist/secureprompt_handoff_v3.zip README.md README_Codex.md Makefile pyproject.toml requirements.txt config secureprompt api tools tests policy data reports slides scripts
