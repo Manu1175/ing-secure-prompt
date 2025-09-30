@@ -47,12 +47,16 @@ def _date_like_ok(s: str) -> bool:
             pass
     return False
 
+def _e164_ok(s: str) -> bool:
+    return bool(re.fullmatch(r"\+\d{8,15}", s))
+
 VALIDATORS = {
     "none": lambda m: True,
     "luhn": lambda m: _luhn_ok(m.group(0)),
     "iban_checksum": lambda m: _iban_ok(m.group(0)),
     "be_nrn": lambda m: _be_nrn_ok(m.group(0)),
     "date": lambda m: _date_like_ok(m.group(0)),
+    "e164_ok": lambda m: _e164_ok(m.group(0)),
 }
 
 def _compile_from_manifests(paths: List[str]):

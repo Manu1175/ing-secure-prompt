@@ -68,6 +68,11 @@ def scrub(in_: ScrubIn):
 
     return result
 
+@app.post("/files/redact-text")
+def redact_text(req: ScrubRequest):
+    res = scrub_text(req.text, req.c_level)
+    out = write_redacted_text(req.filename or "input.txt", res["scrubbed"])
+    return {"output_path": str(out), **res}
 
 @app.post("/descrub")
 def descrub(payload: DescrubIn):

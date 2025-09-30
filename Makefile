@@ -13,6 +13,11 @@ setup:
 dev-install:
 	pip install -e .
 
+dev:
+	pip install -U pip setuptools wheel
+	pip install -e '.[test]'
+
+
 ingest-secureprompt:
 	python tools/ingest_secureprompt_repo.py --config config/datasets.yml
 
@@ -34,7 +39,7 @@ test:
 	pytest -q
 
 test-fast:
-	pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text"
+	PYTHONPATH=$(shell pwd):$$PYTHONPATH pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text"
 
 run-cli:
 	python -m secureprompt.cli scrub README.md || true
@@ -62,9 +67,8 @@ watch-tests:
 metrics:
 	@PYTHONPATH=. python tools/regenerate_metrics.py
 
-metrics-open: metrics
-	@echo "Opening reports/metrics.md…"
-	@/usr/bin/open reports/metrics.md 2>/dev/null || true
+metrics-open:
+	@PYTHONPATH=. python tools/regenerate_metrics.py
 
 release:
 	mkdir -p dist
