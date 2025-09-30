@@ -116,8 +116,11 @@ def evaluate_golden(
 
     _write_report(report_path, label_metrics, overall)
 
+    by_label = {label: metrics.as_dict() for label, metrics in label_metrics.items()}
+
     return {
-        "by_label": {label: metrics.as_dict() for label, metrics in label_metrics.items()},
+        "by_label": by_label,
+        "labels": by_label,
         "overall": overall.as_dict(),
     }
 
@@ -151,19 +154,34 @@ def _update_metrics(
             metrics.exact_matches += 1
 
 
-def _collect_sensitive_values(record: Dict[str, Any]) -> List[str]:
-    candidates: Iterable[Any] = record.get("expected_entities", record.get("entities", []))
-    values: List[str] = []
-    for item in candidates:
-        if isinstance(item, str):
-            values.append(item)
-            continue
-        if isinstance(item, dict):
-            for key in ("value", "text", "raw", "original"):
-                if key in item and isinstance(item[key], str):
-                    values.append(item[key])
-                    break
-    return values
+def _collect_sensitive_values(record) -> list[str]:
+    """
+    Return a list of gold sensitive values for a record.
+    Be robust to entities being None, a string, or a malformed list.
+    Expected shapes we tolerate:
+      - entities: [{"label": "...", "value": "...", ...}, ...]
+      - entities: None / missing / ""  -> []
+      - entities: JSON string of the above
+    """
+    import json
+
+    candidates = record.get("entities") or []
+    # If the producer wrote a JSON string, parse it.
+    if isinstance(candidates, str):
+        try:
+            candidates = json.loads(candidates)
+        except Exception:
+            candidates = []
+
+    out: list[str] = []
+    if isinstance(candidates, list):
+        for item in candidates:
+            if isinstance(item, dict):
+                v = item.get("value")
+                if v:
+                    out.append(str(v))
+    # Anything else is treated as empty.
+    return out
 
 
 def _extract_output_text(result: Dict[str, Any]) -> str:

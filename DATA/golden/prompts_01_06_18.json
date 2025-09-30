@@ -1,0 +1,94 @@
+[
+  {
+    "text": "Can you confirm the deployment date and provider for VM-IAAS-20 and whether it's currently retired?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What’s the account balance for Katie Williams and her last wire transaction?",
+    "labels": []
+  },
+  {
+    "text": "Please list the storage capacity and environment type for SYS-IAAS-4.",
+    "labels": []
+  },
+  {
+    "text": "Is the document link for ING Belgium’s 2024 Pillar 3 Disclosures still active?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Can you provide the credit score and income of Chris Williams?",
+    "labels": []
+  },
+  {
+    "text": "Summarize the investment portfolio and insurance policy type for Anna Williams.",
+    "labels": []
+  },
+  {
+    "text": "Which VM has the highest storage capacity and is hosted on Google Cloud?",
+    "labels": []
+  },
+  {
+    "text": "Evaluate the credit score and criminal conviction status of Kimberly Hardin.",
+    "labels": []
+  },
+  {
+    "text": "Can you list all 2023 ING Belgium documents related to Pillar 3?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Is VM-IAAS-8 still operational, and what’s its environment type?",
+    "labels": []
+  },
+  {
+    "text": "Group customers by biometric authentication method and list their income.",
+    "labels": []
+  },
+  {
+    "text": "Which Azure-hosted systems are currently retired?",
+    "labels": []
+  },
+  {
+    "text": "What was the largest POS transaction for Emily Williams?",
+    "labels": []
+  },
+  {
+    "text": "Which ING Belgium document in 2022 had the highest profit figure?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "List all customers using FaceID and their masked PINs.",
+    "labels": []
+  },
+  {
+    "text": "What’s the account balance and income of John Williams?",
+    "labels": []
+  },
+  {
+    "text": "Which VM on AWS has the lowest storage capacity?",
+    "labels": []
+  },
+  {
+    "text": "How many online transactions did Chris Williams make in 2025?",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Give me the link to ING Belgium’s 2021 Annual Report.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "What’s the national ID and biometric method for Emily Williams?",
+    "labels": []
+  }
+]

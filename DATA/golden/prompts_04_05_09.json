@@ -1,0 +1,136 @@
+[
+  {
+    "text": "Draft an internal notice to deprecate 'Risk Governance Framework' (Compliance; Issuer: National Regulator; Last Reviewed 2024-12-04; Status: Deprecated) and point teams to active policies where applicable.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Prepare a sync note: 'AML Screening Guidelines' are Deprecated (Risk Management; National Regulator; last 2025-01-29). Align with 'AML Compliance Policy' (Compliance; Under Review; last 2024-12-18; owner dept Compliance).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write a one-paragraph brief on 'Digital Onboarding Standards' (Sustainability; Internal Governance; Annual; last 2025-02-09; Status: Advisory) for product managers.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a heads-up: 'Sustainability Reporting Protocol' (Risk Management; Industry Consortium; Annual; last 2025-06-17; Advisory) impacts ESG dashboards; request data lineage checks.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Propose to transition from 'Mobile Banking Security' (Deprecated; National Regulator; last 2024-11-22) to 'Cybersecurity Controls' (Advisory; Basel Committee; last 2025-04-03).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create an action list to retire 'Third-Party Risk Management' guideline (Governance; Basel Committee; Bi-Annual; last 2025-04-09; Deprecated).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Send a reminder about 'Data Privacy Guidelines' (Compliance; Internal Governance; Bi-Annual; last 2024-10-16; Advisory) ahead of next review cycle.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write a change note: 'Board Oversight Principles' (Sustainability; Industry Consortium; Bi-Annual; last 2025-03-02; Deprecated) marked obsolete; archive references.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Prepare a policy status digest: Credit Risk Policy (Active; last 2025-06-22); AML Compliance Policy (Under Review; last 2024-12-18); Operational Risk Policy (Under Review; last 2025-04-18); Loan Approval Policy (Retired; last 2025-02-18).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write an alignment note between 'KYC Policy' (Active; Responsible Dept IT; Approval: Board; Bi-Annual; last 2024-10-18) and 'Digital Onboarding Standards' (Advisory; Internal Governance; last 2025-02-09).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft an email announcing 'IT Governance Policy' is Active (Risk Management; Approval: Compliance Officer; Bi-Annual; last 2024-11-16).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write a short broadcast that 'Customer Service Policy' is Active (Responsible Dept IT; Approval Board; Quarterly review; last 2024-12-27).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Raise an escalation that 'Operational Risk Policy' is Under Review (Responsible Dept IT; Approval: Operations Head; Quarterly; last 2025-04-18) and may impact control attestations.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a retirements summary for: 'Fraud Detection Policy' (Retired; Board approval; last 2025-01-06) and 'Privacy Protection Policy' (Retired; Operations Head; last 2025-02-08).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a notice that 'Loan Approval Policy' is Retired (Risk Management; Approval: Compliance Officer; Quarterly; last 2025-02-18); remove from approval workflows.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Build a contact card for policy queries: Mary Sims (+32 42 361 650; mary.sims@ing.com) and John Graham (+32 31 603 900; john.graham@ing.com).",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Send a training invite referencing 'Data Security Policy' (Active; Customer Service; IT Manager; last 2025-05-07) to Heather Johnson (NS99DB) and Nicholas Wolf (LW24YO).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Prepare a RACI note: Mary Sims as Owner, John Graham as Approver, Erin Johnson and Kristy Peterson as Contributors for policy communications DL.",
+    "labels": []
+  },
+  {
+    "text": "Create a calendar entry for next quarter reviews: Credit Risk Policy (Annual; last 2025-06-22), Customer Service Policy (Quarterly; last 2024-12-27), AML Compliance Policy (Bi-Annual; last 2024-12-18).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a data-minimization note: when sharing employee lists (phones/emails/CorpKeys), restrict to least-privileged distribution lists and avoid external emails.",
+    "labels": []
+  }
+]

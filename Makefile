@@ -58,3 +58,10 @@ check:
 # Auto test watcher: re-runs pytest whenever files change
 watch-tests:
 	ptw --onfail "echo FAIL" --onpass "echo PASS" -c
+	
+metrics:
+	@PYTHONPATH=. python tools/regenerate_metrics.py
+
+metrics-open: metrics
+	@echo "Opening reports/metrics.md…"
+	@/usr/bin/open reports/metrics.md 2>/dev/null || true

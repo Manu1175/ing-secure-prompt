@@ -1,10 +1,15 @@
 from typing import List, Dict, Any, Tuple
-try:
-    import pytesseract
+
+try:  # pragma: no cover - import guard used in tests
     from PIL import Image, ImageDraw
 except Exception:  # pragma: no cover
-    pytesseract = None
     Image = None
+    ImageDraw = None
+
+try:  # pragma: no cover
+    import pytesseract
+except Exception:  # pragma: no cover
+    pytesseract = None
 
 def ocr_image_to_text(img_path: str) -> str:
     if pytesseract is None:
@@ -12,7 +17,7 @@ def ocr_image_to_text(img_path: str) -> str:
     return pytesseract.image_to_string(Image.open(img_path))
 
 def redact_image_with_boxes(img_path: str, boxes: List[Tuple[int,int,int,int]], out_path: str) -> Dict[str, Any]:
-    if Image is None:
+    if Image is None or ImageDraw is None:
         raise RuntimeError("Pillow not available")
     im = Image.open(img_path).convert("RGB")
     draw = ImageDraw.Draw(im)

@@ -67,7 +67,7 @@ def test_evaluate_golden(tmp_path: Path, stub_scrubber) -> None:
     report_path = tmp_path / "metrics.md"
     summary = evaluate_golden(data_dir=data_dir, report_path=report_path, scrubber=stub_scrubber)
 
-    email_metrics = summary["by_label"]["email"]
+    email_metrics = summary["labels"]["email"]
     assert email_metrics["n"] == 2
     assert email_metrics["residual_hits"] == 1
     assert email_metrics["replaced"] == 1
@@ -75,7 +75,7 @@ def test_evaluate_golden(tmp_path: Path, stub_scrubber) -> None:
     assert pytest.approx(email_metrics["recall"]) == pytest.approx(0.5)
     assert email_metrics["notes"] == ""
 
-    address_metrics = summary["by_label"]["address"]
+    address_metrics = summary["labels"]["address"]
     assert address_metrics["n"] == 1
     assert address_metrics["residual_hits"] == 0
     assert address_metrics["replaced"] == 1
@@ -91,4 +91,3 @@ def test_evaluate_golden(tmp_path: Path, stub_scrubber) -> None:
     report = report_path.read_text(encoding="utf-8")
     assert "| label | n | residual_hits" in report
     assert "| overall" in report
-

@@ -1,0 +1,139 @@
+[
+  {
+    "text": "Create a glossary card for 'Accrued Interest' (Category: Financial; Source: Internal Policy; Last Reviewed 2024-12-12). Include a one-line definition and an example sentence.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Log a change note for 'Amortization' (Category: Financial; Source: Regulatory Body; Last Reviewed 2025-04-07) clarifying schedule and accounting treatment.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a micro-glossary comparing 'KYC' (Regulatory; last 2024-09-29) and 'AML' (Regulatory; last 2025-03-31): include purpose, typical controls, and review cadence.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write a quick reference comparing 'CapEx' (Financial; last 2025-04-25) and 'OpEx' (Financial; last 2025-01-10) with 2 examples each.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Bundle technical definitions for 'Virtual Machine' (last 2025-04-19), 'IaaS' (last 2025-06-27), and 'Encryption' (last 2025-04-08). Provide one sentence each plus a usage tip.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft short entries for 'Product Specification' (Product; last 2025-02-20) and 'Operational Status' (Operational; last 2025-04-08) used in CMDB templates.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create governance stubs for 'Risk Assessment' (Operational; last 2024-12-27) and 'Compliance Check' (Regulatory; last 2025-04-04) with who/when/outputs.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a retirement plan for 'Third-Party Risk Management' guideline (Governance; Basel Committee; Bi-Annual; last 2025-04-09; Status: Deprecated).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Send a review reminder for 'Data Privacy Guidelines' (Compliance; Internal Governance; Bi-Annual; last 2024-10-16; Status: Advisory).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Propose transition from 'Mobile Banking Security' (Deprecated; National Regulator; last 2024-11-22) to 'Cybersecurity Controls' (Advisory; Basel Committee; last 2025-04-03).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a note that 'Sustainability Reporting Protocol' (Risk Management; Industry Consortium; Annual; last 2025-06-17; Advisory) requires ESG dashboard lineage checks before refresh.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write an SOP update for 'Customer Complaint Handling' (Governance; Basel Committee; Bi-Annual; last 2025-01-02; Advisory).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Prepare a product onboarding brief for 'Digital Onboarding Standards' (Sustainability; Internal Governance; Annual; last 2025-02-09; Advisory).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Issue a change note: 'Board Oversight Principles' (Sustainability; Industry Consortium; Bi-Annual; last 2025-03-02) is Deprecated; archive references and update board briefing packs.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write an engagement snapshot for Emily Smith: Online Banking (User, Active; last 2025-08-07), Investment Portfolio (Investor, Active; last 2025-07-09), Personal Loan (Borrower, Active; last 2024-10-19).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Produce a Mortgage (Active) microsegment with last interaction dates: John Lewis (2025-09-09), Alex Taylor (2025-02-03), Jane Smith (2025-06-08). Suggest a rate-alert campaign.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft re‑engagement nudges for Online Banking users now Inactive: John Taylor (last 2025-03-19), Katie Taylor (last 2025-05-04), Robert Johnson (last 2025-08-27).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write a cross‑sell note for Jane Miller: Active — Life Insurance (Subscriber; 2025-01-15) and Savings Account (Holder; 2025-05-04). Inactive — Mortgage (last 2025-06-28). Offer a mortgage health check.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Prepare a list of Active Credit Card holders to invite to cashback pilot: Alex Jones (2025-03-21), Jane Jones (2024-12-24), Laura Smith (2025-04-14).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a data‑minimization note: product–customer link data contains C3 PII (names + product status). Use placeholders in training material and pseudonymous IDs in analytics exports.",
+    "labels": []
+  }
+]

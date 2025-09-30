@@ -1,0 +1,111 @@
+[
+  {
+    "text": "Create an on-call roster for the customer outreach platform with primary Mary Sims (+32 42 361 650, mary.sims@ing.com) and backup John Graham (+32 31 603 900, john.graham@ing.com). Include CorpKeys NV26ZI and DI91EX.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a contact card for ‘Customer Data Steward’ Erin Johnson (erin.johnson@ing.com, +32 92 249 506) and ‘Privacy Officer’ Elizabeth Sullivan (elizabeth.sullivan@ing.com, +32 71 848 879).",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Send a training invite for consent handling to Heather Johnson (NS99DB) and Nicholas Wolf (LW24YO).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Write an incident paging cascade SMS: page Daniel Taylor (+32 94 953 438); if no ack in 10 minutes, page Miguel Fitzgerald (+32 81 609 125).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a RACI note: Owner Mary Sims; Approver John Graham; Contributors Erin Johnson and Kristy Peterson for customer communications templates.",
+    "labels": []
+  },
+  {
+    "text": "Write a profile completeness check for Emily Jones (Bruges; emily.jones@skynet.be; +32 15 726 931). Ask to confirm postal address and marketing preferences.",
+    "labels": [
+      "EMAIL",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Compose a consent & preferences audit note for Emily Smith (emily.smith@telenet.be): verify channels against profile (Location Mons; Interest Finance; Hobbies Traveling).",
+    "labels": [
+      "EMAIL"
+    ]
+  },
+  {
+    "text": "Draft a data-quality ticket: Michael Williams shows Gender 'Female' and Age 27; confirm encoding and correct any inconsistencies.",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a high-income microsegment (≥ €90k): Katie Lewis (Bruges; €95,193), Jane Miller (Ghent; €93,522), Robert Lewis (Ghent; €99,675).",
+    "labels": [
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Compose churn‑risk nudges for Brussels customers: Katie Taylor (katie.taylor@telenet.be), John Johnson (john.johnson@proximus.be), Linda Jones (linda.jones@telenet.be).",
+    "labels": [
+      "EMAIL"
+    ]
+  },
+  {
+    "text": "Write a privacy snippet explaining why we collect IP Address and Interest fields and how customers can manage preferences in the portal.",
+    "labels": []
+  },
+  {
+    "text": "Write an engagement snapshot for Emily Jones: Mobile Banking (User, Active; last 2025-04-25) and Current Account (Holder, Active; last 2024-11-11).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a relationship matrix for Alex Johnson: Mobile Banking (User, Active), Mortgage (Borrower, Active), Personal Loan (Borrower, Active).",
+    "labels": []
+  },
+  {
+    "text": "Produce a microsegment for Mortgage borrowers (Active): John Lewis (last 2025-09-09), Jane Smith (last 2025-06-08), Tom Smith (last 2025-01-20). Suggest a rate alert campaign.",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Draft a re‑engagement nudge for Online Banking users now Inactive: John Taylor (last 2025-03-19) and Katie Taylor (last 2025-05-04).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Cross‑sell note for Jane Miller: Life Insurance (Subscriber, Active), Savings Account (Holder, Active), Mortgage (Inactive). Offer a mortgage health check and rate simulation.",
+    "labels": []
+  },
+  {
+    "text": "Compose a consent/cohort note for Emily Smith: Online Banking (User, Active; last 2025-08-07), Investment Portfolio (Investor, Active; last 2025-07-09), Personal Loan (Borrower, Active; last 2024-10-19).",
+    "labels": [
+      "DOB",
+      "PHONE"
+    ]
+  },
+  {
+    "text": "Create a data‑minimization note: for customer analytics exports (names, emails, phones, addresses, IDs, DOB, IPs, income), use pseudonymous IDs, mask sensitive fields, and restrict raw access to least‑privileged roles.",
+    "labels": []
+  },
+  {
+    "text": "Create a data‑minimization note: when sharing employee contacts (phones, emails, CorpKeys) for operational use, limit distribution to least‑privileged DLs and label ‘Internal‑Only’.",
+    "labels": []
+  }
+]
