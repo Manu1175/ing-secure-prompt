@@ -1,6 +1,17 @@
+SHELL := /bin/bash
+
+.PHONY: help setup dev-install ingest-secureprompt slides lint format typecheck test test-fast run-cli run-api clean env check watch-tests
+
+help:
+	@echo "setup | dev-install | ingest-secureprompt | test-fast | test | lint | format | typecheck | run-cli | run-api | slides | env | clean | check | watch-tests"
+
 setup:
 	python -m pip install -U pip
 	pip install -r requirements.txt
+	pip install -e .
+
+dev-install:
+	pip install -e .
 
 ingest-secureprompt:
 	python tools/ingest_secureprompt_repo.py --config config/datasets.yml
@@ -9,7 +20,15 @@ slides:
 	python tools/make_onepager_pptx.py
 
 lint:
-	ruff check . && black --check . && mypy --strict secureprompt
+	ruff check .
+	black --check .
+	mypy --strict secureprompt
+
+format:
+	black .
+
+typecheck:
+	mypy --strict secureprompt
 
 test:
 	pytest -q
@@ -23,5 +42,19 @@ run-cli:
 run-api:
 	uvicorn api.main:app --reload
 
-perf:
-	python -c "print('perf placeholder')"
+env:
+	python -c "import sys; print('python:', sys.version)"
+
+clean:
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	rm -rf .mypy_cache .pytest_cache .ruff_cache
+	rm -rf data/golden data/eval data/out
+	rm -f slides/OnePager.pptx
+
+check:
+	make lint
+	make test-fast
+
+# Auto test watcher: re-runs pytest whenever files change
+watch-tests:
+	ptw --onfail "echo FAIL" --onpass "echo PASS" -c

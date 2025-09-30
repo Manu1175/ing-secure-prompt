@@ -1,3 +1,4 @@
+# api/main.py
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
@@ -9,7 +10,7 @@ class ScrubIn(BaseModel):
     text: str
     c_level: str = "C3"
 
-# Convenience: show docs when hitting the root
+# Redirect / to Swagger for convenience
 @app.get("/", include_in_schema=False)
 def root():
     return RedirectResponse(url="/docs")

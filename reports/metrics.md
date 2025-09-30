@@ -1,3 +1,4 @@
-# Metrics
+| label | n | residual_hits | replaced | exact_matches | recall | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| overall | 0 | 0 | 0 | 0 | 0.000 | pending evaluation |
 
-(precision/recall tables will be auto-updated here)

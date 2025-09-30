@@ -1,0 +1,62 @@
+[
+  {
+    "text": "Write a LinkedIn post announcing the 2024 Annual Report. Include the link and 2 bullet points for customers/investors: https://assets.ing.com/m/6e8ace8ade094690/original/Annual-report-2024.pdf."
+  },
+  {
+    "text": "Draft an internal newsletter blurb pointing to 2024 Pillar 3 Disclosures (Q4) for risk, capital and liquidity metrics: https://assets.ing.com/m/5f710bfeff3364d0/original/ING-BE-Pillar-3-Disclosures-Q4-2024.xlsx."
+  },
+  {
+    "text": "Prepare an analyst Q&A pack referencing 2024 Full Year Results (press room): https://newsroom.ing.be/ing-continues-to-deliver-strong-growth-in-2024-reinforcing-its-commitment-to-customers-and-society."
+  },
+  {
+    "text": "Compose an investor FAQ citing 2023 Annual Report and 2023 Additional Pillar III: https://assets.ing.com/m/38b726ce41627db/original/EN-2023-ING-Belgium-SA-NV-Annual-report.pdf and http://assets.ing.com/m/138d1df935c37a6d/original/ING-Belgium-Additional-Pillar-III-Report-2023.pdf."
+  },
+  {
+    "text": "Create a press-room index linking 2019 Full Year Results and 2018 Full Year Results releases."
+  },
+  {
+    "text": "Prepare a renewal/health check digest for Active customer agreements: CUST-0001 (Emily Davis — Credit Card Agreement — €162,507.76), CUST-0011 (Laura Smith — Insurance Distribution — €263,429.48), CUST-0023 (Emily Williams — Line of Credit — €353,236.74)."
+  },
+  {
+    "text": "List Terminated Letters of Credit to archive and reconcile: CUST-0002 (Michael Clark — €499,667.34) and CUST-0007 (Chris Garcia — €126,113.91)."
+  },
+  {
+    "text": "Flag Pending customer agreements for action: CUST-0004 (Insurance Distribution — €95,984.87), CUST-0044 (Letter of Credit — €310,738.37), CUST-0045 (Bank Guarantee — €212,569.00), CUST-0046 (Personal Loan — €451,133.43), CUST-0055 (Credit Card — €279,479.12), CUST-0056 (Overdraft — €492,879.62)."
+  },
+  {
+    "text": "Summarize Expired/Terminated overdrafts and deposit agreements for housekeeping: CUST-0008 (Overdraft — Expired — €121,557.18), CUST-0012 (Overdraft — Expired — €295,420.43), CUST-0026 (Deposit — Terminated — €97,198.94), CUST-0014 (Overdraft — Terminated — €277,191.04)."
+  },
+  {
+    "text": "Prepare customer notification emails (draft) for status changes: CUST-0033 (Chris Miller — Line of Credit — Terminated), CUST-0035 (John Johnson — Security Agreement — Expired), CUST-0044 (Jane Lewis — Letter of Credit — Pending)."
+  },
+  {
+    "text": "List Active supplier agreements for quarterly review: SUP-0012 (Outsourcing — Supplier 702 — €64,145.18), SUP-0036 (Outsourcing — Supplier 630 — €396,361.85), SUP-0039 (Outsourcing — Supplier 401 — €61,399.13), SUP-0034 (Services Supply — Supplier 986 — €237,777.45), SUP-0035 (Goods Supply — Supplier 395 — €265,967.84)."
+  },
+  {
+    "text": "Flag Pending supplier agreements requiring approvals: SUP-0015 (Maintenance — Supplier 823 — €376,434.55), SUP-0006 (Goods Supply — Supplier 986 — €335,706.97), SUP-0021 (One-off — Supplier 186 — €253,416.37), SUP-0028 (One-off — Supplier 559 — €113,213.53), SUP-0030 (Support — Supplier 763 — €405,599.67)."
+  },
+  {
+    "text": "Draft an ops email confirming payment order PO-0038 (Wire Transfer) completed for USD 19,335.18 from Linda Lewis (linda.lewis@hotmail.com) to Supplier 207 at IBAN BE01390286750206 (Ref: Invoice 23294)."
+  },
+  {
+    "text": "Draft an analysis of Direct Debit failures: PO-0047 (GBP 1,531.94 to Supplier 186, IBAN BE35825771477528) and PO-0049 (GBP 18,071.87 to Supplier 207, IBAN BE59083717722036)."
+  },
+  {
+    "text": "Prepare a Pending Standing Order digest: PO-0044 EUR 6,242.15 (Linda Smith), PO-0029 USD 19,031.16 (Tom Jones), PO-0041 EUR 14,825.92 (Linda Jones)."
+  },
+  {
+    "text": "Create a Cheque completion digest: PO-0013 GBP 13,990.49; PO-0014 USD 1,632.00; PO-0015 USD 12,595.45; PO-0034 EUR 5,835.07; PO-0054 USD 2,792.05."
+  },
+  {
+    "text": "Draft a payer notification for PO-0040 (Direct Debit Completed, USD 2,090.09) initiated by Tom Clark to Supplier 776 (IBAN BE96081490396036)."
+  },
+  {
+    "text": "Create a data-minimization note: IBANs in payment orders (e.g., BE01390286750206; BE35825771477528; BE59083717722036) must be masked (show last 4) in analytics exports and restricted to least-privilege roles."
+  },
+  {
+    "text": "Create a data-minimization note: customer agreement data (names, emails, types, amounts) is C3 PII/business-sensitive — use pseudonymous IDs in analytics and restrict raw exports to authorized teams."
+  },
+  {
+    "text": "Create a sharing note: public disclosures (Annual Reports, Pillar 3, press releases) are C1 and can be shared externally; do not merge with C3/C4 datasets in uncontrolled channels."
+  }
+]
