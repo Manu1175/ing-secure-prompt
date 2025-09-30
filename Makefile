@@ -1,75 +1,67 @@
-SHELL := /bin/bash
+# ===== SecurePrompt Makefile =====
 
-.PHONY: help setup dev-install ingest-secureprompt slides lint format typecheck test test-fast run-cli run-api clean env check watch-tests release
+PYTHON      := python
+UVICORN     := uvicorn
+APP         := api.main:app
+PORT        ?= 8000
+RELOAD      ?= --reload
 
+.PHONY: help
 help:
-	@echo "setup | dev-install | ingest-secureprompt | test-fast | test | lint | format | typecheck | run-cli | run-api | slides | env | clean | check | watch-tests | release"
+	@echo "Targets:"
+	@echo "  dev           - Kill port $(PORT) if busy and start uvicorn on $(PORT)"
+	@echo "  dev-free      - Start uvicorn on the next free port starting at $(PORT)"
+	@echo "  test-fast     - Run focused test subset with repo on PYTHONPATH"
+	@echo "  watch-tests   - (optional) pytest watcher if you use ptw"
+	@echo "  metrics-open  - Generate metrics report (if script present)"
+	@echo "  db-init       - No-op placeholder (UI has no DB)"
+	@echo "  release       - Build dist/secureprompt_handoff_v3.zip"
+	@echo "  clean         - Remove build artifacts"
 
-setup:
-	python -m pip install -U pip
-	pip install -r requirements.txt
-	pip install -e .
-
-dev-install:
-	pip install -e .
-
-dev:
-	pip install -U pip setuptools wheel
-	pip install -e '.[test]'
-
-
-ingest-secureprompt:
-	python tools/ingest_secureprompt_repo.py --config config/datasets.yml
-
-slides:
-	python tools/make_onepager_pptx.py
-
-lint:
-	ruff check .
-	black --check .
-	mypy --strict secureprompt
-
-format:
-	black .
-
-typecheck:
-	mypy --strict secureprompt
-
-test:
-	pytest -q
-
+.PHONY: test-fast
 test-fast:
 	PYTHONPATH=$(shell pwd):$$PYTHONPATH pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text"
 
-run-cli:
-	python -m secureprompt.cli scrub README.md || true
-
-run-api:
-	uvicorn api.main:app --reload
-
-env:
-	python -c "import sys; print('python:', sys.version)"
-
-clean:
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	rm -rf .mypy_cache .pytest_cache .ruff_cache
-	rm -rf data/golden data/eval data/out
-	rm -f slides/OnePager.pptx
-
-check:
-	make lint
-	make test-fast
-
-# Auto test watcher: re-runs pytest whenever files change
+.PHONY: watch-tests
 watch-tests:
-	ptw --onfail "echo FAIL" --onpass "echo PASS" -c
-	
-metrics:
-	@PYTHONPATH=. python tools/regenerate_metrics.py
+	@which ptw >/dev/null 2>&1 || { echo "Install ptw (pytest-watch) to use watch-tests"; exit 1; }
+	PYTHONPATH=$(shell pwd):$$PYTHONPATH ptw -q
 
+
+.PHONY: dev
+dev:
+	- PID=$$(lsof -nP -iTCP:8000 -sTCP:LISTEN -t) ; [ -n "$$PID" ] && kill -TERM $$PID || true
+	sleep 1
+	- PID=$$(lsof -nP -iTCP:8000 -sTCP:LISTEN -t) ; [ -n "$$PID" ] && kill -KILL $$PID || true
+	uvicorn api.main:app --reload --port 8000
+
+.PHONY: dev-free
+dev-free:
+	@PORT=8000; \
+	while lsof -nP -iTCP:$$PORT -sTCP:LISTEN -t >/dev/null 2>&1; do PORT=$$((PORT+1)); done; \
+	echo "Using port $$PORT"; \
+	uvicorn api.main:app --reload --port $$PORT
+
+.PHONY: metrics-open
 metrics-open:
-	@PYTHONPATH=. python tools/regenerate_metrics.py
+	@if [ -f tools/regenerate_metrics.py ]; then \
+		PYTHONPATH=. $(PYTHON) tools/regenerate_metrics.py ; \
+	else \
+		echo "TBD: metrics script not found; create secureprompt/eval/metrics.py"; \
+	fi
 
+.PHONY: db-init
+db-init:
+	@echo "No DB init required for UI without auth"
+
+.PHONY: release
 release:
 	mkdir -p dist
-	zip -r dist/secureprompt_handoff_v3.zip README.md README_Codex.md Makefile pyproject.toml requirements.txt config secureprompt api tools tests policy data reports slides scripts
+	zip -r dist/secureprompt_handoff_v3.zip \
+		AGENT policy secureprompt api tests Makefile pyproject.toml README.md \
+		-x "__pycache__/*" -x "*.pyc" -x ".venv/*" -x "dist/*"
+	@echo "Built dist/secureprompt_handoff_v3.zip"
+
+.PHONY: clean
+clean:
+	rm -rf build dist *.egg-info .pytest_cache __pycache__ */__pycache__ .mypy_cache

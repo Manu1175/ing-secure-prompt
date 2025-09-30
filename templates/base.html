@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}SecurePrompt{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100 min-h-screen">
+    <header class="bg-slate-900 text-white shadow">
+      <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-4">
+          <span class="font-semibold text-lg">SecurePrompt</span>
+          <nav class="flex items-center gap-3 text-sm">
+            <a href="/" class="hover:text-emerald-300">Dashboard</a>
+            <a href="/audit" class="hover:text-emerald-300">Audit</a>
+          </nav>
+        </div>
+        <form action="/" method="get" class="flex items-center gap-2 text-sm">
+          <label for="nav-clearance" class="uppercase tracking-wide text-xs">Clearance</label>
+          <select id="nav-clearance" name="clearance" class="bg-slate-800 border border-slate-600 rounded px-2 py-1">
+            {% for option in clearances %}
+            <option value="{{ option }}" {% if option == clearance %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-semibold px-3 py-1 rounded">Set</button>
+        </form>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-6">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
