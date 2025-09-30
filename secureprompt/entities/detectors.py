@@ -1,5 +1,9 @@
-\
-import re, os, yaml, datetime as dt
+"""Entity detection utilities driven by regex manifests."""
+
+import re
+import os
+import yaml
+import datetime as dt
 from typing import List, Dict, Any, Tuple
 
 def _luhn_ok(s: str) -> bool:
@@ -52,6 +56,7 @@ VALIDATORS = {
 }
 
 def _compile_from_manifests(paths: List[str]):
+    """Load regex patterns from policy manifests."""
     patterns = []
     for p in paths:
         if not os.path.exists(p): continue
@@ -64,12 +69,14 @@ def _compile_from_manifests(paths: List[str]):
                 validator = r.get("validator","none")
                 conf = float(r.get("confidence", 0.8))
                 rule_id = r.get("id", f"{label}_rule")
-                patterns.append((label, rx, validator, conf, rule_id))
+                action = r.get("action", "redact").lower()
+                patterns.append((label, rx, validator, conf, rule_id, action))
             except Exception:
                 continue
     return patterns
 
 def load_patterns():
+    """Load policy manifests defined in ``SECUREPROMPT_POLICY_DIR``."""
     base = os.environ.get("SECUREPROMPT_POLICY_DIR", "policy/manifests")
     return _compile_from_manifests([
         os.path.join(base, "c2.yml"),
@@ -80,10 +87,19 @@ def load_patterns():
 PATTERNS = load_patterns()
 
 def detect(text: str) -> List[Dict[str, Any]]:
+    """Return matches for known entities inside ``text``."""
     hits = []
-    for label, rx, validator_key, conf, rule_id in PATTERNS:
+    for label, rx, validator_key, conf, rule_id, action in PATTERNS:
         for m in rx.finditer(text):
             validator = VALIDATORS.get(validator_key, VALIDATORS["none"])
             if validator(m):
-                hits.append({"label": label, "start": m.start(), "end": m.end(), "value": m.group(0), "confidence": conf, "rule_id": rule_id})
+                hits.append({
+                    "label": label,
+                    "start": m.start(),
+                    "end": m.end(),
+                    "value": m.group(0),
+                    "confidence": conf,
+                    "rule_id": rule_id,
+                    "action": action,
+                })
     return hits
