@@ -26,6 +26,8 @@ from pydantic import BaseModel
 
 from secureprompt.scrub.pipeline import scrub_text
 from secureprompt.ui.selective import selective_sanitize
+from secureprompt.receipts.store import read_receipt
+from secureprompt.receipts.descrub import descrub_text
 
 from secureprompt.files.text import load_text
 from secureprompt.files.pdf import extract_pdf_text
@@ -67,6 +69,8 @@ class ScrubResponse(BaseModel):
     original_hash: str
     scrubbed: str
     entities: List[Dict[str, Any]]
+    operation_id: str
+    receipt_path: str
 
 
 class ScrubWithFileResponse(ScrubResponse):
@@ -74,15 +78,18 @@ class ScrubWithFileResponse(ScrubResponse):
 
 
 class DescrubRequest(BaseModel):
-    ids: List[str]
-    justification: str
-    role: str
+    text: Optional[str] = None
+    ids: Optional[List[str]] = None
+    justification: Optional[str] = None
+    role: Optional[str] = None
+    clearance: Optional[str] = None
+    operation_id: Optional[str] = None
+    receipt_path: Optional[str] = None
 
 
 class DescrubResponse(BaseModel):
-    ok: bool
-    status: str
-    message: Optional[str] = None
+    descrubbed: str
+    operation_id: Optional[str] = None
 
 
 app = FastAPI(title="SecurePrompt", version="0.2.0")
@@ -202,26 +209,35 @@ def api_redact_text(req: ScrubRequest = Body(...)) -> ScrubWithFileResponse:
 
 @app.post("/descrub", response_model=DescrubResponse)
 def api_descrub(req: DescrubRequest = Body(...)) -> DescrubResponse:
-    if req.role not in ACTIONS_ALLOW:
-        _audit_append_safe(
-            action="descrub",
-            ok=False,
-            status="denied",
-            role=req.role,
-            requested_ids=req.ids,
-            justification=req.justification,
-        )
+    role = (req.role or "").lower()
+    if role not in ACTIONS_ALLOW:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="role not permitted")
 
-    _audit_append_safe(
-        action="descrub",
-        ok=True,
-        status="approved",
-        role=req.role,
-        requested_ids=req.ids,
-        justification=req.justification,
+    ref = req.receipt_path or req.operation_id
+    if not ref:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="provide operation_id or receipt_path")
+
+    try:
+        receipt = read_receipt(ref)
+    except FileNotFoundError as exc:  # pragma: no cover - defensive
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    scrubbed = req.text or (receipt.get("scrubbed") or {}).get("text")
+    if not scrubbed:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="scrubbed text not provided and not stored in receipt",
+        )
+
+    clearance = (req.clearance or "C3").upper()
+    descrubbed = descrub_text(
+        scrubbed_text=scrubbed,
+        receipt=receipt,
+        clearance=clearance,
+        ids=req.ids,
     )
-    return DescrubResponse(ok=True, status="approved", message="Selective de-scrub granted")
+
+    return DescrubResponse(descrubbed=descrubbed, operation_id=receipt.get("operation_id"))
 
 
 @app.get("/", response_class=HTMLResponse)

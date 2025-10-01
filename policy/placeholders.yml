@@ -1,101 +1,112 @@
-ACCOUNT_BALANCE:
-  c_level: C3
-  examples:
-  - account balance
+- c_level: C3
   templates:
   - <ACCOUNT_BALANCE>
-APPLICATION_TYPE:
-  c_level: C3
+  label: ACCOUNT_BALANCE
   examples:
-  - physical applications
+  - account balance
+- c_level: C3
   templates:
   - <APPLICATION_TYPE>
-AUTH_METHOD:
-  c_level: C3
+  label: APPLICATION_TYPE
+  examples:
+  - physical applications
+- c_level: C3
+  templates:
+  - <AUTH_METHOD>
+  label: AUTH_METHOD
   examples:
   - FaceID
   - biometric authentication method
   - biometric method
-  templates:
-  - <AUTH_METHOD>
-BENEFICIARY:
-  c_level: C3
-  examples:
-  - beneficiary
+- c_level: C3
   templates:
   - <BENEFICIARY>
-BIOMETRIC_TYPE:
-  c_level: C3
+  label: BENEFICIARY
   examples:
-  - biometric authentication methods
+  - beneficiary
+- c_level: C3
   templates:
   - <BIOMETRIC_TYPE>
-CATEGORY_WRONG:
-  c_level: C3
+  label: BIOMETRIC_TYPE
   examples:
-  - Security
+  - biometric authentication methods
+- c_level: C3
   templates:
   - <CATEGORY_WRONG>
-CCV:
-  c_level: C4
+  label: CATEGORY_WRONG
   examples:
-  - CCV
+  - Security
+- c_level: C4
   templates:
   - <CCV>
-CONFIG_GROUP:
-  c_level: C3
+  label: CCV
   examples:
-  - T78221
+  - CCV
+- c_level: C3
   templates:
   - <CONFIG_GROUP>
-DOCUMENT_TYPE:
-  c_level: C3
+  label: CONFIG_GROUP
   examples:
-  - "ING Belgium\u2019s 2024 Pillar 3 Disclosures"
+  - T78221
+- c_level: C3
   templates:
   - <DOCUMENT_TYPE>
-EMAIL:
-  c_level: C3
+  label: DOCUMENT_TYPE
+  examples:
+  - "ING Belgium\u2019s 2024 Pillar 3 Disclosures"
+- c_level: C3
+  templates:
+  - <EMAIL>
+  label: EMAIL
   examples:
   - email
   - john.williams@proximus.be
+- c_level: C3
   templates:
-  - <EMAIL>
-ENVIRONMENT:
-  c_level: C3
+  - <ENVIRONMENT>
+  label: ENVIRONMENT
   examples:
   - Acceptance
   - environment
-  templates:
-  - <ENVIRONMENT>
-EXPIRY:
-  c_level: C3
-  examples:
-  - expiry date
+- c_level: C3
   templates:
   - <EXPIRY_DATE>
-INCOME:
-  c_level: C3
+  label: EXPIRY
+  examples:
+  - expiry date
+- c_level: C3
+  templates:
+  - <INCOME>
+  label: INCOME
   examples:
   - her income
   - income
-  templates:
-  - <INCOME>
-INSURANCE_POLICY:
-  c_level: C3
-  examples:
-  - insurance policy
+- c_level: C3
   templates:
   - <INSURANCE_POLICY>
-IT_CUSTODIAN:
-  c_level: C3
+  label: INSURANCE_POLICY
+  examples:
+  - insurance policy
+- c_level: C3
+  templates:
+  - <IT_CUSTODIAN>
+  label: IT_CUSTODIAN
   examples:
   - Cory Griffin (IT Custodian)
   - Daniel Taylor
+- c_level: C3
   templates:
-  - <IT_CUSTODIAN>
-NAME:
-  c_level: C3
+  - <APP_NAME>
+  - <APP_NAME_1>
+  - <APP_NAME_2>
+  - <CUSTOMER_NAME>
+  - <FULL_NAME>
+  - <FULL_NAME_1>
+  - <POLICY_NAME>
+  - <PROCESS_NAME>
+  - <PRODUCT_NAME>
+  - <VM_NAME>
+  label: NAME
   examples:
   - AML Compliance Policy
   - AML Screening
@@ -140,135 +151,121 @@ NAME:
   - VM-IAAS-8
   - VM-PH-25
   - Vendor Management
-  templates:
-  - <APP_NAME>
-  - <APP_NAME_1>
-  - <APP_NAME_2>
-  - <CUSTOMER_NAME>
-  - <FULL_NAME>
-  - <FULL_NAME_1>
-  - <POLICY_NAME>
-  - <PROCESS_NAME>
-  - <PRODUCT_NAME>
-  - <VM_NAME>
-NATIONAL_ID:
-  c_level: C3
-  examples:
-  - national ID
+- c_level: C3
   templates:
   - <NATIONAL_ID>
-OPERATIONAL_STATUS:
-  c_level: C3
+  label: NATIONAL_ID
   examples:
-  - operational status
+  - national ID
+- c_level: C3
   templates:
   - <OPERATIONAL_STATUS>
-PAN:
-  c_level: C4
+  label: OPERATIONAL_STATUS
   examples:
-  - 2023 ING Belgium
-  - ING Belgium
-  - credit card 4918491582205278
-  - credit card number
-  - credit card number 5428887483182047
+  - operational status
+- c_level: C4
   templates:
   - <COMPANY>
   - <CREDIT_CARD_NUMBER>
-PASSWORD:
-  c_level: C4
+  label: CARD_PAN
   examples:
-  - password
+  - credit card 4918491582205278
+  - credit card number 5428887483182047
+- c_level: C4
   templates:
   - <PASSWORD>
-PIN:
-  c_level: C4
+  label: PASSWORD
+  examples:
+  - password
+- c_level: C4
+  templates:
+  - <MASKED_PIN>
+  - <PIN>
+  - <POLITICAL_OPINION>
+  label: PIN
   examples:
   - PIN
   - PIN 8889
   - masked PIN
   - political opinion
-  templates:
-  - <MASKED_PIN>
-  - <PIN>
-  - <POLITICAL_OPINION>
-POLICY_A:
-  c_level: C3
-  examples:
-  - Credit Risk Policy
+- c_level: C3
   templates:
   - <POLICY_A>
-POLICY_B:
-  c_level: C3
+  label: POLICY_A
   examples:
-  - Data Security Policy
+  - Credit Risk Policy
+- c_level: C3
   templates:
   - <POLICY_B>
-PROCESS_A:
-  c_level: C3
+  label: POLICY_B
   examples:
-  - Mobile App Update
+  - Data Security Policy
+- c_level: C3
   templates:
   - <PROCESS_A>
-PROCESS_B:
-  c_level: C3
+  label: PROCESS_A
   examples:
-  - Customer Onboarding
+  - Mobile App Update
+- c_level: C3
   templates:
   - <PROCESS_B>
-PROVIDER:
-  c_level: C3
+  label: PROCESS_B
   examples:
-  - AWS
+  - Customer Onboarding
+- c_level: C3
   templates:
   - <PROVIDER>
-RELATIONSHIP_TYPE:
-  c_level: C3
+  label: PROVIDER
   examples:
-  - relationship type
+  - AWS
+- c_level: C3
   templates:
   - <RELATIONSHIP_TYPE>
-RELIGIOUS_BELIEF:
-  c_level: C3
+  label: RELATIONSHIP_TYPE
   examples:
-  - religious belief
+  - relationship type
+- c_level: C3
   templates:
   - <RELIGIOUS_BELIEF>
-RESPONSIBLE_TEAM:
-  c_level: C3
+  label: RELIGIOUS_BELIEF
   examples:
-  - HR Department
+  - religious belief
+- c_level: C3
   templates:
   - <RESPONSIBLE_TEAM>
-STORAGE_CAPACITY:
-  c_level: C3
+  label: RESPONSIBLE_TEAM
   examples:
-  - storage capacity
+  - HR Department
+- c_level: C3
   templates:
   - <STORAGE_CAPACITY>
-TARGET_TEAM:
-  c_level: C3
+  label: STORAGE_CAPACITY
   examples:
-  - IT Department
+  - storage capacity
+- c_level: C3
   templates:
   - <TARGET_TEAM>
-TRANSACTION_TYPE:
-  c_level: C3
+  label: TARGET_TEAM
+  examples:
+  - IT Department
+- c_level: C3
+  templates:
+  - <TRANSACTION_TYPE>
+  label: TRANSACTION_TYPE
   examples:
   - POS transaction
   - online transactions
-  templates:
-  - <TRANSACTION_TYPE>
-VIRTUAL_SYSTEM_CONFIGURATION:
-  c_level: C3
-  examples:
-  - virtual system configuration
+- c_level: C3
   templates:
   - <VIRTUAL_SYSTEM_CONFIGURATION>
-YEAR:
-  c_level: C3
+  label: VIRTUAL_SYSTEM_CONFIGURATION
+  examples:
+  - virtual system configuration
+- c_level: C3
+  templates:
+  - <YEAR>
+  label: YEAR
   examples:
   - '2022'
   - 2023 ING Belgium
   - "ING Belgium\u2019s 2021 Annual Report."
-  templates:
-  - <YEAR>

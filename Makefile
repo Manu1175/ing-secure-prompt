@@ -67,6 +67,11 @@ mine-placeholders:
 	$(PYTHON) tools/mine_placeholders.py
 	@echo "Placeholders written to policy/placeholders.yml"
 
+.PHONY: keys-dev
+keys-dev:
+	@echo "Fernet key path: data/keys/fernet.key"
+	@test -f data/keys/fernet.key || { echo "No key yet; it will be created on first run."; true; }
+
 .PHONY: clean
 clean:
 	rm -rf build dist *.egg-info .pytest_cache __pycache__ */__pycache__ .mypy_cache

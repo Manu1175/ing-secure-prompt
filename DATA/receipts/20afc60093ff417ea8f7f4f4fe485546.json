@@ -1,0 +1,84 @@
+{
+  "operation_id": "20afc60093ff417ea8f7f4f4fe485546",
+  "created_at": "2025-10-01T10:44:25.298053+00:00",
+  "hashes": {
+    "original": "3aab6dc5fec0a3a36f5ef76b194382e2b9f8f6437effab61804b8880ab341b1e",
+    "scrubbed": "04539f9e9e523d245fa2d3db8cac35754e109f2bdf90e600a3d1328d08866f2f"
+  },
+  "c_level": "C3",
+  "filename": null,
+  "policy_version": "unknown",
+  "placeholder_map": {
+    "C3::EMAIL::6e28563491": "C3::EMAIL::6e28563491",
+    "C3::PHONE::ad109d7003": "C3::PHONE::ad109d7003",
+    "C3::PHONE::9852906558": "C3::PHONE::9852906558",
+    "C3::PHONE::c38bc0a136": "C3::PHONE::c38bc0a136",
+    "C3::PHONE::996d5f357b": "C3::PHONE::996d5f357b"
+  },
+  "scrubbed": {
+    "text": "Contact C3::EMAIL::6e28563491. RRN C3::PHONE::ad109d7003.07.C3::PHONE::9852906558-C3::PHONE::c38bc0a136-C3::PHONE::996d5f357b."
+  },
+  "entities": [
+    {
+      "identifier": "C3::EMAIL::6e28563491",
+      "label": "EMAIL",
+      "detector": "EMAIL_basic",
+      "c_level": "C3",
+      "confidence": 0.9,
+      "span": [
+        8,
+        15
+      ],
+      "original_enc": "gAAAAABo3QYJXpKpZ0om9eeaq84VnKrz-dl55N-DexzT_7MXcEQhT3N6K82AH3RUfhsp34Mg7SOIPf2CDx5M5tgbs60jo5eCxA=="
+    },
+    {
+      "identifier": "C3::PHONE::ad109d7003",
+      "label": "PHONE",
+      "detector": "PHONE_e164",
+      "c_level": "C3",
+      "confidence": 0.85,
+      "span": [
+        21,
+        23
+      ],
+      "original_enc": "gAAAAABo3QYJ1keO4Nw0tze-hc3Ikw4T2h3Zccwx6ckbhFOJxrpZ5dCKMDtsCJH8drFqBvey5CV-Mt_ZZrKas0uVpkGPLQDWqA=="
+    },
+    {
+      "identifier": "C3::PHONE::9852906558",
+      "label": "PHONE",
+      "detector": "PHONE_e164",
+      "c_level": "C3",
+      "confidence": 0.85,
+      "span": [
+        27,
+        29
+      ],
+      "original_enc": "gAAAAABo3QYJ9qZVTviAlFSHnDrbRjWs8JowMggZVkaRaSm7AHtgkqIAmFVph3yq2rt-y8TgaTTiX6_pDg1nP18S4RYke31NVg=="
+    },
+    {
+      "identifier": "C3::PHONE::c38bc0a136",
+      "label": "PHONE",
+      "detector": "PHONE_e164",
+      "c_level": "C3",
+      "confidence": 0.85,
+      "span": [
+        30,
+        33
+      ],
+      "original_enc": "gAAAAABo3QYJ0s0_BXL99W6vqmdfgt0WzI32gvrr3ZqLkYp2pyODQS98Ak2QPMSSJSXIuTXDjNrj1gFXKs6O9Xqfh9TWzmhFBg=="
+    },
+    {
+      "identifier": "C3::PHONE::996d5f357b",
+      "label": "PHONE",
+      "detector": "PHONE_e164",
+      "c_level": "C3",
+      "confidence": 0.85,
+      "span": [
+        34,
+        36
+      ],
+      "original_enc": "gAAAAABo3QYJt4x6xC7tVCtQ9NxJJONdkpZj8IN5Kz14kxwWdloshSOw0cv3jVZnf8doCPQRIDG2VYiJob2Q9h-V-yaiac9F_Q=="
+    }
+  ],
+  "receipt_path": "data/receipts/20afc60093ff417ea8f7f4f4fe485546.json"
+}
