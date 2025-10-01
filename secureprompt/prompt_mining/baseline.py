@@ -132,12 +132,14 @@ def build_baseline(
 
 
 def write_json(path: Path, data: Dict[str, Any]) -> None:
+    """Persist baseline statistics to JSON."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
         json.dump(data, handle, indent=2, sort_keys=True)
 
 
 def write_csv(path: Path, rows: Iterable[Dict[str, Any]]) -> None:
+    """Persist flattened baseline rows to CSV."""
     import csv
 
     path.parent.mkdir(parents=True, exist_ok=True)

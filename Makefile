@@ -16,12 +16,13 @@ help:
 	@echo "  metrics-open  - Generate metrics report (if script present)"
 	@echo "  db-init       - No-op placeholder (UI has no DB)"
 	@echo "  make-baseline - Generate PROMPTS baseline counts"
+	@echo "  perf-fast     - Run lightweight performance harness"
 	@echo "  release       - Build dist/secureprompt_handoff_v3.zip"
 	@echo "  clean         - Remove build artifacts"
 
 .PHONY: test-fast
 test-fast:
-	PYTHONPATH=$(shell pwd):$$PYTHONPATH pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text or xlsx or audit or scoring"
+	PYTHONPATH=$(shell pwd):$$PYTHONPATH pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text or xlsx or audit or scoring or confidence"
 
 .PHONY: watch-tests
 watch-tests:
@@ -71,6 +72,10 @@ mine-placeholders:
 .PHONY: make-baseline
 make-baseline:
 	$(PYTHON) tools/make_baseline.py
+
+.PHONY: perf-fast
+perf-fast:
+	$(PYTHON) tools/perf_fast.py
 
 .PHONY: keys-dev
 keys-dev:

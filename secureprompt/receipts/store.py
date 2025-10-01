@@ -60,6 +60,32 @@ def write_receipt(
     policy_version: Optional[str] = None,
     placeholder_map: Optional[Dict[str, str]] = None,
 ) -> Path:
+    """Persist encrypted receipt metadata for a scrub operation.
+
+    Parameters
+    ----------
+    operation_id:
+        Unique identifier generated for the scrub run.
+    text:
+        Original (unsanitised) text snapshot.
+    scrubbed:
+        Scrubbed text snapshot.
+    entities:
+        Iterable of entity dictionaries including identifiers and captured spans.
+    c_level:
+        Clearance level used when scrubbing.
+    filename:
+        Optional source filename.
+    policy_version:
+        Optional policy manifest version string.
+    placeholder_map:
+        Mapping from identifier to placeholder string seen in the scrubbed output.
+
+    Returns
+    -------
+    Path
+        Filesystem path where the receipt JSON was stored.
+    """
     RECEIPTS_DIR.mkdir(parents=True, exist_ok=True)
 
     original_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -67,7 +93,19 @@ def write_receipt(
 
     serialised_entities = []
     for entity in entities:
-        payload = {k: entity.get(k) for k in ("identifier", "label", "detector", "c_level", "confidence", "span")}
+        payload = {
+            key: entity.get(key)
+            for key in (
+                "identifier",
+                "label",
+                "detector",
+                "c_level",
+                "confidence",
+                "span",
+                "confidence_sources",
+                "explanation",
+            )
+        }
         if entity.get("excel"):
             payload["excel"] = entity.get("excel")
         original_value = entity.get("original") or entity.get("value") or ""
@@ -96,6 +134,7 @@ def write_receipt(
 
 
 def read_receipt(path_or_id: str) -> Dict[str, Any]:
+    """Load a stored receipt by path or by operation identifier."""
     candidate = Path(path_or_id)
     if not candidate.exists():
         candidate = RECEIPTS_DIR / f"{path_or_id}.json"

@@ -8,6 +8,7 @@ make ingest-secureprompt
 make test-fast
 make watch-tests  # optional: keep fast suite running on changes
 make metrics
+make perf-fast    # optional: quick scrub benchmark
 make run-api
 curl -s -X POST "http://127.0.0.1:8000/scrub" \
   -H "Content-Type: application/json" \

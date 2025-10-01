@@ -22,6 +22,7 @@ def descrub_text(
     clearance: str,
     ids: Optional[Iterable[str]] = None,
 ) -> str:
+    """Reconstruct text by selectively replacing placeholders using a receipt."""
     result = scrubbed_text
     ids_set: Optional[Set[str]] = set(ids) if ids else None
     clearance_rank = _rank(clearance)
@@ -48,4 +49,3 @@ def descrub_text(
 
 
 __all__ = ["descrub_text"]
-
