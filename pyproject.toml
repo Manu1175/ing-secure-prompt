@@ -24,11 +24,8 @@ test = [
   "python-multipart",
   "openpyxl"
 ]
-  "transformers>=4.40",
-  "torch>=2; platform_system!='Darwin'"
 ]
-
-ml = ["transformers>=4.40", "torch>=2; platform_system!=Úrwin'"]
+ml = ["transformers>=4.40", "torch>=2; platform_system!='Darwin'"]
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["secureprompt*"]
