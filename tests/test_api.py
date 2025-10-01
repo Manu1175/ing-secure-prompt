@@ -12,15 +12,20 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture()
 def api_client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
-    monkeypatch.setenv("SECUREPROMPT_AUDIT_PATH", str(tmp_path / "audit.log"))
-    import api.main as api_main
+    import secureprompt.audit.log as audit_log
 
+    monkeypatch.chdir(tmp_path)
+    importlib.reload(audit_log)
+
+    import api.main as api_main
     importlib.reload(api_main)
+
     client = TestClient(api_main.app)
+    client.audit_log = audit_log
 
     yield client
 
-    monkeypatch.delenv("SECUREPROMPT_AUDIT_PATH", raising=False)
+    importlib.reload(audit_log)
     importlib.reload(api_main)
 
 
@@ -31,10 +36,10 @@ def test_scrub_endpoint_logs(api_client: TestClient, tmp_path: Path) -> None:
     data = response.json()
     assert "scrubbed" in data
     assert data["operation_id"]
-
-    audit_log = tmp_path / "audit.log"
-    assert audit_log.exists()
-    assert "scrub" in audit_log.read_text(encoding="utf-8")
+    audit_entries = api_client.audit_log.tail(5)
+    assert any(entry.get("event") == "scrub" for entry in audit_entries)
+    jsonl_files = list((tmp_path / "data" / "audit").glob("audit-*.jsonl"))
+    assert jsonl_files
 
 
 def test_descrub_role_gate(api_client: TestClient) -> None:
@@ -56,3 +61,7 @@ def test_descrub_role_gate(api_client: TestClient) -> None:
         json={"role": "viewer", "operation_id": op_id, "clearance": "C3"},
     )
     assert fail_resp.status_code == 422
+
+    events = api_client.audit_log.tail(10)
+    assert any(entry.get("event") == "descrub" and entry.get("status") != "denied" for entry in events)
+    assert any(entry.get("event") == "descrub" and entry.get("status") == "denied" for entry in events)

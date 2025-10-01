@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
@@ -193,6 +194,11 @@ def scrub_workbook(path: Path, clearance: str, *, filename: Optional[str] = None
     combined_original = "\n".join(combined_original_segments)
     combined_scrubbed = "\n".join(combined_scrubbed_segments)
 
+    original_hash = hashlib.sha256(combined_original.encode("utf-8")).hexdigest()
+    scrubbed_hash = hashlib.sha256(combined_scrubbed.encode("utf-8")).hexdigest()
+
+    source_bytes = path.stat().st_size if path.exists() else 0
+
     receipt_path = write_receipt(
         operation_id=operation_id,
         text=combined_original,
@@ -226,8 +232,12 @@ def scrub_workbook(path: Path, clearance: str, *, filename: Optional[str] = None
         "receipt_path": str(receipt_path),
         "redacted_path": str(redacted_path),
         "entities": entities_for_ui,
-        "original_display": "\n".join(combined_original_segments),
+        "original_display": combined_original,
         "sanitized_display": "\n".join(display_sanitized_segments),
+        "original_hash": original_hash,
+        "scrubbed_hash": scrubbed_hash,
+        "source_bytes": source_bytes,
+        "scrubbed_text": combined_scrubbed,
     }
 
 

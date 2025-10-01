@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import tempfile
-from collections import deque
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -19,7 +19,7 @@ from fastapi import (
     UploadFile,
     status,
 )
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -39,11 +39,16 @@ try:  # pragma: no cover - optional helper
 except Exception:  # pragma: no cover - degrade gracefully
     write_redacted_text = None  # type: ignore[attr-defined]
 
+from secureprompt.audit import log as audit_log
+
 REDACTED_DIR = Path("data/out")
 REDACTED_DIR.mkdir(parents=True, exist_ok=True)
 
 REDACTED_XLSX_DIR = Path("data/redacted")
 REDACTED_XLSX_DIR.mkdir(parents=True, exist_ok=True)
+
+RECEIPTS_DIR = Path("data/receipts")
+RECEIPTS_DIR.mkdir(parents=True, exist_ok=True)
 
 ACTIONS_ALLOW = {"admin", "auditor"}
 CLEARANCE_OPTIONS = ("C1", "C2", "C3", "C4")
@@ -51,17 +56,6 @@ TEXT_EXTENSIONS = {".txt", ".text", ".html", ".htm", ".csv"}
 ALLOWED_EXTENSIONS = TEXT_EXTENSIONS | {".pdf", ".png", ".xlsx"}
 
 templates = Jinja2Templates(directory="templates")
-
-AUDIT_PATH = Path(os.environ.get("SECUREPROMPT_AUDIT_PATH", "data/audit.log"))
-
-try:  # pragma: no cover - if audit logger missing we fall back to plain file appends
-    from secureprompt.audit.log import AuditLog
-
-    AUDIT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    _audit = AuditLog(str(AUDIT_PATH))
-except Exception:  # pragma: no cover
-    _audit = None  # type: ignore[assignment]
-
 
 class ScrubRequest(BaseModel):
     text: str
@@ -99,23 +93,76 @@ class DescrubResponse(BaseModel):
 app = FastAPI(title="SecurePrompt", version="0.2.0")
 app.mount("/files", StaticFiles(directory=REDACTED_DIR), name="files")
 app.mount("/redacted", StaticFiles(directory=REDACTED_XLSX_DIR), name="redacted")
+app.mount("/receipts", StaticFiles(directory=RECEIPTS_DIR), name="receipts")
 
 
-def _audit_append_safe(**record: Any) -> None:
-    record.setdefault("ok", True)
-    if _audit is not None:
-        try:
-            _audit.append(record)  # type: ignore[attr-defined]
-            return
-        except Exception:  # pragma: no cover - best effort
-            pass
+def _default_actor(role: str = "system") -> Dict[str, str]:
+    return {
+        "username": "placeholder",
+        "role": role,
+        "session_id": "sess_placeholder",
+    }
 
-    try:
-        AUDIT_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with AUDIT_PATH.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(record) + "\n")
-    except Exception:  # pragma: no cover - logging failure ignored
+
+def _client_meta(request: Optional[Request]) -> Dict[str, str]:
+    client_host = request.client.host if request and request.client else "127.0.0.1"
+    user_agent = request.headers.get("user-agent", "placeholder") if request else "placeholder"
+    return {
+        "ip": client_host,
+        "user_agent": user_agent,
+        "device_id": "placeholder",
+        "browser_id": "placeholder",
+    }
+
+
+def _sha256_file(path: Optional[str]) -> Optional[str]:
+    if not path:
+        return None
+    file_path = Path(path)
+    if not file_path.exists():
+        return None
+    h = hashlib.sha256()
+    with file_path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _emit_audit_event(event: Dict[str, Any]) -> None:
+    try:  # pragma: no cover - best-effort logging
+        audit_log.append(event)
+    except Exception:
         pass
+
+
+def _file_size(path: Optional[str]) -> int:
+    if not path:
+        return 0
+    file_path = Path(path)
+    if not file_path.exists():
+        return 0
+    return file_path.stat().st_size
+
+
+def _entity_counts(entities: List[Dict[str, Any]], clearance: str) -> Dict[str, Any]:
+    return audit_log.summarize_entities(entities, clearance)
+
+
+def _hashes_payload(
+    *,
+    original_hash: Optional[str],
+    scrubbed_text: Optional[str],
+    receipt_path: Optional[str],
+) -> Dict[str, Optional[str]]:
+    scrubbed_hash = (
+        hashlib.sha256(scrubbed_text.encode("utf-8")).hexdigest() if scrubbed_text else None
+    )
+    receipt_hash = _sha256_file(receipt_path)
+    return {
+        "original_sha256": original_hash,
+        "scrubbed_sha256": scrubbed_hash,
+        "receipt_sha256": receipt_hash,
+    }
 
 
 def _load_uploaded_text(path: Path, suffix: str) -> str:
@@ -196,60 +243,175 @@ def health() -> Dict[str, str]:
 
 
 @app.post("/scrub", response_model=ScrubResponse)
-def api_scrub(req: ScrubRequest = Body(...)) -> ScrubResponse:
+def api_scrub(request: Request, req: ScrubRequest = Body(...)) -> ScrubResponse:
     result = scrub_text(req.text, req.c_level)
-    _audit_append_safe(
-        action="scrub",
-        c_level=req.c_level,
-        entity_count=len(result.get("entities", [])),
-    )
+
+    event = {
+        "event": "scrub",
+        "operation_id": result.get("operation_id"),
+        "actor": _default_actor("system"),
+        "client": _client_meta(request),
+        "source": {
+            "type": "text",
+            "path": None,
+            "filename": req.filename,
+            "mime": "text/plain",
+            "bytes": len(req.text.encode("utf-8")),
+        },
+        "policy": {"clearance": req.c_level, "matrix_version": "v1"},
+        "counts": _entity_counts(result.get("entities", []), req.c_level),
+        "hashes": _hashes_payload(
+            original_hash=result.get("original_hash"),
+            scrubbed_text=result.get("scrubbed"),
+            receipt_path=result.get("receipt_path"),
+        ),
+        "receipt_path": result.get("receipt_path"),
+    }
+    _emit_audit_event(event)
+
     return ScrubResponse.model_validate(result)
 
 
 @app.post("/files/redact-text", response_model=ScrubWithFileResponse)
-def api_redact_text(req: ScrubRequest = Body(...)) -> ScrubWithFileResponse:
+def api_redact_text(request: Request, req: ScrubRequest = Body(...)) -> ScrubWithFileResponse:
     result = scrub_text(req.text, req.c_level)
     if write_redacted_text is None:
-        _audit_append_safe(action="scrub_file", ok=False, detail="writer unavailable")
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="File writer unavailable")
 
     filename = req.filename or "scrubbed.txt"
     target = REDACTED_DIR / filename
     output_path = write_redacted_text(result["scrubbed"], source_path=target)
-    _audit_append_safe(
-        action="scrub_file",
-        ok=True,
-        output=str(output_path),
-        c_level=req.c_level,
-    )
+
+    event = {
+        "event": "file_scrub",
+        "operation_id": result.get("operation_id"),
+        "actor": _default_actor("system"),
+        "client": _client_meta(request),
+        "source": {
+            "type": "text",
+            "path": str(target),
+            "filename": filename,
+            "mime": "text/plain",
+            "bytes": len(req.text.encode("utf-8")),
+        },
+        "policy": {"clearance": req.c_level, "matrix_version": "v1"},
+        "counts": _entity_counts(result.get("entities", []), req.c_level),
+        "hashes": _hashes_payload(
+            original_hash=result.get("original_hash"),
+            scrubbed_text=result.get("scrubbed"),
+            receipt_path=result.get("receipt_path"),
+        ),
+        "receipt_path": result.get("receipt_path"),
+        "redacted_path": str(output_path),
+    }
+    _emit_audit_event(event)
+
     payload = dict(result)
     payload["output_path"] = str(output_path)
     return ScrubWithFileResponse.model_validate(payload)
 
 
 @app.post("/descrub", response_model=DescrubResponse)
-def api_descrub(req: DescrubRequest = Body(...)) -> DescrubResponse:
+
+def api_descrub(request: Request, req: DescrubRequest = Body(...)) -> DescrubResponse:
     role = (req.role or "").lower()
+    clearance = (req.clearance or "C3").upper()
+    ref = req.receipt_path or req.operation_id
+
     if role not in ACTIONS_ALLOW:
+        event = {
+            "event": "descrub",
+            "operation_id": ref,
+            "actor": _default_actor(role or "user"),
+            "client": _client_meta(request),
+            "source": {
+                "type": "receipt",
+                "path": req.receipt_path,
+                "filename": Path(req.receipt_path).name if req.receipt_path else None,
+                "mime": "application/json",
+                "bytes": _file_size(req.receipt_path),
+            },
+            "policy": {"clearance": clearance, "matrix_version": "v1"},
+            "counts": _entity_counts([], clearance),
+            "hashes": _hashes_payload(original_hash=None, scrubbed_text=None, receipt_path=req.receipt_path),
+            "receipt_path": req.receipt_path,
+            "status": "denied",
+        }
+        _emit_audit_event(event)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="role not permitted")
 
-    ref = req.receipt_path or req.operation_id
     if not ref:
+        event = {
+            "event": "descrub",
+            "operation_id": None,
+            "actor": _default_actor(role or "user"),
+            "client": _client_meta(request),
+            "source": {
+                "type": "receipt",
+                "path": None,
+                "filename": None,
+                "mime": "application/json",
+                "bytes": 0,
+            },
+            "policy": {"clearance": clearance, "matrix_version": "v1"},
+            "counts": _entity_counts([], clearance),
+            "hashes": _hashes_payload(original_hash=None, scrubbed_text=None, receipt_path=None),
+            "receipt_path": None,
+            "status": "invalid_request",
+        }
+        _emit_audit_event(event)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="provide operation_id or receipt_path")
 
     try:
         receipt = read_receipt(ref)
     except FileNotFoundError as exc:  # pragma: no cover - defensive
+        event = {
+            "event": "descrub",
+            "operation_id": ref,
+            "actor": _default_actor(role or "user"),
+            "client": _client_meta(request),
+            "source": {
+                "type": "receipt",
+                "path": req.receipt_path,
+                "filename": Path(req.receipt_path).name if req.receipt_path else None,
+                "mime": "application/json",
+                "bytes": _file_size(req.receipt_path),
+            },
+            "policy": {"clearance": clearance, "matrix_version": "v1"},
+            "counts": _entity_counts([], clearance),
+            "hashes": _hashes_payload(original_hash=None, scrubbed_text=None, receipt_path=req.receipt_path),
+            "receipt_path": req.receipt_path,
+            "status": "not_found",
+        }
+        _emit_audit_event(event)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
     scrubbed = req.text or (receipt.get("scrubbed") or {}).get("text")
     if not scrubbed:
+        event = {
+            "event": "descrub",
+            "operation_id": receipt.get("operation_id"),
+            "actor": _default_actor(role or "user"),
+            "client": _client_meta(request),
+            "source": {
+                "type": "receipt",
+                "path": receipt.get("receipt_path"),
+                "filename": Path(receipt.get("receipt_path") or "").name if receipt.get("receipt_path") else None,
+                "mime": "application/json",
+                "bytes": _file_size(receipt.get("receipt_path")),
+            },
+            "policy": {"clearance": clearance, "matrix_version": "v1"},
+            "counts": _entity_counts([], clearance),
+            "hashes": _hashes_payload(original_hash=None, scrubbed_text=None, receipt_path=receipt.get("receipt_path")),
+            "receipt_path": receipt.get("receipt_path"),
+            "status": "invalid_payload",
+        }
+        _emit_audit_event(event)
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="scrubbed text not provided and not stored in receipt",
         )
 
-    clearance = (req.clearance or "C3").upper()
     descrubbed = descrub_text(
         scrubbed_text=scrubbed,
         receipt=receipt,
@@ -257,7 +419,36 @@ def api_descrub(req: DescrubRequest = Body(...)) -> DescrubResponse:
         ids=req.ids,
     )
 
+    receipt_path = receipt.get("receipt_path")
+    receipt_hashes = (receipt.get("hashes") or {})
+
+    event = {
+        "event": "descrub",
+        "operation_id": receipt.get("operation_id"),
+        "actor": _default_actor(role or "user"),
+        "client": _client_meta(request),
+        "source": {
+            "type": "receipt",
+            "path": receipt_path,
+            "filename": Path(receipt_path or "").name if receipt_path else None,
+            "mime": "application/json",
+            "bytes": _file_size(receipt_path),
+        },
+        "policy": {"clearance": clearance, "matrix_version": "v1"},
+        "counts": _entity_counts(receipt.get("entities", []), clearance),
+        "hashes": _hashes_payload(
+            original_hash=receipt_hashes.get("original"),
+            scrubbed_text=receipt.get("scrubbed", {}).get("text"),
+            receipt_path=receipt_path,
+        ),
+        "receipt_path": receipt_path,
+        "restored_ids": len(req.ids or []),
+        "status": "approved",
+    }
+    _emit_audit_event(event)
+
     return DescrubResponse(descrubbed=descrubbed, operation_id=receipt.get("operation_id"))
+
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -279,7 +470,7 @@ async def ui_scrub(
     if clearance not in CLEARANCE_OPTIONS:
         clearance = "C3"
 
-    error = None
+    error: Optional[str] = None
     original_text = text or ""
     saved_path_display: Optional[str] = None
     saved_href: Optional[str] = None
@@ -289,6 +480,12 @@ async def ui_scrub(
     receipt_path: Optional[str] = None
     sanitized: Optional[str] = None
     is_xlsx = False
+    original_hash: Optional[str] = None
+    scrubbed_for_hash: Optional[str] = None
+    source_type = "text"
+    source_mime = "text/plain"
+    source_path: Optional[str] = None
+    source_bytes = len(original_text.encode("utf-8")) if original_text else 0
 
     try:
         if upload is not None and upload.filename:
@@ -305,8 +502,22 @@ async def ui_scrub(
                 redacted_path = Path(workbook["redacted_path"])
                 saved_path_display = redacted_path.name
                 saved_href = f"/redacted/{operation_id}/{redacted_path.name}"
+                original_hash = workbook.get("original_hash")
+                scrubbed_for_hash = workbook.get("scrubbed_text")
+                source_bytes = workbook.get("source_bytes", 0)
+                source_type = "file"
+                source_mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                source_path = str(redacted_path)
             else:
                 original_text = await _ingest_upload(upload)
+                source_type = "file"
+                if suffix in {".txt", ".text", ".csv", ".html", ".htm"}:
+                    source_mime = "text/plain"
+                elif suffix == ".pdf":
+                    source_mime = "application/pdf"
+                elif suffix == ".png":
+                    source_mime = "image/png"
+                source_bytes = len(original_text.encode("utf-8")) if original_text else 0
         elif not original_text.strip():
             error = "Provide text or upload a supported file."
     except ValueError as exc:
@@ -315,7 +526,25 @@ async def ui_scrub(
         error = str(exc)
 
     if error is not None:
-        _audit_append_safe(action="ui_scrub", ok=False, clearance=clearance, file=file_name, error=error)
+        error_event = {
+            "event": "error",
+            "operation_id": None,
+            "actor": _default_actor("user"),
+            "client": _client_meta(request),
+            "source": {
+                "type": "file" if file_name else "text",
+                "path": None,
+                "filename": file_name,
+                "mime": None,
+                "bytes": 0,
+            },
+            "policy": {"clearance": clearance, "matrix_version": "v1"},
+            "counts": {"entities_total": 0, "masked": 0, "by_label": {}, "by_c_level": {}},
+            "hashes": _hashes_payload(original_hash=None, scrubbed_text=None, receipt_path=None),
+            "receipt_path": None,
+            "message": error,
+        }
+        _emit_audit_event(error_event)
         return _render_dashboard(request, clearance=clearance, error=error)
 
     if not is_xlsx:
@@ -330,17 +559,41 @@ async def ui_scrub(
             saved_file = write_redacted_text(sanitized, source_path=target)
             saved_path_display = Path(saved_file).name
             saved_href = f"/files/{Path(saved_file).name}"
+            source_path = str(saved_file)
+            source_type = "file"
+            source_mime = "text/plain"
 
         operation_id = result.get("operation_id")
         receipt_path = result.get("receipt_path")
+        original_hash = result.get("original_hash")
+        scrubbed_for_hash = result.get("scrubbed")
+        source_bytes = len(original_text.encode("utf-8")) if original_text else 0
 
-    _audit_append_safe(
-        action="ui_scrub",
-        ok=True,
-        clearance=clearance,
-        file=file_name,
-        entities=len(entities),
+    counts = _entity_counts(entities, clearance)
+    hashes = _hashes_payload(
+        original_hash=original_hash,
+        scrubbed_text=scrubbed_for_hash,
+        receipt_path=receipt_path,
     )
+
+    event = {
+        "event": "ui_scrub",
+        "operation_id": operation_id,
+        "actor": _default_actor("user"),
+        "client": _client_meta(request),
+        "source": {
+            "type": source_type,
+            "path": source_path,
+            "filename": file_name,
+            "mime": source_mime,
+            "bytes": source_bytes,
+        },
+        "policy": {"clearance": clearance, "matrix_version": "v1"},
+        "counts": counts,
+        "hashes": hashes,
+        "receipt_path": receipt_path,
+    }
+    _emit_audit_event(event)
 
     return _render_dashboard(
         request,
@@ -356,31 +609,18 @@ async def ui_scrub(
     )
 
 
-def _load_audit_records(limit: int = 200) -> List[Dict[str, Any]]:
-    if not AUDIT_PATH.exists():
-        return []
-    records: deque[str] = deque(maxlen=limit)
-    with AUDIT_PATH.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            stripped = line.strip()
-            if stripped:
-                records.append(stripped)
+@app.get("/ui/scrub", response_class=HTMLResponse)
+async def ui_scrub_get(request: Request, clearance: str = "C3") -> HTMLResponse:
+    selected = (clearance or "C3").upper()
+    if selected not in CLEARANCE_OPTIONS:
+        selected = "C3"
+    return _render_dashboard(request, clearance=selected)
 
-    output: List[Dict[str, Any]] = []
-    while records:
-        raw = records.pop()
-        try:
-            payload = json.loads(raw)
-        except json.JSONDecodeError:
-            payload = {"raw": raw}
-        payload["short_hash"] = (payload.get("curr_hash") or "")[:8]
-        output.append(payload)
-    return output
 
 
 @app.get("/audit", response_class=HTMLResponse)
 async def audit_dashboard(request: Request) -> HTMLResponse:
-    entries = _load_audit_records()
+    entries = audit_log.tail(200)
     context = {
         "request": request,
         "entries": entries,
@@ -389,3 +629,11 @@ async def audit_dashboard(request: Request) -> HTMLResponse:
         "clearances": CLEARANCE_OPTIONS,
     }
     return templates.TemplateResponse("audit.html", context)
+
+
+@app.get("/audit/jsonl")
+def audit_download() -> FileResponse:
+    path = audit_log.jsonl_path()
+    if not path.exists():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No audit entries yet")
+    return FileResponse(path, media_type="application/json", filename=path.name)
