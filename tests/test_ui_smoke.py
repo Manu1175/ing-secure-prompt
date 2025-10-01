@@ -34,6 +34,8 @@ def test_scrub_text_flow(ui_client: TestClient) -> None:
     response = ui_client.post("/ui/scrub", data={"clearance": "C3", "text": "Email a@b.com"})
     assert response.status_code == 200
     assert "Sanitized Output" in response.text
+    assert "Operation ID" in response.text
+    assert "Original SHA256" in response.text
 
 
 def test_upload_with_unsupported_extension(ui_client: TestClient) -> None:

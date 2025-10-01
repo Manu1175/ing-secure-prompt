@@ -15,6 +15,7 @@ dependencies = [
 [project.optional-dependencies]
 test = [
   "pytest",
+  "fastapi",
   "httpx",          # fastapi/starlette test client
   "pdfminer.six",   # PDF text
   "pillow",         # images for OCR redaction tests
