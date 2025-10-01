@@ -1,0 +1,274 @@
+ACCOUNT_BALANCE:
+  c_level: C3
+  examples:
+  - account balance
+  templates:
+  - <ACCOUNT_BALANCE>
+APPLICATION_TYPE:
+  c_level: C3
+  examples:
+  - physical applications
+  templates:
+  - <APPLICATION_TYPE>
+AUTH_METHOD:
+  c_level: C3
+  examples:
+  - FaceID
+  - biometric authentication method
+  - biometric method
+  templates:
+  - <AUTH_METHOD>
+BENEFICIARY:
+  c_level: C3
+  examples:
+  - beneficiary
+  templates:
+  - <BENEFICIARY>
+BIOMETRIC_TYPE:
+  c_level: C3
+  examples:
+  - biometric authentication methods
+  templates:
+  - <BIOMETRIC_TYPE>
+CATEGORY_WRONG:
+  c_level: C3
+  examples:
+  - Security
+  templates:
+  - <CATEGORY_WRONG>
+CCV:
+  c_level: C4
+  examples:
+  - CCV
+  templates:
+  - <CCV>
+CONFIG_GROUP:
+  c_level: C3
+  examples:
+  - T78221
+  templates:
+  - <CONFIG_GROUP>
+DOCUMENT_TYPE:
+  c_level: C3
+  examples:
+  - "ING Belgium\u2019s 2024 Pillar 3 Disclosures"
+  templates:
+  - <DOCUMENT_TYPE>
+EMAIL:
+  c_level: C3
+  examples:
+  - email
+  - john.williams@proximus.be
+  templates:
+  - <EMAIL>
+ENVIRONMENT:
+  c_level: C3
+  examples:
+  - Acceptance
+  - environment
+  templates:
+  - <ENVIRONMENT>
+EXPIRY:
+  c_level: C3
+  examples:
+  - expiry date
+  templates:
+  - <EXPIRY_DATE>
+INCOME:
+  c_level: C3
+  examples:
+  - her income
+  - income
+  templates:
+  - <INCOME>
+INSURANCE_POLICY:
+  c_level: C3
+  examples:
+  - insurance policy
+  templates:
+  - <INSURANCE_POLICY>
+IT_CUSTODIAN:
+  c_level: C3
+  examples:
+  - Cory Griffin (IT Custodian)
+  - Daniel Taylor
+  templates:
+  - <IT_CUSTODIAN>
+NAME:
+  c_level: C3
+  examples:
+  - AML Compliance Policy
+  - AML Screening
+  - Anna Walker
+  - App_10
+  - App_37
+  - App_53
+  - App_70
+  - App_73
+  - App_95
+  - Chris Walker
+  - Chris Williams
+  - Customer Complaint Handling
+  - Customer Service Policy
+  - Data Backup
+  - Emily Clark
+  - Emily Jones
+  - Emily Walker
+  - Emily Williams
+  - Fraud Detection Policy
+  - IT Governance Policy
+  - Interest Calculation (IT Department;
+  - Investment Portfolio
+  - Jane Clark
+  - Jane Williams
+  - KYC Policy
+  - KYC Verification
+  - Katie Williams
+  - Life Insurance
+  - Loan Approval Policy
+  - Loan Origination
+  - Mobile Banking
+  - Operational Risk Policy
+  - Password Reset
+  - Personal Loan
+  - Privacy Protection Policy
+  - Savings Account
+  - Tom Smith
+  - Transaction Monitoring
+  - VM
+  - VM-IAAS-20
+  - VM-IAAS-8
+  - VM-PH-25
+  - Vendor Management
+  templates:
+  - <APP_NAME>
+  - <APP_NAME_1>
+  - <APP_NAME_2>
+  - <CUSTOMER_NAME>
+  - <FULL_NAME>
+  - <FULL_NAME_1>
+  - <POLICY_NAME>
+  - <PROCESS_NAME>
+  - <PRODUCT_NAME>
+  - <VM_NAME>
+NATIONAL_ID:
+  c_level: C3
+  examples:
+  - national ID
+  templates:
+  - <NATIONAL_ID>
+OPERATIONAL_STATUS:
+  c_level: C3
+  examples:
+  - operational status
+  templates:
+  - <OPERATIONAL_STATUS>
+PAN:
+  c_level: C4
+  examples:
+  - 2023 ING Belgium
+  - ING Belgium
+  - credit card 4918491582205278
+  - credit card number
+  - credit card number 5428887483182047
+  templates:
+  - <COMPANY>
+  - <CREDIT_CARD_NUMBER>
+PASSWORD:
+  c_level: C4
+  examples:
+  - password
+  templates:
+  - <PASSWORD>
+PIN:
+  c_level: C4
+  examples:
+  - PIN
+  - PIN 8889
+  - masked PIN
+  - political opinion
+  templates:
+  - <MASKED_PIN>
+  - <PIN>
+  - <POLITICAL_OPINION>
+POLICY_A:
+  c_level: C3
+  examples:
+  - Credit Risk Policy
+  templates:
+  - <POLICY_A>
+POLICY_B:
+  c_level: C3
+  examples:
+  - Data Security Policy
+  templates:
+  - <POLICY_B>
+PROCESS_A:
+  c_level: C3
+  examples:
+  - Mobile App Update
+  templates:
+  - <PROCESS_A>
+PROCESS_B:
+  c_level: C3
+  examples:
+  - Customer Onboarding
+  templates:
+  - <PROCESS_B>
+PROVIDER:
+  c_level: C3
+  examples:
+  - AWS
+  templates:
+  - <PROVIDER>
+RELATIONSHIP_TYPE:
+  c_level: C3
+  examples:
+  - relationship type
+  templates:
+  - <RELATIONSHIP_TYPE>
+RELIGIOUS_BELIEF:
+  c_level: C3
+  examples:
+  - religious belief
+  templates:
+  - <RELIGIOUS_BELIEF>
+RESPONSIBLE_TEAM:
+  c_level: C3
+  examples:
+  - HR Department
+  templates:
+  - <RESPONSIBLE_TEAM>
+STORAGE_CAPACITY:
+  c_level: C3
+  examples:
+  - storage capacity
+  templates:
+  - <STORAGE_CAPACITY>
+TARGET_TEAM:
+  c_level: C3
+  examples:
+  - IT Department
+  templates:
+  - <TARGET_TEAM>
+TRANSACTION_TYPE:
+  c_level: C3
+  examples:
+  - POS transaction
+  - online transactions
+  templates:
+  - <TRANSACTION_TYPE>
+VIRTUAL_SYSTEM_CONFIGURATION:
+  c_level: C3
+  examples:
+  - virtual system configuration
+  templates:
+  - <VIRTUAL_SYSTEM_CONFIGURATION>
+YEAR:
+  c_level: C3
+  examples:
+  - '2022'
+  - 2023 ING Belgium
+  - "ING Belgium\u2019s 2021 Annual Report."
+  templates:
+  - <YEAR>
