@@ -19,15 +19,17 @@ CellKey = Tuple[str, str]
 
 
 def read_xlsx_text(path: Path) -> List[Dict[str, Any]]:
-    """Return non-empty textual cells from a workbook.
+    """Extract textual content from non-empty cells.
 
-    Args:
-        path: Absolute path to the workbook on disk.
+    Parameters
+    ----------
+    path:
+        Absolute path to the workbook on disk.
 
-    Returns:
-        A list of dictionaries describing each populated cell. Each dictionary contains
-        ``sheet`` (worksheet title), ``cell`` (Excel coordinate), and ``text`` (string
-        representation of the cell value).
+    Returns
+    -------
+    list of dict
+        One entry per populated cell containing ``sheet``, ``cell`` and ``text`` keys.
     """
 
     workbook = load_workbook(path, read_only=True, data_only=True)
@@ -54,17 +56,21 @@ def write_xlsx_redacted(
     *,
     output_path: Optional[Path] = None,
 ) -> Path:
-    """Persist a redacted workbook alongside the source file.
+    """Write a redacted workbook next to the original.
 
-    Args:
-        src_path: Path to the source workbook used as a template for redaction.
-        replacements: Mapping of ``(sheet, cell)`` to the sanitized text that should
-            replace the original cell value.
-        output_path: Optional destination for the new workbook. When omitted, the
-            redacted workbook is emitted next to ``src_path`` with ``.redacted`` suffix.
+    Parameters
+    ----------
+    src_path:
+        Template workbook whose values will be replaced.
+    replacements:
+        Mapping from ``(sheet, cell)`` to sanitized text values.
+    output_path:
+        Optional destination path. Defaults to ``<stem>.redacted.xlsx`` besides ``src_path``.
 
-    Returns:
-        Path to the redacted workbook.
+    Returns
+    -------
+    Path
+        Location of the new redacted workbook.
     """
 
     workbook = load_workbook(src_path)
@@ -132,20 +138,22 @@ def _scrub_cell_text(text: str, base_c_level: str = "C4") -> Tuple[str, List[Dic
 
 
 def scrub_workbook(path: Path, clearance: str, *, filename: Optional[str] = None) -> Dict[str, Any]:
-    """Scrub an Excel workbook and emit a redacted copy plus an encrypted receipt.
+    """Scrub an Excel workbook and persist a redacted artefact with receipt metadata.
 
-    Args:
-        path: Local path to the uploaded workbook (temporary file).
-        clearance: Selected clearance for selective masking (C1–C4).
-        filename: Optional original filename for logging/receipts.
+    Parameters
+    ----------
+    path:
+        Local filesystem path to the uploaded workbook.
+    clearance:
+        Clearance selected in the UI (C1–C4) used for selective sanitisation.
+    filename:
+        Optional original filename for logging purposes.
 
-    Returns:
-        A dictionary containing the redaction artefacts:
-            ``operation_id``: unique identifier for the scrub
-            ``receipt_path``: path to the stored receipt JSON
-            ``redacted_path``: path to the redacted workbook
-            ``entities``: list of entities suitable for UI display
-            ``original_display`` / ``sanitized_display``: newline-joined summaries
+    Returns
+    -------
+    dict
+        Structured information including operation id, receipt path, redacted file path,
+        entities for UI display, combined hashes, and summary strings.
     """
 
     rows = read_xlsx_text(path)

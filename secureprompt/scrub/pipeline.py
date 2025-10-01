@@ -8,6 +8,9 @@ from uuid import uuid4
 from typing import Dict, Any, List
 
 from ..entities.detectors import detect
+from ..entities.confidence import add_confidence
+
+CLEARANCE_ORDER = {"C1": 1, "C2": 2, "C3": 3, "C4": 4}
 from ..receipts.store import write_receipt
 
 ENTITY_DEFAULT_C_LEVEL = {
@@ -47,7 +50,7 @@ def _mask_value(value: str) -> str:
 def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
     """Scrub sensitive entities from ``text`` according to active policies."""
 
-    hits = detect(text)
+    hits = add_confidence(detect(text))
     out = text
     entities: List[Dict[str, Any]] = []
     receipt_entities: List[Dict[str, Any]] = []
@@ -64,10 +67,12 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
             "label": hit["label"],
             "span": [hit["start"], hit["end"]],
             "detector": hit["rule_id"],
-            "confidence": hit["confidence"],
+            "confidence": hit.get("confidence"),
+            "confidence_sources": hit.get("confidence_sources", {}),
             "c_level": entity_level,
             "identifier": identifier,
             "action": action,
+            "explanation": hit.get("explanation"),
         }
         if mask_preview is not None:
             entity["mask_preview"] = mask_preview
@@ -79,14 +84,27 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
                 "label": hit["label"],
                 "detector": hit["rule_id"],
                 "c_level": entity_level,
-                "confidence": hit["confidence"],
+                "confidence": hit.get("confidence"),
+                "confidence_sources": hit.get("confidence_sources", {}),
                 "span": [hit["start"], hit["end"]],
                 "original": hit["value"],
+                "explanation": hit.get("explanation"),
             }
         )
 
     public_entities = list(reversed(entities))
     receipt_entities = list(reversed(receipt_entities))
+
+    def _sort_key(item: Dict[str, Any]) -> tuple:
+        level = (item.get("c_level") or "C1").upper()
+        return (
+            -CLEARANCE_ORDER.get(level, 1),
+            -(item.get("confidence") or 0.0),
+            str(item.get("label")),
+            str(item.get("identifier")),
+        )
+
+    public_entities_sorted = sorted(public_entities, key=_sort_key)
 
     operation_id = uuid4().hex
     placeholder_map = {entity["identifier"]: entity["identifier"] for entity in public_entities}
@@ -104,7 +122,7 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
     return {
         "original_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "scrubbed": out,
-        "entities": public_entities,
+        "entities": public_entities_sorted,
         "operation_id": operation_id,
         "receipt_path": str(receipt_path),
     }

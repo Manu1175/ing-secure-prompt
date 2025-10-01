@@ -6,7 +6,7 @@ import datetime as dt
 import hashlib
 import json
 import sqlite3
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -128,6 +128,8 @@ def summarize_entities(entities: List[Dict[str, Any]], clearance: str) -> Dict[s
     labels = Counter()
     levels = Counter()
     masked = 0
+    confidences: List[float] = []
+    label_conf: Dict[str, List[float]] = defaultdict(list)
 
     for entity in entities or []:
         label = entity.get("label")
@@ -137,13 +139,24 @@ def summarize_entities(entities: List[Dict[str, Any]], clearance: str) -> Dict[s
         levels[level] += 1
         if _CLEARANCE_ORDER.get(level, 4) > clearance_rank:
             masked += 1
+        conf = entity.get("confidence")
+        if isinstance(conf, (float, int)):
+            confidences.append(float(conf))
+            if label:
+                label_conf[label].append(float(conf))
 
     total = sum(labels.values()) if labels else sum(levels.values())
+    avg_conf = sum(confidences) / len(confidences) if confidences else 0.0
+    avg_conf_by_label = {
+        label: (sum(vals) / len(vals)) if vals else 0.0 for label, vals in label_conf.items()
+    }
     return {
         "entities_total": total,
         "masked": masked,
         "by_label": dict(labels),
         "by_c_level": dict(levels),
+        "avg_confidence": avg_conf,
+        "avg_confidence_by_label": avg_conf_by_label,
     }
 
 

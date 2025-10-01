@@ -211,6 +211,7 @@
           <tr>
             <th class="px-3 py-2">Label</th>
             <th class="px-3 py-2">C-Level</th>
+            <th class="px-3 py-2">Confidence</th>
             <th class="px-3 py-2">Placeholder</th>
             <th class="px-3 py-2">Identifier</th>
             <th class="px-3 py-2">Span</th>
@@ -223,6 +224,7 @@
           <tr class="border-t border-slate-200">
             <td class="px-3 py-2 font-mono text-xs">{{ entity.label }}</td>
             <td class="px-3 py-2 text-xs">{{ entity.c_level or "C?" }}</td>
+            <td class="px-3 py-2 text-xs" title="{{ entity.explanation }}">{{ ((entity.confidence or 0) * 100) | round(2) }}%</td>
             <td class="px-3 py-2 font-mono text-xs break-all">{{ entity.mask_preview or entity.identifier }}</td>
             <td class="px-3 py-2 font-mono text-xs break-all">{{ (entity.identifier or '')[:20] }}{% if (entity.identifier or '')|length > 20 %}…{% endif %}</td>
             <td class="px-3 py-2 text-xs">{{ entity.span if entity.span else "–" }}</td>
