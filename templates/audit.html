@@ -4,7 +4,10 @@
 
 {% block content %}
 <section class="space-y-4">
-  <h1 class="text-xl font-semibold text-slate-800">Audit Trail</h1>
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-semibold text-slate-800">Audit Trail</h1>
+    <a href="/audit/jsonl" class="text-sm text-emerald-600 hover:text-emerald-500 underline">Download JSONL</a>
+  </div>
   {% if not has_entries %}
   <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded">
     No audit entries yet. Scrub text or files to populate the log.
@@ -15,21 +18,45 @@
       <table class="min-w-full text-left text-sm">
         <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
           <tr>
-            <th class="px-3 py-2">Action</th>
-            <th class="px-3 py-2">Status</th>
             <th class="px-3 py-2">Timestamp</th>
-            <th class="px-3 py-2">Message</th>
-            <th class="px-3 py-2">Hash</th>
+            <th class="px-3 py-2">Event</th>
+            <th class="px-3 py-2">Clearance</th>
+            <th class="px-3 py-2">Source</th>
+            <th class="px-3 py-2">Entities</th>
+            <th class="px-3 py-2">Hash Chain</th>
+            <th class="px-3 py-2">Receipt</th>
           </tr>
         </thead>
         <tbody>
           {% for entry in entries %}
+          {% set counts = entry.get('counts', {}) %}
+          {% set policy = entry.get('policy', {}) %}
+          {% set source = entry.get('source', {}) %}
+          {% set receipt = entry.get('receipt_path') %}
+          {% set receipt_href = receipt.replace('data/receipts/', '/receipts/') if receipt %}
           <tr class="border-t border-slate-200">
-            <td class="px-3 py-2 text-xs">{{ entry.action or entry.get("action") }}</td>
-            <td class="px-3 py-2 text-xs">{{ entry.status or (entry.ok and "ok" or "") }}</td>
-            <td class="px-3 py-2 text-xs">{{ "{:.0f}".format(entry.ts) if entry.ts is defined else "" }}</td>
-            <td class="px-3 py-2 text-xs">{{ entry.justification or entry.message or entry.error or "" }}</td>
-            <td class="px-3 py-2 font-mono text-xs">{{ entry.short_hash }}</td>
+            <td class="px-3 py-2 text-xs text-slate-600">{{ entry.get('ts') }}</td>
+            <td class="px-3 py-2 text-xs">{{ entry.get('event') }}</td>
+            <td class="px-3 py-2 text-xs">{{ policy.get('clearance') }}</td>
+            <td class="px-3 py-2 text-xs">
+              <div>{{ source.get('filename') or '-' }}</div>
+              <div class="text-[11px] text-slate-500">{{ source.get('type') }} · {{ source.get('bytes') or 0 }} bytes</div>
+            </td>
+            <td class="px-3 py-2 text-xs">
+              <div>Masked {{ counts.get('masked', 0) }} / {{ counts.get('entities_total', 0) }}</div>
+              {% if counts.get('by_label') %}
+              <div class="text-[11px] text-slate-500">{{ counts.get('by_label') }}</div>
+              {% endif %}
+            </td>
+            <td class="px-3 py-2 font-mono text-[11px]">
+              {{ (entry.get('prev_hash') or '')[:8] }} → {{ (entry.get('hash') or '')[:8] }}
+            </td>
+            <td class="px-3 py-2 text-xs">
+              {% if receipt and receipt_href %}
+              <a href="{{ receipt_href }}" class="text-emerald-600 underline" target="_blank" rel="noopener">open</a>
+              <div class="text-[11px] text-slate-500 font-mono">{{ receipt }}</div>
+              {% else %}-{% endif %}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
