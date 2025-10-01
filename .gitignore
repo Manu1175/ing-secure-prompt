@@ -215,3 +215,4 @@ reports/baseline_counts.csv
 *.sqlite
 *.db
 # Runtime outputs (K2 preflight)
+*.bak.k2phase0
