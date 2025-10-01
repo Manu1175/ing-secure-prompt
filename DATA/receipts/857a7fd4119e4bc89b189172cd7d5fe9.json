@@ -1,0 +1,95 @@
+{
+  "operation_id": "857a7fd4119e4bc89b189172cd7d5fe9",
+  "created_at": "2025-10-01T10:46:46.676699+00:00",
+  "hashes": {
+    "original": "400535f8921f61ef9bb78ab44252f68405054a00556003161ca687d190d4447f",
+    "scrubbed": "bedba1787b26a223196c50012066e24d4837ab533432c9c3bebe8cf9e158cff4"
+  },
+  "c_level": "C3",
+  "filename": null,
+  "policy_version": "unknown",
+  "placeholder_map": {
+    "C3::EMAIL::6e28563491": "C3::EMAIL::6e28563491",
+    "C4::PAN::e2292d1b12": "C4::PAN::e2292d1b12",
+    "C4::PHONE::2dfc5d92f7": "C4::PHONE::2dfc5d92f7",
+    "C4::PHONE::2414955870": "C4::PHONE::2414955870"
+  },
+  "scrubbed": {
+    "text": "Email C3::EMAIL::6e28563491; Card C4::PAN::e2292d1b12f7 C4::PHONE::2414955870 C4::PHONE::2414955870 C4::PHONE::2414955870"
+  },
+  "entities": [
+    {
+      "identifier": "C3::EMAIL::6e28563491",
+      "label": "EMAIL",
+      "detector": "EMAIL_basic",
+      "c_level": "C3",
+      "confidence": 0.9,
+      "span": [
+        6,
+        13
+      ],
+      "original_enc": "gAAAAABo3QaWxj6aHAHCtkqamJldJrLQduBNBerlGbKf3YUWwz5ChyrJ-t9xyl5KFh-lVZLeVnsCltieQdAbU9BbVxRLPBAdhQ=="
+    },
+    {
+      "identifier": "C4::PAN::e2292d1b12",
+      "label": "PAN",
+      "detector": "PAN_luhn",
+      "c_level": "C4",
+      "confidence": 0.96,
+      "span": [
+        20,
+        39
+      ],
+      "original_enc": "gAAAAABo3QaWhsQvdxyGVpQbZGwXrnE6hrjvnod6akgk3WsDb4gPvHD0dQAOnr_4GdgM6wqNduOIK4FG41viJSRzDVA6DImXzcvpM79pyLeDXyE7hw0UKsA="
+    },
+    {
+      "identifier": "C4::PHONE::2dfc5d92f7",
+      "label": "PHONE",
+      "detector": "PHONE_e164",
+      "c_level": "C4",
+      "confidence": 0.85,
+      "span": [
+        20,
+        24
+      ],
+      "original_enc": "gAAAAABo3QaWAFlMqzJliWmAiP7DCYTVdjgmLM6Xm851qbPLCL4P4RB1WwnmgYXEzFb_VpvzDBxpUF0RJGuCfAAAGGY9cALs5w=="
+    },
+    {
+      "identifier": "C4::PHONE::2414955870",
+      "label": "PHONE",
+      "detector": "PHONE_e164",
+      "c_level": "C4",
+      "confidence": 0.85,
+      "span": [
+        25,
+        29
+      ],
+      "original_enc": "gAAAAABo3QaWSrQHbRIUeVGN28oD2LwYBnfVq62VaWzKjylkbZCOskcjObvI5KtV_-qDpZEFsFEl_DkkQFfmCxtKVRS9hoXYnQ=="
+    },
+    {
+      "identifier": "C4::PHONE::2414955870",
+      "label": "PHONE",
+      "detector": "PHONE_e164",
+      "c_level": "C4",
+      "confidence": 0.85,
+      "span": [
+        30,
+        34
+      ],
+      "original_enc": "gAAAAABo3QaWAW6rEgJWJsKIEhn2SjfhvuL_bQmVYPrx9KVr4I2NgjVRHM0ogjpL1rWQyx2TAAGr5aZ7A4ZlJ6OhzMyJQBU-eA=="
+    },
+    {
+      "identifier": "C4::PHONE::2414955870",
+      "label": "PHONE",
+      "detector": "PHONE_e164",
+      "c_level": "C4",
+      "confidence": 0.85,
+      "span": [
+        35,
+        39
+      ],
+      "original_enc": "gAAAAABo3QaWFGbGX8qdHDmroKYogyu_w34ocb_Ojv9UPQG4f1BHXqWm3iEMUNFDLua7ecsmLGT5YIcvSrwA6GpFxypCaNi9dA=="
+    }
+  ],
+  "receipt_path": "data/receipts/857a7fd4119e4bc89b189172cd7d5fe9.json"
+}

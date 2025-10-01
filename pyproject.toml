@@ -7,6 +7,9 @@ name = "secureprompt"
 version = "0.0.1"
 description = "SecurePrompt scrubbing pipeline"
 requires-python = ">=3.10"
+dependencies = [
+  "cryptography>=41",
+]
 
 # Optional extras (so `pip install -e '.[test]'` works)
 [project.optional-dependencies]

@@ -12,10 +12,11 @@ def test_scrub_replaces_values_with_policy_actions():
     email = entities["EMAIL"]
     pan = entities["PAN"]
 
-    assert email["identifier"].startswith("C3::EMAIL::")
+    assert email["identifier"].startswith(f"{email['c_level']}::EMAIL::")
     assert email["mask_preview"].count("*") == len("a@b.com")
 
-    assert pan["identifier"].startswith("C3::PAN::")
+    assert pan["c_level"] == "C4"
+    assert pan["identifier"].startswith(f"{pan['c_level']}::PAN::")
     assert "mask_preview" not in pan
 
-    assert "C3::PAN::" in out["scrubbed"]
+    assert pan["identifier"] in out["scrubbed"]

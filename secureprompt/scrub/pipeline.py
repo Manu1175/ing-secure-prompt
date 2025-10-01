@@ -4,9 +4,25 @@ from __future__ import annotations
 
 import hashlib
 import os
+from uuid import uuid4
 from typing import Dict, Any, List
 
 from ..entities.detectors import detect
+from ..receipts.store import write_receipt
+
+ENTITY_DEFAULT_C_LEVEL = {
+    "EMAIL": "C3",
+    "PHONE": "C4",
+    "NAME": "C3",
+    "ADDRESS": "C3",
+    "PAN": "C4",
+    "CCV": "C4",
+    "EXPIRY_DATE": "C4",
+    "IBAN": "C3",
+    "PIN": "C4",
+    "PASSWORD": "C4",
+    "NATIONAL_ID": "C4",
+}
 
 
 def _salt() -> str:
@@ -34,9 +50,11 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
     hits = detect(text)
     out = text
     entities: List[Dict[str, Any]] = []
+    receipt_entities: List[Dict[str, Any]] = []
 
     for hit in sorted(hits, key=lambda x: x["start"], reverse=True):
-        identifier = _identifier(hit["label"], hit["value"], c_level)
+        entity_level = ENTITY_DEFAULT_C_LEVEL.get(hit["label"], c_level)
+        identifier = _identifier(hit["label"], hit["value"], entity_level)
         action = hit.get("action", "redact")
         mask_preview = _mask_value(hit["value"]) if action == "mask" else None
 
@@ -47,7 +65,7 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
             "span": [hit["start"], hit["end"]],
             "detector": hit["rule_id"],
             "confidence": hit["confidence"],
-            "c_level": c_level,
+            "c_level": entity_level,
             "identifier": identifier,
             "action": action,
         }
@@ -55,11 +73,40 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
             entity["mask_preview"] = mask_preview
 
         entities.append(entity)
+        receipt_entities.append(
+            {
+                "identifier": identifier,
+                "label": hit["label"],
+                "detector": hit["rule_id"],
+                "c_level": entity_level,
+                "confidence": hit["confidence"],
+                "span": [hit["start"], hit["end"]],
+                "original": hit["value"],
+            }
+        )
+
+    public_entities = list(reversed(entities))
+    receipt_entities = list(reversed(receipt_entities))
+
+    operation_id = uuid4().hex
+    placeholder_map = {entity["identifier"]: entity["identifier"] for entity in public_entities}
+    receipt_path = write_receipt(
+        operation_id=operation_id,
+        text=text,
+        scrubbed=out,
+        entities=receipt_entities,
+        c_level=c_level,
+        filename=None,
+        policy_version=None,
+        placeholder_map=placeholder_map,
+    )
 
     return {
         "original_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "scrubbed": out,
-        "entities": list(reversed(entities)),
+        "entities": public_entities,
+        "operation_id": operation_id,
+        "receipt_path": str(receipt_path),
     }
 
 

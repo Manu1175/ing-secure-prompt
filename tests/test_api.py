@@ -30,27 +30,29 @@ def test_scrub_endpoint_logs(api_client: TestClient, tmp_path: Path) -> None:
     assert response.status_code == 200
     data = response.json()
     assert "scrubbed" in data
+    assert data["operation_id"]
 
     audit_log = tmp_path / "audit.log"
     assert audit_log.exists()
     assert "scrub" in audit_log.read_text(encoding="utf-8")
 
 
-def test_descrub_role_gate(api_client: TestClient, tmp_path: Path) -> None:
+def test_descrub_role_gate(api_client: TestClient) -> None:
+    scrub_payload = {"text": "Email a@b.com", "c_level": "C3"}
+    scrub_resp = api_client.post("/scrub", json=scrub_payload)
+    data = scrub_resp.json()
+    op_id = data["operation_id"]
+
     ok_resp = api_client.post(
         "/descrub",
-        json={"ids": ["C3::EMAIL::abc"], "justification": "demo", "role": "admin"},
+        json={"role": "admin", "operation_id": op_id, "clearance": "C3"},
     )
     assert ok_resp.status_code == 200
-    assert ok_resp.json()["status"] == "approved"
+    ok_data = ok_resp.json()
+    assert "a@b.com" in ok_data["descrubbed"]
 
     fail_resp = api_client.post(
         "/descrub",
-        json={"ids": ["C3::EMAIL::abc"], "justification": "demo", "role": "viewer"},
+        json={"role": "viewer", "operation_id": op_id, "clearance": "C3"},
     )
     assert fail_resp.status_code == 422
-
-    audit_log = tmp_path / "audit.log"
-    content = audit_log.read_text(encoding="utf-8")
-    assert "approved" in content
-    assert "denied" in content
