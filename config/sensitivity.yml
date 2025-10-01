@@ -1,0 +1,5 @@
+clearance_thresholds:
+  C1: { NAME: 0.85, ADDRESS: 0.90, ORG_NAME: 0.90 }
+  C2: { NAME: 0.80, ADDRESS: 0.85, ORG_NAME: 0.85 }
+  C3: { NAME: 0.75, ADDRESS: 0.80, ORG_NAME: 0.80 }
+  C4: { NAME: 0.70, ADDRESS: 0.75, ORG_NAME: 0.75 }
