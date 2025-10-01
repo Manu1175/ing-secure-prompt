@@ -20,7 +20,8 @@ test = [
   "pillow",         # images for OCR redaction tests
   "pytesseract",    # OCR (tests auto-skip if binary missing)
   "jinja2",
-  "python-multipart"
+  "python-multipart",
+  "openpyxl"
 ]
 
 [tool.setuptools.packages.find]

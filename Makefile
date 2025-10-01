@@ -20,7 +20,7 @@ help:
 
 .PHONY: test-fast
 test-fast:
-	PYTHONPATH=$(shell pwd):$$PYTHONPATH pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text"
+	PYTHONPATH=$(shell pwd):$$PYTHONPATH pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text or xlsx"
 
 .PHONY: watch-tests
 watch-tests:

@@ -110,4 +110,4 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
     }
 
 
-__all__ = ["scrub_text"]
+__all__ = ["scrub_text", "ENTITY_DEFAULT_C_LEVEL"]
