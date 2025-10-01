@@ -38,26 +38,167 @@
     </div>
   </form>
 
+  {% if counts %}
+  <div class="bg-white rounded shadow p-4">
+    <h2 class="text-sm font-semibold text-slate-700 mb-3">Classification Summary</h2>
+    <div class="flex flex-wrap gap-4 text-sm text-slate-600">
+      <div>
+        <div class="text-xs uppercase tracking-wide text-slate-500">Entities</div>
+        <div class="text-base font-semibold">{{ counts.entities_total or 0 }}</div>
+      </div>
+      <div>
+        <div class="text-xs uppercase tracking-wide text-slate-500">Masked</div>
+        <div class="text-base font-semibold">{{ counts.masked or 0 }}</div>
+      </div>
+      <div class="flex-1">
+        <div class="text-xs uppercase tracking-wide text-slate-500 mb-1">By Clearance</div>
+        <div class="flex flex-wrap gap-2">
+          {% for level, cnt in (counts.by_c_level or {}).items() %}
+          <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-700">
+            <span class="font-semibold">{{ level }}</span>
+            <span>{{ cnt }}</span>
+          </span>
+          {% endfor %}
+          {% if not counts.by_c_level %}
+          <span class="text-xs text-slate-400">–</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="text-xs uppercase tracking-wide text-slate-500 mb-1">By Label</div>
+        <div class="flex flex-wrap gap-2">
+          {% for label, cnt in (counts.by_label or {}).items() %}
+          <span class="inline-flex items-center gap-1 rounded px-2 py-1 text-xs bg-emerald-50 text-emerald-700">
+            <span class="font-mono">{{ label }}</span>
+            <span>{{ cnt }}</span>
+          </span>
+          {% endfor %}
+          {% if not counts.by_label %}
+          <span class="text-xs text-slate-400">–</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if baseline_ctx and baseline_ctx.has_baseline %}
+  <div class="bg-white rounded shadow p-4 space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-sm font-semibold text-slate-700">Expected vs Achieved (Clearance {{ baseline_ctx.clearance }})</h2>
+        <p class="text-xs text-slate-500">Baseline file: {{ baseline_ctx.filename }}</p>
+      </div>
+      <div class="text-2xl font-semibold text-emerald-600">{{ baseline_ctx.score }}%</div>
+    </div>
+    <div class="h-2 bg-slate-200 rounded-full">
+      <div class="h-2 bg-emerald-500 rounded-full" style="width: {{ baseline_ctx.score }}%"></div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4 text-sm">
+      <div>
+        <h3 class="text-xs font-semibold uppercase text-slate-500 mb-2">By Label</h3>
+        <table class="min-w-full text-xs">
+          <thead class="bg-slate-100 text-slate-600 uppercase">
+            <tr><th class="px-2 py-1 text-left">Label</th><th class="px-2 py-1 text-right">Expected</th><th class="px-2 py-1 text-right">Achieved</th></tr>
+          </thead>
+          <tbody>
+            {% for row in baseline_ctx.label_rows %}
+            <tr class="border-t border-slate-200">
+              <td class="px-2 py-1 font-mono">{{ row.label }}</td>
+              <td class="px-2 py-1 text-right">{{ row.expected }}</td>
+              <td class="px-2 py-1 text-right">{{ row.achieved }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3 class="text-xs font-semibold uppercase text-slate-500 mb-2">By Clearance</h3>
+        <table class="min-w-full text-xs">
+          <thead class="bg-slate-100 text-slate-600 uppercase">
+            <tr><th class="px-2 py-1 text-left">Level</th><th class="px-2 py-1 text-right">Expected</th><th class="px-2 py-1 text-right">Achieved</th></tr>
+          </thead>
+          <tbody>
+            {% for row in baseline_ctx.level_rows %}
+            <tr class="border-t border-slate-200">
+              <td class="px-2 py-1">{{ row.level }}</td>
+              <td class="px-2 py-1 text-right">{{ row.expected }}</td>
+              <td class="px-2 py-1 text-right">{{ row.achieved }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% if baseline_ctx.diff %}
+    <details class="text-xs text-slate-500">
+      <summary class="cursor-pointer">Details</summary>
+      <div class="mt-2 grid md:grid-cols-2 gap-4">
+        <div>
+          <div class="font-semibold text-slate-600 mb-1">Missing</div>
+          {% if baseline_ctx.diff.missing %}
+          <ul class="list-disc list-inside space-y-1">
+            {% for label, val in baseline_ctx.diff.missing.items() %}
+            <li>{{ label }} → {{ val }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>None</p>
+          {% endif %}
+        </div>
+        <div>
+          <div class="font-semibold text-slate-600 mb-1">Extra</div>
+          {% if baseline_ctx.diff.extra %}
+          <ul class="list-disc list-inside space-y-1">
+            {% for label, val in baseline_ctx.diff.extra.items() %}
+            <li>{{ label }} → {{ val }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>None</p>
+          {% endif %}
+        </div>
+      </div>
+    </details>
+    {% endif %}
+  </div>
+  {% endif %}
+
   <div class="grid gap-4 md:grid-cols-2">
-    <div class="bg-white rounded shadow p-4">
-      <h2 class="text-sm font-semibold text-slate-700 mb-2">Input</h2>
-      {% if file_name %}
-      <p class="text-xs text-slate-500 mb-2">File: {{ file_name }}</p>
-      {% endif %}
+    <div class="bg-white rounded shadow p-4 space-y-2">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-slate-700">Input</h2>
+        {% if file_name %}
+        <span class="text-xs text-slate-500">{{ file_name }}</span>
+        {% endif %}
+      </div>
       <pre class="whitespace-pre-wrap text-sm text-slate-700">{{ original }}</pre>
     </div>
-    <div class="bg-white rounded shadow p-4">
-      <h2 class="text-sm font-semibold text-slate-700 mb-2">Sanitized Output</h2>
+    <div class="bg-white rounded shadow p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-slate-700">Sanitized Output</h2>
+        {% if saved_href %}
+        <a href="{{ saved_href }}" class="inline-flex items-center gap-2 rounded bg-emerald-600 px-3 py-1 text-sm font-semibold text-white hover:bg-emerald-500" target="_blank" rel="noopener">Download redacted</a>
+        {% endif %}
+      </div>
       <pre class="whitespace-pre-wrap text-sm text-slate-700">{{ sanitized }}</pre>
-      {% if saved_href %}
-      <p class="text-xs text-emerald-600 mt-3">Saved copy: <a href="{{ saved_href }}" class="underline" target="_blank" rel="noopener">{{ saved_path }}</a></p>
-      {% endif %}
-      {% if operation_id %}
-      <p class="text-xs text-slate-500 mt-2">Operation ID: <span class="font-mono">{{ operation_id }}</span></p>
-      {% endif %}
-      {% if receipt_path %}
-      <p class="text-xs text-slate-500">Receipt: <span class="font-mono">{{ receipt_path }}</span></p>
-      {% endif %}
+      {% set receipt_href = receipt_path.replace('data/receipts/', '/receipts/') if receipt_path %}
+      <div class="text-xs text-slate-500 space-y-1">
+        {% if hashes %}
+        <div>Original SHA256: <span class="font-mono">{{ hashes.original_sha256 or '–' }}</span></div>
+        <div>Scrubbed SHA256: <span class="font-mono">{{ hashes.scrubbed_sha256 or '–' }}</span></div>
+        {% endif %}
+        {% if operation_id %}
+        <div>Operation ID: <span class="font-mono">{{ operation_id }}</span></div>
+        {% endif %}
+        {% if receipt_path %}
+        <div>Receipt: <span class="font-mono">{{ receipt_path }}</span>
+          {% if receipt_href %}
+          <a href="{{ receipt_href }}" class="text-emerald-600 underline ml-2" target="_blank" rel="noopener">open</a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 
@@ -70,23 +211,22 @@
           <tr>
             <th class="px-3 py-2">Label</th>
             <th class="px-3 py-2">C-Level</th>
-            <th class="px-3 py-2">Detector</th>
             <th class="px-3 py-2">Placeholder</th>
+            <th class="px-3 py-2">Identifier</th>
+            <th class="px-3 py-2">Span</th>
             <th class="px-3 py-2">Excel</th>
           </tr>
         </thead>
         <tbody>
           {% for entity in entities %}
+          {% set excel = entity.excel %}
           <tr class="border-t border-slate-200">
             <td class="px-3 py-2 font-mono text-xs">{{ entity.label }}</td>
             <td class="px-3 py-2 text-xs">{{ entity.c_level or "C?" }}</td>
-            <td class="px-3 py-2 text-xs">{{ entity.detector }}</td>
-            <td class="px-3 py-2 font-mono text-xs break-all">{{ entity.identifier }}</td>
-            <td class="px-3 py-2 text-xs">
-              {% if entity.excel %}
-              {{ entity.excel.sheet }}!{{ entity.excel.cell }}
-              {% else %}-{% endif %}
-            </td>
+            <td class="px-3 py-2 font-mono text-xs break-all">{{ entity.mask_preview or entity.identifier }}</td>
+            <td class="px-3 py-2 font-mono text-xs break-all">{{ (entity.identifier or '')[:20] }}{% if (entity.identifier or '')|length > 20 %}…{% endif %}</td>
+            <td class="px-3 py-2 text-xs">{{ entity.span if entity.span else "–" }}</td>
+            <td class="px-3 py-2 text-xs">{% if excel %}{{ excel.sheet }}!{{ excel.cell }}{% else %}–{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -96,5 +236,6 @@
     <p class="text-sm text-slate-500">No entities detected.</p>
     {% endif %}
   </div>
+
 </section>
 {% endblock %}

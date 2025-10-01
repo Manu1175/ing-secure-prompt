@@ -40,6 +40,7 @@ except Exception:  # pragma: no cover - degrade gracefully
     write_redacted_text = None  # type: ignore[attr-defined]
 
 from secureprompt.audit import log as audit_log
+from secureprompt.ui import scoring as ui_scoring
 
 REDACTED_DIR = Path("data/out")
 REDACTED_DIR.mkdir(parents=True, exist_ok=True)
@@ -49,6 +50,8 @@ REDACTED_XLSX_DIR.mkdir(parents=True, exist_ok=True)
 
 RECEIPTS_DIR = Path("data/receipts")
 RECEIPTS_DIR.mkdir(parents=True, exist_ok=True)
+
+BASELINE_PATH = Path(os.environ.get("SECUREPROMPT_BASELINE_PATH", "reports/baseline_counts.json"))
 
 ACTIONS_ALLOW = {"admin", "auditor"}
 CLEARANCE_OPTIONS = ("C1", "C2", "C3", "C4")
@@ -144,6 +147,60 @@ def _file_size(path: Optional[str]) -> int:
     return file_path.stat().st_size
 
 
+def _baseline_context(
+    *,
+    file_name: Optional[str],
+    clearance: str,
+    entities: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    if not file_name:
+        return {"has_baseline": False}
+
+    baseline_data = ui_scoring.load_baseline(BASELINE_PATH)
+    if not baseline_data:
+        return {"has_baseline": False, "filename": file_name}
+
+    expected = ui_scoring.expected_for_file(baseline_data, file_name, clearance)
+    achieved = ui_scoring.achieved_counts(entities)
+
+    if not expected.get("by_label"):
+        return {"has_baseline": False, "filename": file_name}
+
+    scoring_result = ui_scoring.score(expected, achieved)
+
+    labels = sorted(set(expected["by_label"].keys()) | set(achieved["by_label"].keys()))
+    label_rows = [
+        {
+            "label": label,
+            "expected": expected["by_label"].get(label, 0),
+            "achieved": achieved["by_label"].get(label, 0),
+        }
+        for label in labels
+    ]
+
+    levels = sorted(set(expected["by_c_level"].keys()) | set(achieved["by_c_level"].keys()))
+    level_rows = [
+        {
+            "level": level,
+            "expected": expected["by_c_level"].get(level, 0),
+            "achieved": achieved["by_c_level"].get(level, 0),
+        }
+        for level in levels
+    ]
+
+    return {
+        "has_baseline": True,
+        "filename": file_name,
+        "clearance": clearance,
+        "expected": expected,
+        "achieved": achieved,
+        "score": scoring_result.get("score", 0.0),
+        "diff": scoring_result.get("diff", {}),
+        "label_rows": label_rows,
+        "level_rows": level_rows,
+    }
+
+
 def _entity_counts(entities: List[Dict[str, Any]], clearance: str) -> Dict[str, Any]:
     return audit_log.summarize_entities(entities, clearance)
 
@@ -219,6 +276,9 @@ def _render_dashboard(
     saved_href: Optional[str] = None,
     operation_id: Optional[str] = None,
     receipt_path: Optional[str] = None,
+    counts: Optional[Dict[str, Any]] = None,
+    hashes: Optional[Dict[str, Optional[str]]] = None,
+    baseline_ctx: Optional[Dict[str, Any]] = None,
 ) -> HTMLResponse:
     context = {
         "request": request,
@@ -233,8 +293,11 @@ def _render_dashboard(
         "saved_href": saved_href,
         "operation_id": operation_id,
         "receipt_path": receipt_path,
+        "counts": counts,
+        "hashes": hashes,
+        "baseline_ctx": baseline_ctx,
     }
-    return templates.TemplateResponse("dashboard.html", context)
+    return templates.TemplateResponse(request, "dashboard.html", context)
 
 
 @app.get("/health")
@@ -576,6 +639,8 @@ async def ui_scrub(
         receipt_path=receipt_path,
     )
 
+    baseline_ctx = _baseline_context(file_name=file_name, clearance=clearance, entities=entities)
+
     event = {
         "event": "ui_scrub",
         "operation_id": operation_id,
@@ -606,6 +671,9 @@ async def ui_scrub(
         saved_href=saved_href,
         operation_id=operation_id,
         receipt_path=receipt_path,
+        counts=counts,
+        hashes=hashes,
+        baseline_ctx=baseline_ctx,
     )
 
 
@@ -628,7 +696,7 @@ async def audit_dashboard(request: Request) -> HTMLResponse:
         "clearance": "C3",
         "clearances": CLEARANCE_OPTIONS,
     }
-    return templates.TemplateResponse("audit.html", context)
+    return templates.TemplateResponse(request, "audit.html", context)
 
 
 @app.get("/audit/jsonl")

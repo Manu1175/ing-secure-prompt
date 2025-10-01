@@ -15,12 +15,13 @@ help:
 	@echo "  watch-tests   - (optional) pytest watcher if you use ptw"
 	@echo "  metrics-open  - Generate metrics report (if script present)"
 	@echo "  db-init       - No-op placeholder (UI has no DB)"
+	@echo "  make-baseline - Generate PROMPTS baseline counts"
 	@echo "  release       - Build dist/secureprompt_handoff_v3.zip"
 	@echo "  clean         - Remove build artifacts"
 
 .PHONY: test-fast
 test-fast:
-	PYTHONPATH=$(shell pwd):$$PYTHONPATH pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text or xlsx or audit"
+	PYTHONPATH=$(shell pwd):$$PYTHONPATH pytest -q -k "ingest or entities or scrub or image_redaction or pdf_text or xlsx or audit or scoring"
 
 .PHONY: watch-tests
 watch-tests:
@@ -66,6 +67,10 @@ release:
 mine-placeholders:
 	$(PYTHON) tools/mine_placeholders.py
 	@echo "Placeholders written to policy/placeholders.yml"
+
+.PHONY: make-baseline
+make-baseline:
+	$(PYTHON) tools/make_baseline.py
 
 .PHONY: keys-dev
 keys-dev:
