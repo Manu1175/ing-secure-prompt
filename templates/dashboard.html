@@ -28,8 +28,8 @@
 
     <div class="space-y-2">
       <label for="upload" class="text-sm font-medium text-slate-700">Upload file</label>
-      <input id="upload" name="upload" type="file" accept=".txt,.text,.html,.csv,.pdf,.png" class="block w-full text-sm text-slate-600" />
-      <p class="text-xs text-slate-500">Supported types: .txt, .html, .csv, .pdf, .png</p>
+      <input id="upload" name="upload" type="file" accept=".txt,.text,.html,.csv,.pdf,.png,.xlsx" class="block w-full text-sm text-slate-600" />
+      <p class="text-xs text-slate-500">Supported types: .txt, .html, .csv, .pdf, .png, .xlsx</p>
     </div>
 
     <div class="flex gap-3">
@@ -52,6 +52,12 @@
       {% if saved_href %}
       <p class="text-xs text-emerald-600 mt-3">Saved copy: <a href="{{ saved_href }}" class="underline" target="_blank" rel="noopener">{{ saved_path }}</a></p>
       {% endif %}
+      {% if operation_id %}
+      <p class="text-xs text-slate-500 mt-2">Operation ID: <span class="font-mono">{{ operation_id }}</span></p>
+      {% endif %}
+      {% if receipt_path %}
+      <p class="text-xs text-slate-500">Receipt: <span class="font-mono">{{ receipt_path }}</span></p>
+      {% endif %}
     </div>
   </div>
 
@@ -65,7 +71,8 @@
             <th class="px-3 py-2">Label</th>
             <th class="px-3 py-2">C-Level</th>
             <th class="px-3 py-2">Detector</th>
-            <th class="px-3 py-2">Identifier</th>
+            <th class="px-3 py-2">Placeholder</th>
+            <th class="px-3 py-2">Excel</th>
           </tr>
         </thead>
         <tbody>
@@ -75,6 +82,11 @@
             <td class="px-3 py-2 text-xs">{{ entity.c_level or "C?" }}</td>
             <td class="px-3 py-2 text-xs">{{ entity.detector }}</td>
             <td class="px-3 py-2 font-mono text-xs break-all">{{ entity.identifier }}</td>
+            <td class="px-3 py-2 text-xs">
+              {% if entity.excel %}
+              {{ entity.excel.sheet }}!{{ entity.excel.cell }}
+              {% else %}-{% endif %}
+            </td>
           </tr>
           {% endfor %}
         </tbody>

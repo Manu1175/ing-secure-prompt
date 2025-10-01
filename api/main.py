@@ -32,6 +32,7 @@ from secureprompt.receipts.descrub import descrub_text
 from secureprompt.files.text import load_text
 from secureprompt.files.pdf import extract_pdf_text
 from secureprompt.files.ocr import ocr_image_to_text
+from secureprompt.files.xlsx import scrub_workbook
 
 try:  # pragma: no cover - optional helper
     from secureprompt.files.redact import write_redacted_text
@@ -41,10 +42,13 @@ except Exception:  # pragma: no cover - degrade gracefully
 REDACTED_DIR = Path("data/out")
 REDACTED_DIR.mkdir(parents=True, exist_ok=True)
 
+REDACTED_XLSX_DIR = Path("data/redacted")
+REDACTED_XLSX_DIR.mkdir(parents=True, exist_ok=True)
+
 ACTIONS_ALLOW = {"admin", "auditor"}
 CLEARANCE_OPTIONS = ("C1", "C2", "C3", "C4")
 TEXT_EXTENSIONS = {".txt", ".text", ".html", ".htm", ".csv"}
-ALLOWED_EXTENSIONS = TEXT_EXTENSIONS | {".pdf", ".png"}
+ALLOWED_EXTENSIONS = TEXT_EXTENSIONS | {".pdf", ".png", ".xlsx"}
 
 templates = Jinja2Templates(directory="templates")
 
@@ -94,6 +98,7 @@ class DescrubResponse(BaseModel):
 
 app = FastAPI(title="SecurePrompt", version="0.2.0")
 app.mount("/files", StaticFiles(directory=REDACTED_DIR), name="files")
+app.mount("/redacted", StaticFiles(directory=REDACTED_XLSX_DIR), name="redacted")
 
 
 def _audit_append_safe(**record: Any) -> None:
@@ -127,7 +132,7 @@ async def _ingest_upload(upload: UploadFile) -> str:
     filename = upload.filename or "upload.txt"
     suffix = Path(filename).suffix.lower()
     if suffix not in ALLOWED_EXTENSIONS:
-        raise ValueError("Unsupported file type. Allowed: .txt, .html, .csv, .pdf, .png")
+        raise ValueError("Unsupported file type. Allowed: .txt, .html, .csv, .pdf, .png, .xlsx")
 
     data = await upload.read()
     if not data:
@@ -143,6 +148,17 @@ async def _ingest_upload(upload: UploadFile) -> str:
         temp_path.unlink(missing_ok=True)
 
 
+async def _save_upload_to_tempfile(upload: UploadFile) -> Path:
+    filename = upload.filename or "upload"
+    suffix = Path(filename).suffix or ".tmp"
+    data = await upload.read()
+    if not data:
+        raise ValueError("Uploaded file is empty")
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        tmp.write(data)
+        return Path(tmp.name)
+
+
 def _render_dashboard(
     request: Request,
     *,
@@ -152,8 +168,10 @@ def _render_dashboard(
     entities: Optional[List[Dict[str, Any]]] = None,
     error: Optional[str] = None,
     file_name: Optional[str] = None,
-    saved_path: Optional[Path] = None,
+    saved_path: Optional[str] = None,
     saved_href: Optional[str] = None,
+    operation_id: Optional[str] = None,
+    receipt_path: Optional[str] = None,
 ) -> HTMLResponse:
     context = {
         "request": request,
@@ -164,8 +182,10 @@ def _render_dashboard(
         "entities": entities or [],
         "error": error,
         "file_name": file_name,
-        "saved_path": str(saved_path) if saved_path else None,
+        "saved_path": saved_path,
         "saved_href": saved_href,
+        "operation_id": operation_id,
+        "receipt_path": receipt_path,
     }
     return templates.TemplateResponse("dashboard.html", context)
 
@@ -261,13 +281,32 @@ async def ui_scrub(
 
     error = None
     original_text = text or ""
-    saved_path: Optional[Path] = None
+    saved_path_display: Optional[str] = None
     saved_href: Optional[str] = None
     file_name = upload.filename if upload and upload.filename else None
+    entities: List[Dict[str, Any]] = []
+    operation_id: Optional[str] = None
+    receipt_path: Optional[str] = None
+    sanitized: Optional[str] = None
+    is_xlsx = False
 
     try:
         if upload is not None and upload.filename:
-            original_text = await _ingest_upload(upload)
+            suffix = Path(upload.filename).suffix.lower()
+            if suffix == ".xlsx":
+                is_xlsx = True
+                temp_path = await _save_upload_to_tempfile(upload)
+                workbook = scrub_workbook(temp_path, clearance, filename=file_name)
+                original_text = workbook["original_display"]
+                sanitized = workbook["sanitized_display"]
+                entities = workbook["entities"]
+                operation_id = workbook["operation_id"]
+                receipt_path = workbook["receipt_path"]
+                redacted_path = Path(workbook["redacted_path"])
+                saved_path_display = redacted_path.name
+                saved_href = f"/redacted/{operation_id}/{redacted_path.name}"
+            else:
+                original_text = await _ingest_upload(upload)
         elif not original_text.strip():
             error = "Provide text or upload a supported file."
     except ValueError as exc:
@@ -279,16 +318,21 @@ async def ui_scrub(
         _audit_append_safe(action="ui_scrub", ok=False, clearance=clearance, file=file_name, error=error)
         return _render_dashboard(request, clearance=clearance, error=error)
 
-    result = scrub_text(original_text, "C4")
-    entities = result.get("entities", [])
-    sanitized = selective_sanitize(original_text, entities, clearance)
-    if sanitized == original_text and result.get("scrubbed") != original_text:
-        sanitized = result["scrubbed"]
+    if not is_xlsx:
+        result = scrub_text(original_text, "C4")
+        entities = result.get("entities", [])
+        sanitized = selective_sanitize(original_text, entities, clearance)
+        if sanitized == original_text and result.get("scrubbed") != original_text:
+            sanitized = result["scrubbed"]
 
-    if file_name and Path(file_name).suffix.lower() in TEXT_EXTENSIONS and write_redacted_text is not None:
-        target = REDACTED_DIR / file_name
-        saved_path = write_redacted_text(sanitized, source_path=target)
-        saved_href = f"/files/{Path(saved_path).name}"
+        if file_name and Path(file_name).suffix.lower() in TEXT_EXTENSIONS and write_redacted_text is not None:
+            target = REDACTED_DIR / file_name
+            saved_file = write_redacted_text(sanitized, source_path=target)
+            saved_path_display = Path(saved_file).name
+            saved_href = f"/files/{Path(saved_file).name}"
+
+        operation_id = result.get("operation_id")
+        receipt_path = result.get("receipt_path")
 
     _audit_append_safe(
         action="ui_scrub",
@@ -305,8 +349,10 @@ async def ui_scrub(
         sanitized=sanitized,
         entities=entities,
         file_name=file_name,
-        saved_path=saved_path,
+        saved_path=saved_path_display,
         saved_href=saved_href,
+        operation_id=operation_id,
+        receipt_path=receipt_path,
     )
 
 

@@ -68,6 +68,8 @@ def write_receipt(
     serialised_entities = []
     for entity in entities:
         payload = {k: entity.get(k) for k in ("identifier", "label", "detector", "c_level", "confidence", "span")}
+        if entity.get("excel"):
+            payload["excel"] = entity.get("excel")
         original_value = entity.get("original") or entity.get("value") or ""
         payload["original_enc"] = encrypt_text(original_value)
         serialised_entities.append(payload)
@@ -108,4 +110,3 @@ def read_receipt(path_or_id: str) -> Dict[str, Any]:
 
 
 __all__ = ["get_cipher", "encrypt_text", "decrypt_text", "write_receipt", "read_receipt"]
-
