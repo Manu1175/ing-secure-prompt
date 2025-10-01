@@ -62,6 +62,11 @@ release:
 		-x "__pycache__/*" -x "*.pyc" -x ".venv/*" -x "dist/*"
 	@echo "Built dist/secureprompt_handoff_v3.zip"
 
+.PHONY: mine-placeholders
+mine-placeholders:
+	$(PYTHON) tools/mine_placeholders.py
+	@echo "Placeholders written to policy/placeholders.yml"
+
 .PHONY: clean
 clean:
 	rm -rf build dist *.egg-info .pytest_cache __pycache__ */__pycache__ .mypy_cache
