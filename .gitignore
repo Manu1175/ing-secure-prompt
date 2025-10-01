@@ -205,3 +205,14 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Runtime outputs
+data/**
+data.redacted/**
+reports/baseline_counts.json
+reports/baseline_counts.csv
+*.jsonl
+*.sqlite
+*.db
+# Runtime outputs (K2 preflight)
+*.bak.k2phase0

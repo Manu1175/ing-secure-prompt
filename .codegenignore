@@ -1,0 +1,9 @@
+data/**
+data.redacted/**
+reports/**
+**/*.jsonl
+**/*.sqlite
+**/*.db
+.venv/**
+node_modules/**
+.git/**
