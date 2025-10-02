@@ -4,6 +4,7 @@ import json
 import os
 import re
 import difflib
+from collections import Counter
 from pathlib import Path
 from collections.abc import Iterable
 from typing import Any, Dict, List, Optional, Tuple
@@ -12,13 +13,8 @@ from urllib import error, request
 from openpyxl import Workbook
 from openpyxl import load_workbook
 
-try:
-    from secureprompt.prompt.sanitizer import sanitize_prompt as _sanitize_prompt_impl  # type: ignore
-except Exception:  # pragma: no cover - fallback path
-    _sanitize_prompt_impl = None
+from secureprompt.prompt.sanitizer import sanitize_prompt as SAN
 
-
-_PROMPT_SANITIZER_WARNING_SHOWN = False
 _SCRUB_WARNING_SHOWN = False
 _SCRUB_URL = os.getenv("SP_SCRUB_URL", "http://127.0.0.1:8000/scrub")
 
@@ -38,6 +34,18 @@ _APPENDED_COLUMNS = [
     "Response_Correct",
     "Receipt_Path",
 ]
+
+TOKEN_RX = re.compile(r"[<\[]([A-Z0-9_]+)[>\]]")
+_SMART_QUOTES = {
+    "“": '"',
+    "”": '"',
+    "„": '"',
+    "‟": '"',
+    "‘": "'",
+    "’": "'",
+    "‚": "'",
+    "‛": "'",
+}
 
 
 def detect_clearance(path: str | Path, default: str = "C3") -> str:
@@ -119,22 +127,15 @@ def read_sheet(path: str | Path) -> List[Dict[str, Any]]:
     return rows
 
 
-def _sanitize_prompt(text: str) -> Tuple[str, List[Any]]:
-    global _PROMPT_SANITIZER_WARNING_SHOWN
+def _sanitize_prompt(
+    text: str,
+    xlsx_hint: str | Path | None = None,
+    *,
+    style: str = "square",
+) -> Tuple[str, List[Any]]:
     if not text:
         return "", []
-    if _sanitize_prompt_impl is None:
-        if not _PROMPT_SANITIZER_WARNING_SHOWN:
-            print("warning: prompt sanitizer unavailable; returning original prompts")
-            _PROMPT_SANITIZER_WARNING_SHOWN = True
-        return text, []
-    try:
-        result = _sanitize_prompt_impl(text)
-    except Exception:
-        if not _PROMPT_SANITIZER_WARNING_SHOWN:
-            print("warning: prompt sanitizer failed; returning original prompts")
-            _PROMPT_SANITIZER_WARNING_SHOWN = True
-        return text, []
+    result = SAN(text, xlsx_hint=xlsx_hint, style=style)
     if isinstance(result, tuple) and len(result) >= 2:
         sanitized_text, operations = result[0], result[1]
     elif isinstance(result, dict):  # pragma: no cover - defensive branch
@@ -225,11 +226,22 @@ def _count_diffs(original: str, sanitized: str) -> int:
     return sum(1 for tag, *_ in matcher.get_opcodes() if tag != "equal")
 
 
-def eval_row(row: Dict[str, Any], clearance: str) -> Dict[str, Any]:
+def eval_row(
+    row: Dict[str, Any],
+    clearance: str,
+    xlsx_hint: str | Path | None = None,
+    *,
+    style: str = "square",
+) -> Dict[str, Any]:
     original_prompt = row.get("original_prompt", "")
     expected_prompt = row.get("expected_sanitized_prompt") if row.get("__has_expected_prompt__") else None
-    prompt_text, operations = _sanitize_prompt(original_prompt)
+    prompt_text, operations = _sanitize_prompt(
+        original_prompt,
+        xlsx_hint=xlsx_hint,
+        style=style,
+    )
     prompt_replacements = _count_operations(operations)
+    prompt_ops = [getattr(op, "label", "") for op in operations]
 
     response_text = row.get("response", "")
     scrub_result = _post_scrub(response_text, clearance)
@@ -254,10 +266,16 @@ def eval_row(row: Dict[str, Any], clearance: str) -> Dict[str, Any]:
         "expected_response": expected_response,
         "original_prompt": original_prompt,
         "response": response_text,
+        "prompt_ops": [label for label in prompt_ops if label],
     }
 
 
-def summarize(results: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
+def summarize(
+    results: Iterable[Dict[str, Any]],
+    *,
+    seen_tokens: Optional[Dict[str, int]] = None,
+    matched_tokens: Optional[Dict[str, int]] = None,
+) -> Dict[str, Any]:
     total_rows = 0
     prompt_evaluated = prompt_correct_count = 0
     response_evaluated = response_correct_count = 0
@@ -279,6 +297,25 @@ def summarize(results: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
                 response_correct_count += 1
     prompt_accuracy = (prompt_correct_count / prompt_evaluated) if prompt_evaluated else None
     response_accuracy = (response_correct_count / response_evaluated) if response_evaluated else None
+    seen_tokens = {k: int(v) for k, v in (seen_tokens or {}).items()}
+    matched_tokens = {k: int(v) for k, v in (matched_tokens or {}).items()}
+    expected_token_list = sorted(seen_tokens)
+    missed_tokens = sorted(
+        (token for token in expected_token_list if matched_tokens.get(token, 0) == 0),
+        key=lambda t: (-seen_tokens.get(t, 0), t),
+    )
+    token_stats = [
+        {
+            "token": token,
+            "seen": seen_tokens.get(token, 0),
+            "matched": matched_tokens.get(token, 0),
+        }
+        for token in sorted(
+            seen_tokens,
+            key=lambda t: (-seen_tokens[t], t),
+        )
+    ]
+
     return {
         "total_rows": total_rows,
         "prompt_evaluated": prompt_evaluated,
@@ -289,6 +326,12 @@ def summarize(results: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
         "response_accuracy": response_accuracy,
         "total_prompt_replacements": total_prompt_replacements,
         "total_response_entities": total_response_entities,
+        "ops_by_label": {},
+        "expected_tokens": expected_token_list,
+        "seen_tokens": dict(sorted(seen_tokens.items())),
+        "matched_tokens": dict(sorted(matched_tokens.items())),
+        "top_missed_tokens": missed_tokens[:20],
+        "token_stats": token_stats,
     }
 
 
@@ -322,6 +365,53 @@ def _short_diff(expected: Optional[str], got: Optional[str]) -> str:
         if len(snippets) >= 3:
             break
     return "; ".join(snippets) or "differences detected"
+
+
+def tokens_of(text: Optional[str]) -> set[str]:
+    if not isinstance(text, str):
+        return set()
+    return {token.upper() for token in TOKEN_RX.findall(text)}
+
+
+def _prepare_display(text: Optional[str]) -> str:
+    value = (text or "").replace("\r", " ").replace("\n", " ")
+    for src, dst in _SMART_QUOTES.items():
+        value = value.replace(src, dst)
+    value = TOKEN_RX.sub(lambda m: f"[{m.group(1)}]", value)
+    value = re.sub(r"\s+", " ", value).strip()
+    if len(value) > 120:
+        value = value[:117] + "..."
+    return value
+
+
+def collect_token_coverage(
+    rows: Iterable[Dict[str, Any]],
+    results: Iterable[Dict[str, Any]],
+) -> Tuple[Dict[str, int], Dict[str, int]]:
+    seen: Counter[str] = Counter()
+    matched: Counter[str] = Counter()
+    result_map = {
+        result.get("row_index"): result for result in results
+    }
+    for row in rows:
+        row_idx = row.get("__row_index__")
+        if not row.get("__has_expected_prompt__"):
+            continue
+        expected_text = row.get("expected_sanitized_prompt") or ""
+        if not isinstance(expected_text, str):
+            continue
+        expected_tokens = tokens_of(expected_text)
+        for token in expected_tokens:
+            seen[token] += 1
+        result = result_map.get(row_idx)
+        got_tokens: set[str] = set()
+        if result:
+            got_text = result.get("got_sanitized_prompt") or ""
+            if isinstance(got_text, str):
+                got_tokens = tokens_of(got_text)
+        for token in expected_tokens & got_tokens:
+            matched[token] += 1
+    return dict(seen), dict(matched)
 
 
 def write_outputs(
@@ -368,6 +458,20 @@ def write_outputs(
         json.dump(summary, handle, indent=2, sort_keys=True)
 
     anomalies: List[str] = ["# Prompt Evaluation Anomalies", ""]
+    token_stats = summary.get("token_stats") or []
+    if token_stats:
+        anomalies.append("| Token | Seen in gold | Matched |")
+        anomalies.append("|-------|--------------|---------|")
+        for entry in token_stats[:20]:
+            anomalies.append(
+                f"| {entry['token']} | {entry['seen']} | {entry['matched']} |"
+            )
+        anomalies.append("")
+    missed_tokens = summary.get("top_missed_tokens") or []
+    if missed_tokens:
+        subset = ", ".join(missed_tokens[:10])
+        anomalies.append(f"Coverage gaps: {subset}")
+        anomalies.append("")
     mismatch_entries = []
     for result in results:
         row_id = result.get("row_index")
@@ -381,7 +485,8 @@ def write_outputs(
                     row_id,
                     "prompt",
                     _heuristic_label(expected_prompt, result.get("got_sanitized_prompt")),
-                    _short_diff(expected_prompt, result.get("got_sanitized_prompt")),
+                    result.get("got_sanitized_prompt"),
+                    expected_prompt,
                 )
             )
         expected_response = result.get("expected_response")
@@ -394,15 +499,18 @@ def write_outputs(
                     row_id,
                     "response",
                     _heuristic_label(expected_response, result.get("got_sanitized_response")),
-                    _short_diff(expected_response, result.get("got_sanitized_response")),
+                    result.get("got_sanitized_response"),
+                    expected_response,
                 )
             )
     if not mismatch_entries:
         anomalies.append("No anomalies detected.")
     else:
-        for row_id, kind, label, diff in mismatch_entries:
+        for row_id, kind, label, got_value, expected_value in mismatch_entries:
+            got_display = _prepare_display(got_value)
+            expected_display = _prepare_display(expected_value)
             anomalies.append(
-                f"- Row {row_id} ({kind}): {label} — {diff}"
+                f"- Row {row_id} ({kind}): {label} — GOT: {got_display} vs EXPECTED: {expected_display}"
             )
     anomalies.append("")
     with anomalies_path.open("w", encoding="utf-8") as handle:
@@ -421,4 +529,6 @@ __all__ = [
     "eval_row",
     "summarize",
     "write_outputs",
+    "collect_expected_tokens",
+    "collect_ops_by_label",
 ]
