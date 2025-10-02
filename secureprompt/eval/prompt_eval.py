@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from urllib import error, request
 
 from openpyxl import Workbook
-from openpyxl.load_workbook import load_workbook
+from openpyxl import load_workbook
 
 try:
     from secureprompt.prompt.sanitizer import sanitize_prompt as _sanitize_prompt_impl  # type: ignore
