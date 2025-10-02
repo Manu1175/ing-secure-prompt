@@ -212,7 +212,7 @@ def sanitize_prompt(
 
     s = CUSTOMER_NAME_RX.sub(_name_cb, s)
     s = _restore_placeholders(s, slots)
-    plain = re.sub(r"<[A-Z0-9_]+>", "", s)
+    plain = re.sub(r"[<\[][A-Z0-9_]+[>\]]", "", s)
     if len(plain.strip()) < max(10, int(0.4 * len(text))):
         s = text
         ops.clear()

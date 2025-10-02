@@ -6,25 +6,63 @@ build-backend = "setuptools.build_meta"
 name = "secureprompt"
 version = "0.0.1"
 description = "SecurePrompt scrubbing pipeline"
-requires-python = ">=3.10"
+# We stick to 3.12 to avoid wheel/ABI hiccups you hit on 3.13
+requires-python = ">=3.12,<3.13"
+
+# Core runtime deps (keep minimal)
 dependencies = [
   "cryptography>=41",
 ]
 
-# Optional extras (so `pip install -e '.[test]'` works)
+# Optional extras
 [project.optional-dependencies]
-test = [
-  "pytest",
-  "fastapi",
-  "httpx",          # fastapi/starlette test client
-  "pdfminer.six",   # PDF text
-  "pillow",         # images for OCR redaction tests
-  "pytesseract",    # OCR (tests auto-skip if binary missing)
-  "jinja2",
-  "python-multipart",
-  "openpyxl"
+# API server pieces
+api = [
+  "fastapi==0.118.0",
+  "uvicorn>=0.37",
+  "httpx>=0.28",
+  "python-multipart>=0.0.9",
+  "jinja2>=3.1",
 ]
-ml = ["transformers>=4.40", "torch>=2; platform_system!='Darwin'"]
+
+# Evaluation / spreadsheets / data helpers
+eval = [
+  "openpyxl==3.1.5",   # Excel I/O (pinned; stable)
+  "et-xmlfile>=2.0.0", # tiny helper used by openpyxl
+  "pandas>=2.2",
+  "pypdf>=6.0",        # unified replacement for PyPDF2
+  "pdfminer.six>=20231228",
+]
+
+# OCR / imaging (used by redaction tests)
+ocr = [
+  "pillow>=10.4",
+  "pytesseract>=0.3.10",
+]
+
+# Test bundle = everything needed to run the suite
+test = [
+  "pytest>=8.2",
+  "fastapi==0.118.0",
+  "httpx>=0.28",
+  "python-multipart>=0.0.9",
+  "jinja2>=3.1",
+  "openpyxl==3.1.5",
+  "et-xmlfile>=2.0.0",
+  "pandas>=2.2",
+  "pypdf>=6.0",
+  "pdfminer.six>=20231228",
+  "pillow>=10.4",
+  "pytesseract>=0.3.10",
+]
+
+# Dev tools (formatter/linter/type-checker)
+dev = [
+  "black>=24.8",
+  "ruff>=0.5",
+  "mypy>=1.11",
+]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["secureprompt*"]
@@ -32,7 +70,7 @@ include = ["secureprompt*"]
 [tool.setuptools]
 include-package-data = true
 
-# Ship policy files, reports, etc. (adjust globs to your tree)
+# Ship policy files, reports, etc. (adjust globs if needed)
 [tool.setuptools.package-data]
 secureprompt = [
   "policy/**/*.yml",
@@ -44,7 +82,7 @@ secureprompt = [
 
 [tool.black]
 line-length = 100
-target-version = ["py310"]
+target-version = ["py312"]
 
 [tool.ruff]
 line-length = 100
@@ -52,7 +90,7 @@ select = ["E","F","I","UP","B"]
 ignore = ["E501"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true

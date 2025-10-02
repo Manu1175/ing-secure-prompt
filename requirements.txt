@@ -11,3 +11,5 @@ pytesseract>=0.3.10
 pdfminer.six>=20231228
 pypdf>=4.2
 python-pptx>=0.6.23
+openpyxl>=3.1
+et-xmlfile>=2.0.0
