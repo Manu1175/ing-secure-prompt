@@ -5,9 +5,13 @@ import argparse
 import csv
 import json
 import os
+import sys
+import pathlib
 from pathlib import Path
 from typing import Iterable, Optional
 from urllib import error, request
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
 from openpyxl import load_workbook
 
@@ -19,6 +23,9 @@ except Exception:  # pragma: no cover - optional dependency
     PdfReader = None
 
 SCRUB_URL = os.getenv("SP_SCRUB_URL", "http://127.0.0.1:8000/scrub")
+
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
 
 
 def call_scrub(text: str, clearance: str) -> tuple[str, int, str]:
@@ -82,6 +89,14 @@ def infer_clearance(path: Path, override: Optional[str]) -> str:
     env = os.getenv("SP_CLEARANCE")
     if env:
         return env.upper()
+    name = path.name.lower()
+    tokens = name.replace("-", "_")
+    for level in ("C1", "C2", "C3", "C4"):
+        marker = f"_{level.lower()}_"
+        if marker in tokens:
+            return level
+        if f"-{level.lower()}-" in name:
+            return level
     return prompt_eval.detect_clearance(path)
 
 
@@ -152,21 +167,26 @@ def sanitize_pdf(path: Path, clearance: str, reports_dir: Path) -> Optional[tupl
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Sanitize sample business files using the scrub API.")
-    parser.add_argument("--in", dest="input_path", required=True, help="Path to a file or directory")
+    parser.add_argument("--in", dest="input_path", default="DATA", help="Path to a file or directory (default: DATA)")
     parser.add_argument("--clearance", dest="clearance", help="Clearance override (C1..C4)")
     args = parser.parse_args()
 
     target = Path(args.input_path)
     if not target.exists():
-        raise FileNotFoundError(f"Path not found: {target}")
+        alt = ROOT_DIR / target
+        if not alt.exists():
+            raise FileNotFoundError(f"Path not found: {target}")
+        target = alt
 
     reports_dir = Path("reports")
     reports_dir.mkdir(parents=True, exist_ok=True)
-    log_path = reports_dir / "sanitize_log.csv"
-    log_rows: list[tuple[str, str, str]] = []
+    index_path = reports_dir / "sanitized_index.csv"
+    entries: list[tuple[str, str, str]] = []
 
     for file_path in iter_files(target):
         suffix = file_path.suffix.lower()
+        if suffix not in {".xlsx", ".xlsm", ".txt", ".html", ".htm", ".pdf"}:
+            continue
         clearance = infer_clearance(file_path, args.clearance)
         sanitized_entry: Optional[tuple[Path, str]] = None
         if suffix in {".xlsx", ".xlsm"}:
@@ -175,25 +195,19 @@ def main() -> int:
             sanitized_entry = sanitize_text_file(file_path, clearance, reports_dir)
         elif suffix == ".pdf":
             sanitized_entry = sanitize_pdf(file_path, clearance, reports_dir)
-        else:
-            continue
         if sanitized_entry is None:
             continue
         sanitized_path, receipt = sanitized_entry
-        log_rows.append((str(file_path), str(sanitized_path), receipt))
-        print(f"sanitized {file_path} -> {sanitized_path} (receipt: {receipt or 'n/a'})")
+        entries.append((str(file_path), str(sanitized_path), receipt))
 
-    if log_rows:
-        write_mode = "a" if log_path.exists() else "w"
-        header = write_mode == "w"
-        with log_path.open(write_mode, newline="", encoding="utf-8") as handle:
+    if entries:
+        with index_path.open("w", newline="", encoding="utf-8") as handle:
             writer = csv.writer(handle)
-            if header:
-                writer.writerow(["source", "sanitized", "receipt"])
-            writer.writerows(log_rows)
-        print(f"Log written to {log_path}")
-    else:
-        print("No files sanitized.")
+            writer.writerow(["source", "sanitized", "receipt"])
+            writer.writerows(entries)
+    total_files = len(entries)
+    receipt_count = sum(1 for _src, _dst, receipt in entries if receipt)
+    print(f"Files: {total_files} | Receipts: {receipt_count} | Out: {index_path}")
 
     return 0
 

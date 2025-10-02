@@ -88,4 +88,8 @@ clean:
 
 .PHONY: eval-prompts
 eval-prompts:
-	PYTHONPATH=$(shell pwd):$$PYTHONPATH $(PYTHON) scripts/eval_prompts.py --in $$IN --clearance $${CLEARANCE}
+	PYTHONPATH=$${PYTHONPATH}:$(PWD) python scripts/eval_prompts.py --in $${IN:-PROMPTS} --clearance $${CLEARANCE}
+
+.PHONY: sanitize-data
+sanitize-data:
+	PYTHONPATH=$${PYTHONPATH}:$(PWD) python scripts/sanitize_files.py --in DATA --clearance $${CLEARANCE}
