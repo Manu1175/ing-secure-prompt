@@ -42,7 +42,6 @@ def _columns(ws) -> Dict[str, int]:
     return {name: idx for idx, name in enumerate(hdr)}
 
 def _best_raw_prompt_row(row_cells: List[Any], names: Dict[str, int]) -> Optional[str]:
-    # Search typical raw prompt column names, in priority order.
     for key in ("Prompt", "Original Prompt", "Original", "Input", "Raw"):
         if key in names:
             v = row_cells[names[key]]
@@ -83,7 +82,6 @@ def _write_anomalies_md(path: str, missing_counts: List[Tuple[str, int]]):
             f.write(f"- {t}: {n}\n")
 
 def _bracket_style() -> Tuple[str, str]:
-    # SP_TOKEN_STYLE = "square" (default) or "angle"
     style = os.environ.get("SP_TOKEN_STYLE", "square").strip().lower()
     return ("[", "]") if style != "angle" else ("<", ">")
 
@@ -92,7 +90,6 @@ def _label_token(label: str) -> str:
     return f"{l}{normalize_token(label)}{r}"
 
 def _span_from_entity(e: Dict[str, Any]) -> Optional[Tuple[int, int]]:
-    # Prefer explicit start/end; fall back to legacy span = [start, end]
     if "start" in e and "end" in e and isinstance(e["start"], int) and isinstance(e["end"], int):
         return (e["start"], e["end"])
     sp = e.get("span")
@@ -101,13 +98,8 @@ def _span_from_entity(e: Dict[str, Any]) -> Optional[Tuple[int, int]]:
     return None
 
 def make_eval_sanitized(raw_text: str, entities: List[Dict[str, Any]]) -> str:
-    """
-    Build a bracket-tokenized string from the RAW prompt using entity spans.
-    Right-to-left replacement keeps indices stable.
-    """
     if not raw_text or not entities:
         return raw_text or ""
-
     out = raw_text
     repls: List[Tuple[int, int, str]] = []
     for e in entities:
@@ -117,36 +109,25 @@ def make_eval_sanitized(raw_text: str, entities: List[Dict[str, Any]]) -> str:
             s, t = span
             if 0 <= s <= t <= len(raw_text):
                 repls.append((s, t, _label_token(label)))
-
-    # sort by start desc, then end desc
     repls.sort(key=lambda x: (x[0], x[1]), reverse=True)
     for s, t, tok in repls:
         out = out[:s] + tok + out[t:]
     return out
 
 def _fallback_tokenize_from_scrubbed(scrubbed: str) -> str:
-    """
-    As a safety net, convert Cx::LABEL::hash fragments to [LABEL]/<LABEL>.
-    """
     if not scrubbed:
         return ""
     return SCRUB_TAG_RX.sub(lambda m: _label_token(m.group(1)), scrubbed)
 
 def _ensure_eval_columns(ws) -> Dict[str, int]:
-    """
-    Ensure we have the evaluation columns present, append if missing.
-    Returns a fresh mapping of headers -> index.
-    """
     names = _columns(ws)
     def _need(name: str):
         nonlocal ws, names
         if name not in names:
             ws.cell(row=1, column=ws.max_column + 1, value=name)
             names = _columns(ws)
-
-    # Where we store things
-    _need("Got_Sanitized_Prompt")            # original sanitized (from API)
-    _need("Got_Sanitized_Prompt_Eval")       # bracketized-for-eval view
+    _need("Got_Sanitized_Prompt")
+    _need("Got_Sanitized_Prompt_Eval")
     _need("Gold_Tokens")
     _need("Got_Tokens")
     _need("TP")
@@ -160,12 +141,6 @@ def _ensure_eval_columns(ws) -> Dict[str, int]:
     return names
 
 def minimal_diff(a: str, b: str, max_chars: int = 1000) -> str:
-    """
-    Produce a compact, minimally highlighted diff between a and b.
-    - Insertions are marked as [+...+]
-    - Deletions are marked as [-...-]
-    Output is truncated at max_chars to avoid huge cells.
-    """
     a = a or ""
     b = b or ""
     sm = difflib.SequenceMatcher(a=a, b=b)
@@ -185,25 +160,16 @@ def minimal_diff(a: str, b: str, max_chars: int = 1000) -> str:
     return out
 
 def _apply_column_hiding(ws, keep_cols: Optional[Iterable[str]], topk: int) -> None:
-    """
-    Hide columns not explicitly kept.
-    If keep_cols is provided, we keep those exact names (case-insensitive match).
-    Else, if topk > 0, we keep the first K columns from a priority list that are present.
-    """
     if not (keep_cols or topk > 0):
         return
-
-    names = _columns(ws)  # name -> idx
+    names = _columns(ws)
     keep_set: set[str] = set()
-
     if keep_cols:
         target = {c.strip().lower() for c in keep_cols if c and str(c).strip()}
         for name, idx in names.items():
             if name and name.strip().lower() in target:
                 keep_set.add(name)
-
     if not keep_set and topk > 0:
-        # Priority list for evaluation ergonomics
         priority = [
             "Prompt", "Original Prompt", "Original", "Input",
             "Sanitized Prompt",
@@ -219,17 +185,12 @@ def _apply_column_hiding(ws, keep_cols: Optional[Iterable[str]], topk: int) -> N
                 keep_set.add(name)
                 if len(keep_set) >= topk:
                     break
-
-    # Hide every column not in keep_set
     for name, idx in names.items():
-        col_letter = get_column_letter(idx + 1)  # openpyxl is 1-based
+        col_letter = get_column_letter(idx + 1)
         if name not in keep_set:
             ws.column_dimensions[col_letter].hidden = True
 
-def _add_anomalies_sheet(wb: Workbook, ws_src, rows_meta: List[Dict[str, Any]], top_missing: List[Tuple[str, int]]) -> None:
-    """
-    Create an 'Anomalies' sheet showing per-row missing/extra tokens, plus a summary of top missing tokens.
-    """
+def _add_anomalies_sheet(wb: Workbook, rows_meta: List[Dict[str, Any]], top_missing: List[Tuple[str, int]]) -> None:
     ws = wb.create_sheet("Anomalies")
     ws.append([
         "Row", "Missing_Tokens", "Extra_Tokens",
@@ -246,11 +207,32 @@ def _add_anomalies_sheet(wb: Workbook, ws_src, rows_meta: List[Dict[str, Any]], 
                 ", ".join(sorted(m["G"])) if m["G"] else "",
                 m["tp"], m["fp"], m["fn"], m["entities"], m["lat_ms"],
             ])
-
     ws.append([])
     ws.append(["Top Missing Tokens", "Count"])
     for tok, cnt in top_missing[:50]:
         ws.append([tok, cnt])
+
+def _load_aliases_dict(aliases: Optional[Dict[str, str]]) -> Dict[str, str]:
+    out: Dict[str, str] = {}
+    if aliases:
+        for k, v in aliases.items():
+            out[normalize_token(k)] = normalize_token(v)
+    env_json = os.environ.get("SP_TOKEN_ALIASES_JSON", "").strip()
+    if env_json:
+        try:
+            extra = json.loads(env_json)
+            for k, v in extra.items():
+                out[normalize_token(k)] = normalize_token(v)
+        except Exception:
+            pass
+    return out
+
+def _apply_aliases(tokens: Iterable[str], alias_map: Dict[str, str]) -> List[str]:
+    out = []
+    for t in tokens:
+        nt = normalize_token(t)
+        out.append(alias_map.get(nt, nt))
+    return out
 
 def evaluate_workbook(
     input_path: str,
@@ -259,23 +241,15 @@ def evaluate_workbook(
     add_anomalies_sheet: bool = True,
     keep_cols: Optional[List[str]] = None,
     keep_topk: int = 0,
-    diff_mode: str = "gold",  # "gold", "raw", or "none"
+    diff_mode: str = "gold",  # "gold", "raw", "none"
+    eval_source: str = "auto",  # "auto", "scrubbed", "spans"
+    aliases: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Any]:
-    """
-    Evaluate sanitized prompts by calling the SecurePrompt API, replacing entity
-    spans in the RAW prompt with bracket tokens to align with gold.
-    Writes:
-      - reports/*_eval.xlsx (annotated workbook)
-      - reports/prompt_eval_summary.json
-      - reports/prompt_eval_anomalies.md
-      - (optional) 'Anomalies' sheet inside the workbook
-    """
     _ensure_output_dir(outdir)
     wb = load_workbook(input_path)
     ws = wb.active
 
     names = _ensure_eval_columns(ws)
-
     gold_col = names.get("Sanitized Prompt")
     if gold_col is None:
         raise ValueError("Workbook must contain 'Sanitized Prompt' header (gold).")
@@ -294,19 +268,16 @@ def evaluate_workbook(
     diff_col         = names["Diff_Gold_vs_GotEval"]
 
     api = os.environ.get("SCRUB_API", "http://127.0.0.1:8000")
+    alias_map = _load_aliases_dict(aliases)
 
     tp = fp = fn = 0
     total_entities = 0
     missing_counter = collections.Counter()
-    got_counter = collections.Counter()
-    gold_counter = collections.Counter()
     rows = 0
-
     rows_meta: List[Dict[str, Any]] = []
 
     for i, r in enumerate(ws.iter_rows(min_row=2, values_only=False), start=2):
         rows += 1
-        # Pull cell values into a list
         cells = [c.value for c in r]
         raw = _best_raw_prompt_row(cells, names)
         gold = cells[gold_col] if gold_col is not None else None
@@ -322,23 +293,25 @@ def evaluate_workbook(
                 got_sanitized = payload.get("scrubbed")
                 entities = payload.get("entities") or []
                 total_entities += len(entities)
-                # Build an eval view from RAW using spans; fallback to tag rewrite if needed.
-                got_eval = make_eval_sanitized(raw, entities)
-                if got_eval == raw and got_sanitized:
-                    got_eval = _fallback_tokenize_from_scrubbed(got_sanitized)
+                if eval_source == "scrubbed":
+                    got_eval = _fallback_tokenize_from_scrubbed(got_sanitized or "")
+                else:
+                    got_eval = make_eval_sanitized(raw, entities)
+                    if eval_source == "auto" and got_eval == raw and got_sanitized:
+                        got_eval = _fallback_tokenize_from_scrubbed(got_sanitized)
             else:
                 got_sanitized = None
                 got_eval = None
 
-        # Write worksheet outputs
         r[got_col].value = got_sanitized
         r[got_eval_col].value = got_eval
         r[ents_cnt_col].value = len(entities) if entities else 0
         r[latency_col].value = round(latency_ms, 2)
 
-        # Token accounting
-        E = set(normalize_token(t) for t in tokens_of(gold))
-        G = set(normalize_token(t) for t in tokens_of(got_eval))
+        E_raw = tokens_of(gold)
+        G_raw = tokens_of(got_eval)
+        E = set(_apply_aliases(E_raw, alias_map))
+        G = set(_apply_aliases(G_raw, alias_map))
 
         r[gold_tokens_col].value = ", ".join(sorted(E)) if E else ""
         r[got_tokens_col].value  = ", ".join(sorted(G)) if G else ""
@@ -352,7 +325,6 @@ def evaluate_workbook(
         r[miss_col].value = ", ".join(sorted(miss)) if miss else ""
         r[extra_col].value = ", ".join(sorted(extra)) if extra else ""
 
-        # Diff column
         if diff_mode == "gold":
             r[diff_col].value = minimal_diff(gold or "", got_eval or "")
         elif diff_mode == "raw":
@@ -360,8 +332,6 @@ def evaluate_workbook(
         else:
             r[diff_col].value = ""
 
-        gold_counter.update(E)
-        got_counter.update(G)
         missing_counter.update(miss)
         tp += len(hit)
         fp += len(extra)
@@ -375,11 +345,8 @@ def evaluate_workbook(
             "entities": len(entities), "lat_ms": round(latency_ms, 2),
         })
 
-    # Optionally create anomalies sheet
     if add_anomalies_sheet:
-        _add_anomalies_sheet(wb, ws, rows_meta, missing_counter.most_common())
-
-    # Optionally hide columns to reduce noise
+        _add_anomalies_sheet(wb, rows_meta, missing_counter.most_common())
     _apply_column_hiding(ws, keep_cols=keep_cols, topk=keep_topk)
 
     out_xlsx = os.path.join(outdir, os.path.basename(input_path).replace(".xlsx", "_eval.xlsx"))
@@ -403,6 +370,8 @@ def evaluate_workbook(
         "keep_topk": keep_topk,
         "kept_columns": keep_cols or [],
         "anomalies_sheet": add_anomalies_sheet,
+        "eval_source": eval_source,
+        "aliases_size": len(alias_map),
     }
     _write_summary(os.path.join(outdir, "prompt_eval_summary.json"), summary)
     _write_anomalies_md(os.path.join(outdir, "prompt_eval_anomalies.md"), missing_counter.most_common())
