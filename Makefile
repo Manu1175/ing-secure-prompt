@@ -85,3 +85,7 @@ keys-dev:
 .PHONY: clean
 clean:
 	rm -rf build dist *.egg-info .pytest_cache __pycache__ */__pycache__ .mypy_cache
+
+.PHONY: eval-prompts
+eval-prompts:
+	PYTHONPATH=$(shell pwd):$$PYTHONPATH $(PYTHON) scripts/eval_prompts.py --in $$IN --clearance $${CLEARANCE}
