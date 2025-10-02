@@ -705,3 +705,69 @@ def audit_download() -> FileResponse:
     if not path.exists():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No audit entries yet")
     return FileResponse(path, media_type="application/json", filename=path.name)
+
+# --- BEGIN: favicon hotfix (append-only) ---
+import logging
+from starlette.responses import Response
+
+_logger = logging.getLogger("secureprompt.favicon")
+
+def _has_favicon_route(_app) -> bool:
+    try:
+        return any(getattr(r, "path", None) == "/favicon.ico" for r in _app.router.routes)
+    except Exception:
+        return False
+
+try:
+    # `app` must already exist by this point in the file
+    _app = globals().get("app")
+    if _app is not None and not _has_favicon_route(_app):
+        @_app.get("/favicon.ico", include_in_schema=False)
+        async def _favicon() -> Response:  # type: ignore[no-redef]
+            # Empty but valid ICO response (200) to satisfy browsers/devtools
+            return Response(content=b"", media_type="image/x-icon",
+                            headers={"Cache-Control": "public, max-age=86400"})
+        _logger.info("Registered /favicon.ico route (200 image/x-icon).")
+    elif _app is None:
+        _logger.warning("No global `app` found; favicon hotfix skipped.")
+    else:
+        _logger.info("/favicon.ico already present; hotfix skipped.")
+except Exception as _e:
+    _logger.exception("Favicon hotfix failed: %s", _e)
+# --- END: favicon hotfix (append-only) ---
+# --- BEGIN: favicon route (idempotent, GET+HEAD) ---
+from starlette.responses import Response
+
+def _route_exists(_app, path: str) -> bool:
+    try:
+        return any(getattr(r, "path", None) == path for r in _app.router.routes)
+    except Exception:
+        return False
+
+_app = globals().get("app")
+if _app is not None and not _route_exists(_app, "/favicon.ico"):
+    @_app.api_route("/favicon.ico", methods=["GET", "HEAD"], include_in_schema=False)
+    async def _favicon():
+        # Return a valid (empty) ICO with 200 OK. Cached for a day.
+        return Response(
+            content=b"",
+            media_type="image/x-icon",
+            headers={"Cache-Control": "public, max-age=86400"},
+        )
+# --- END: favicon route ---# --- BEGIN: favicon shim (idempotent) ---
+try:
+    from fastapi import Response
+    _has_favicon = any(getattr(r, "path", "") == "/favicon.ico" for r in getattr(app, "routes", []))
+    if not _has_favicon:
+        @app.get("/favicon.ico")
+        async def _favicon_get() -> Response:
+            # Return 200 with icon content-type; body can be empty (browsers cope fine)
+            return Response(content=b"", media_type="image/x-icon", headers={"Cache-Control": "public, max-age=86400"})
+
+        @app.head("/favicon.ico")
+        async def _favicon_head() -> Response:
+            return Response(content=b"", media_type="image/x-icon", headers={"Cache-Control": "public, max-age=86400"})
+except Exception:
+    # Non-fatal if app is not yet defined in this module context
+    pass
+# --- END: favicon shim (idempotent) ---

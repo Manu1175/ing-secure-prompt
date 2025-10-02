@@ -1,532 +1,409 @@
 from __future__ import annotations
 
-import json
 import os
+import json
+import time
+import collections
 import re
 import difflib
-from collections import Counter
-from pathlib import Path
-from collections.abc import Iterable
-from typing import Any, Dict, List, Optional, Tuple
-from urllib import error, request
+from typing import Dict, Any, List, Tuple, Optional, Iterable
 
-from openpyxl import Workbook
-from openpyxl import load_workbook
-
-from secureprompt.prompt.sanitizer import sanitize_prompt as SAN
-
-_SCRUB_WARNING_SHOWN = False
-_SCRUB_URL = os.getenv("SP_SCRUB_URL", "http://127.0.0.1:8000/scrub")
-
-_EXPECTED_COLUMNS = {
-    "original_prompt": ("original", "prompt"),
-    "expected_sanitized_prompt": ("sanitized", "prompt"),
-    "response": ("response",),
-    "expected_sanitized_response": ("sanitized", "response"),
-}
-
-_APPENDED_COLUMNS = [
-    "Got_Sanitized_Prompt",
-    "Got_Sanitized_Response",
-    "Prompt_Replacements",
-    "Response_Entities",
-    "Prompt_Correct",
-    "Response_Correct",
-    "Receipt_Path",
-]
-
-TOKEN_RX = re.compile(r"[<\[]([A-Z0-9_]+)[>\]]")
-_SMART_QUOTES = {
-    "“": '"',
-    "”": '"',
-    "„": '"',
-    "‟": '"',
-    "‘": "'",
-    "’": "'",
-    "‚": "'",
-    "‛": "'",
-}
-
-
-def detect_clearance(path: str | Path, default: str = "C3") -> str:
-    """Infer the clearance level from env or filename (fallbacks to default)."""
-
-    default = (default or "C3").upper()
-    choices = {"C1", "C2", "C3", "C4"}
-    env = os.getenv("SP_CLEARANCE")
-    if env:
-        env = env.strip().upper()
-        if env in choices:
-            return env
-    basename = Path(path).name.lower()
-    match = re.search(r"c([1-4])", basename)
-    if match:
-        candidate = f"C{match.group(1)}"
-        if candidate in choices:
-            return candidate
-    return default if default in choices else "C3"
-
-
-def _normalize(text: Any) -> str:
-    return str(text).strip() if isinstance(text, str) else (str(text).strip() if text is not None else "")
-
-
-def _normalize_header(name: str) -> Tuple[str, ...]:
-    cleaned = re.sub(r"[^a-z0-9]+", " ", (name or "").lower()).split()
-    return tuple(cleaned)
-
-
-def _match_column(name: str) -> Optional[str]:
-    tokens = set(_normalize_header(name))
-    if not tokens:
-        return None
-    for key, required in _EXPECTED_COLUMNS.items():
-        if all(token in tokens for token in required):
-            return key
-    return None
-
-
-def read_sheet(path: str | Path) -> List[Dict[str, Any]]:
-    """Read the first sheet of an XLSX workbook into normalized row dicts."""
-
-    workbook = load_workbook(filename=path, data_only=True)
-    sheet = workbook.active
-    headers: List[str] = []
-    header_map: Dict[int, str] = {}
-    header_row = next(sheet.iter_rows(min_row=1, max_row=1, values_only=True), None)
-    if not header_row:
-        return []
-    for idx, cell in enumerate(header_row, start=1):
-        header = _normalize(cell)
-        headers.append(header)
-        mapped = _match_column(header)
-        if mapped:
-            header_map[idx] = mapped
-    header_values = set(header_map.values())
-    has_expected_prompt = "expected_sanitized_prompt" in header_values
-    has_expected_response = "expected_sanitized_response" in header_values
-    rows: List[Dict[str, Any]] = []
-    for row_idx, values in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
-        raw_row: Dict[str, Any] = {}
-        normalized: Dict[str, Any] = {
-            "__row_index__": row_idx,
-            "__headers__": headers,
-            "__raw__": raw_row,
-        }
-        for col_idx, cell_value in enumerate(values, start=1):
-            header = headers[col_idx - 1] if col_idx - 1 < len(headers) else f"Column {col_idx}"
-            raw_row[header] = cell_value
-            mapped_key = header_map.get(col_idx)
-            if mapped_key:
-                normalized[mapped_key] = _normalize(cell_value)
-        for required in _EXPECTED_COLUMNS:
-            normalized.setdefault(required, "")
-        normalized["__has_expected_prompt__"] = has_expected_prompt
-        normalized["__has_expected_response__"] = has_expected_response
-        rows.append(normalized)
-    return rows
-
-
-def _sanitize_prompt(
-    text: str,
-    xlsx_hint: str | Path | None = None,
-    *,
-    style: str = "square",
-) -> Tuple[str, List[Any]]:
-    if not text:
-        return "", []
-    result = SAN(text, xlsx_hint=xlsx_hint, style=style)
-    if isinstance(result, tuple) and len(result) >= 2:
-        sanitized_text, operations = result[0], result[1]
-    elif isinstance(result, dict):  # pragma: no cover - defensive branch
-        sanitized_text = result.get("text") or result.get("sanitized") or text
-        operations = result.get("operations") or result.get("ops") or result.get("replacements") or []
-    else:  # pragma: no cover - unexpected return type
-        sanitized_text, operations = result, []
-    if isinstance(operations, dict):
-        replacements = operations.get("replacements")
-        if isinstance(replacements, Iterable) and not isinstance(replacements, (str, bytes)):
-            operations = replacements
-        else:
-            operations = list(operations.values())
-    if isinstance(operations, (str, bytes)):
-        operations_list: List[Any] = []
-    elif isinstance(operations, Iterable):
-        operations_list = list(operations)
-    else:
-        operations_list = []
-    return str(sanitized_text), operations_list
-
-
-def _count_operations(operations: Iterable[Any]) -> int:
-    count = 0
-    for _ in operations:
-        count += 1
-    return count
-
-
-def _post_scrub(text: str, clearance: str) -> Dict[str, Any]:
-    global _SCRUB_WARNING_SHOWN
-    payload = json.dumps({"text": text, "c_level": clearance}).encode("utf-8")
-    req = request.Request(_SCRUB_URL, data=payload, headers={"Content-Type": "application/json"})
-    try:
-        with request.urlopen(req, timeout=10) as response:
-            body = response.read().decode("utf-8")
-        return json.loads(body) if body else {}
-    except (error.URLError, error.HTTPError, TimeoutError, json.JSONDecodeError, OSError):
-        if not _SCRUB_WARNING_SHOWN:
-            print("warning: scrub API unreachable; using raw responses")
-            _SCRUB_WARNING_SHOWN = True
-        return {
-            "sanitized": text,
-            "findings": [],
-        }
-
-
-def _extract_sanitized_text(data: Dict[str, Any], fallback: str) -> str:
-    for key in ("sanitized_text", "sanitized", "output", "text_sanitized"):
-        value = data.get(key)
-        if isinstance(value, str):
-            return value
-    result = data.get("result")
-    if isinstance(result, dict):
-        value = result.get("text")
-        if isinstance(value, str):
-            return value
-    return fallback
-
-
-def _extract_findings(data: Dict[str, Any]) -> Optional[List[Any]]:
-    value = data.get("findings")
-    if isinstance(value, list):
-        return value
-    result = data.get("result")
-    if isinstance(result, dict):
-        nested = result.get("findings")
-        if isinstance(nested, list):
-            return nested
-    return None
-
-
-def _extract_receipt_path(data: Dict[str, Any]) -> str:
-    for key in ("receipt", "receipt_path"):
-        value = data.get(key)
-        if isinstance(value, str):
-            return value
-    result = data.get("result")
-    if isinstance(result, dict):
-        value = result.get("receipt") or result.get("receipt_path")
-        if isinstance(value, str):
-            return value
-    return ""
-
-
-def _count_diffs(original: str, sanitized: str) -> int:
-    matcher = difflib.SequenceMatcher(None, original or "", sanitized or "")
-    return sum(1 for tag, *_ in matcher.get_opcodes() if tag != "equal")
-
-
-def eval_row(
-    row: Dict[str, Any],
-    clearance: str,
-    xlsx_hint: str | Path | None = None,
-    *,
-    style: str = "square",
-) -> Dict[str, Any]:
-    original_prompt = row.get("original_prompt", "")
-    expected_prompt = row.get("expected_sanitized_prompt") if row.get("__has_expected_prompt__") else None
-    prompt_text, operations = _sanitize_prompt(
-        original_prompt,
-        xlsx_hint=xlsx_hint,
-        style=style,
-    )
-    prompt_replacements = _count_operations(operations)
-    prompt_ops = [getattr(op, "label", "") for op in operations]
-
-    response_text = row.get("response", "")
-    scrub_result = _post_scrub(response_text, clearance)
-    sanitized_response = _extract_sanitized_text(scrub_result, response_text)
-    findings = _extract_findings(scrub_result)
-    response_entities = len(findings) if findings is not None else _count_diffs(response_text, sanitized_response)
-    expected_response = row.get("expected_sanitized_response") if row.get("__has_expected_response__") else None
-
-    prompt_correct = (prompt_text == expected_prompt) if expected_prompt is not None else None
-    response_correct = (sanitized_response == expected_response) if expected_response is not None else None
-
-    return {
-        "row_index": row.get("__row_index__"),
-        "got_sanitized_prompt": prompt_text,
-        "got_sanitized_response": sanitized_response,
-        "prompt_replacements": prompt_replacements,
-        "response_entities": response_entities,
-        "prompt_correct": prompt_correct,
-        "response_correct": response_correct,
-        "receipt_path": _extract_receipt_path(scrub_result),
-        "expected_prompt": expected_prompt,
-        "expected_response": expected_response,
-        "original_prompt": original_prompt,
-        "response": response_text,
-        "prompt_ops": [label for label in prompt_ops if label],
-    }
-
-
-def summarize(
-    results: Iterable[Dict[str, Any]],
-    *,
-    seen_tokens: Optional[Dict[str, int]] = None,
-    matched_tokens: Optional[Dict[str, int]] = None,
-) -> Dict[str, Any]:
-    total_rows = 0
-    prompt_evaluated = prompt_correct_count = 0
-    response_evaluated = response_correct_count = 0
-    total_prompt_replacements = 0
-    total_response_entities = 0
-    for result in results:
-        total_rows += 1
-        total_prompt_replacements += int(result.get("prompt_replacements", 0))
-        total_response_entities += int(result.get("response_entities", 0))
-        prompt_correct = result.get("prompt_correct")
-        if prompt_correct is not None:
-            prompt_evaluated += 1
-            if prompt_correct:
-                prompt_correct_count += 1
-        response_correct = result.get("response_correct")
-        if response_correct is not None:
-            response_evaluated += 1
-            if response_correct:
-                response_correct_count += 1
-    prompt_accuracy = (prompt_correct_count / prompt_evaluated) if prompt_evaluated else None
-    response_accuracy = (response_correct_count / response_evaluated) if response_evaluated else None
-    seen_tokens = {k: int(v) for k, v in (seen_tokens or {}).items()}
-    matched_tokens = {k: int(v) for k, v in (matched_tokens or {}).items()}
-    expected_token_list = sorted(seen_tokens)
-    missed_tokens = sorted(
-        (token for token in expected_token_list if matched_tokens.get(token, 0) == 0),
-        key=lambda t: (-seen_tokens.get(t, 0), t),
-    )
-    token_stats = [
-        {
-            "token": token,
-            "seen": seen_tokens.get(token, 0),
-            "matched": matched_tokens.get(token, 0),
-        }
-        for token in sorted(
-            seen_tokens,
-            key=lambda t: (-seen_tokens[t], t),
-        )
-    ]
-
-    return {
-        "total_rows": total_rows,
-        "prompt_evaluated": prompt_evaluated,
-        "prompt_correct": prompt_correct_count,
-        "prompt_accuracy": prompt_accuracy,
-        "response_evaluated": response_evaluated,
-        "response_correct": response_correct_count,
-        "response_accuracy": response_accuracy,
-        "total_prompt_replacements": total_prompt_replacements,
-        "total_response_entities": total_response_entities,
-        "ops_by_label": {},
-        "expected_tokens": expected_token_list,
-        "seen_tokens": dict(sorted(seen_tokens.items())),
-        "matched_tokens": dict(sorted(matched_tokens.items())),
-        "top_missed_tokens": missed_tokens[:20],
-        "token_stats": token_stats,
-    }
-
-
-def _heuristic_label(expected: Optional[str], got: Optional[str]) -> str:
-    expected = expected or ""
-    got = got or ""
-    if "PRODUCT_NAME" in expected and "PRODUCT_NAME" not in got:
-        return "missed PRODUCT_NAME"
-    if "[NAME" in expected and "[NAME" not in got:
-        return "name not detected"
-    if "POLICY" in expected.upper():
-        return "policy pattern"
-    return "mismatch"
-
-
-def _short_diff(expected: Optional[str], got: Optional[str]) -> str:
-    expected = expected or ""
-    got = got or ""
-    matcher = difflib.SequenceMatcher(None, expected, got)
-    snippets: List[str] = []
-    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
-        if tag == "equal":
-            continue
-        left = expected[i1:i2]
-        right = got[j1:j2]
-        if len(left) > 40:
-            left = left[:37] + "..."
-        if len(right) > 40:
-            right = right[:37] + "..."
-        snippets.append(f"{tag}: '{left}' -> '{right}'")
-        if len(snippets) >= 3:
-            break
-    return "; ".join(snippets) or "differences detected"
-
-
-def tokens_of(s: str | None) -> set[str]:
-    return set(TOKEN_RX.findall(s or ""))
-
-
-def _prepare_display(text: Optional[str]) -> str:
-    value = (text or "").replace("\r", " ").replace("\n", " ")
-    for src, dst in _SMART_QUOTES.items():
-        value = value.replace(src, dst)
-    value = TOKEN_RX.sub(lambda m: f"[{m.group(1)}]", value)
-    value = re.sub(r"\s+", " ", value).strip()
-    if len(value) > 120:
-        value = value[:117] + "..."
-    return value
-
-
-def collect_token_coverage(
-    rows: Iterable[Dict[str, Any]],
-    results: Iterable[Dict[str, Any]],
-) -> Tuple[Dict[str, int], Dict[str, int]]:
-    seen: Counter[str] = Counter()
-    matched: Counter[str] = Counter()
-    result_map = {
-        result.get("row_index"): result for result in results
-    }
-    for row in rows:
-        row_idx = row.get("__row_index__")
-        if not row.get("__has_expected_prompt__"):
-            continue
-        expected_text = row.get("expected_sanitized_prompt") or ""
-        if not isinstance(expected_text, str):
-            continue
-        expected_tokens = tokens_of(expected_text)
-        for token in expected_tokens:
-            seen[token] += 1
-        result = result_map.get(row_idx)
-        got_tokens: set[str] = set()
-        if result:
-            got_text = result.get("got_sanitized_prompt") or ""
-            if isinstance(got_text, str):
-                got_tokens = tokens_of(got_text)
-        for token in expected_tokens & got_tokens:
-            matched[token] += 1
-    return dict(seen), dict(matched)
-
-
-def write_outputs(
-    input_path: str | Path,
-    rows: List[Dict[str, Any]],
-    results: List[Dict[str, Any]],
-    summary: Dict[str, Any],
-    output_dir: str | Path | None = None,
-) -> Dict[str, Path]:
-    reports_dir = Path(output_dir) if output_dir is not None else Path("reports")
-    reports_dir.mkdir(parents=True, exist_ok=True)
-
-    base = Path(input_path).stem
-    workbook_path = reports_dir / f"{base}_eval.xlsx"
-    summary_path = reports_dir / "prompt_eval_summary.json"
-    anomalies_path = reports_dir / "prompt_eval_anomalies.md"
-
-    headers: List[str] = rows[0].get("__headers__", []) if rows else []
-
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Evaluation"
-    ws.append(headers + _APPENDED_COLUMNS)
-    if len(rows) != len(results):
-        raise ValueError("Row/result length mismatch")
-    for row, result in zip(rows, results):
-        raw = row.get("__raw__", {})
-        values = [raw.get(header, "") for header in headers]
-        values.extend(
-            [
-                result.get("got_sanitized_prompt", ""),
-                result.get("got_sanitized_response", ""),
-                result.get("prompt_replacements", 0),
-                result.get("response_entities", 0),
-                result.get("prompt_correct"),
-                result.get("response_correct"),
-                result.get("receipt_path", ""),
-            ]
-        )
-        ws.append(values)
-    wb.save(workbook_path)
-
-    with summary_path.open("w", encoding="utf-8") as handle:
-        json.dump(summary, handle, indent=2, sort_keys=True)
-
-    anomalies: List[str] = ["# Prompt Evaluation Anomalies", ""]
-    token_stats = summary.get("token_stats") or []
-    if token_stats:
-        anomalies.append("| Token | Seen in gold | Matched |")
-        anomalies.append("|-------|--------------|---------|")
-        for entry in token_stats[:20]:
-            anomalies.append(
-                f"| {entry['token']} | {entry['seen']} | {entry['matched']} |"
-            )
-        anomalies.append("")
-    missed_tokens = summary.get("top_missed_tokens") or []
-    if missed_tokens:
-        subset = ", ".join(missed_tokens[:10])
-        anomalies.append(f"Coverage gaps: {subset}")
-        anomalies.append("")
-    mismatch_entries = []
-    for result in results:
-        row_id = result.get("row_index")
-        expected_prompt = result.get("expected_prompt")
-        prompt_mismatch = (
-            expected_prompt is not None and result.get("got_sanitized_prompt") != expected_prompt
-        )
-        if prompt_mismatch:
-            mismatch_entries.append(
-                (
-                    row_id,
-                    "prompt",
-                    _heuristic_label(expected_prompt, result.get("got_sanitized_prompt")),
-                    result.get("got_sanitized_prompt"),
-                    expected_prompt,
-                )
-            )
-        expected_response = result.get("expected_response")
-        response_mismatch = (
-            expected_response is not None and result.get("got_sanitized_response") != expected_response
-        )
-        if response_mismatch:
-            mismatch_entries.append(
-                (
-                    row_id,
-                    "response",
-                    _heuristic_label(expected_response, result.get("got_sanitized_response")),
-                    result.get("got_sanitized_response"),
-                    expected_response,
-                )
-            )
-    if not mismatch_entries:
-        anomalies.append("No anomalies detected.")
-    else:
-        for row_id, kind, label, got_value, expected_value in mismatch_entries:
-            got_display = _prepare_display(got_value)
-            expected_display = _prepare_display(expected_value)
-            anomalies.append(
-                f"- Row {row_id} ({kind}): {label} — GOT: {got_display} vs EXPECTED: {expected_display}"
-            )
-    anomalies.append("")
-    with anomalies_path.open("w", encoding="utf-8") as handle:
-        handle.write("\n".join(anomalies))
-
-    return {
-        "workbook": workbook_path,
-        "summary": summary_path,
-        "anomalies": anomalies_path,
-    }
-
+import httpx
+from openpyxl import load_workbook, Workbook
+from openpyxl.utils import get_column_letter
 
 __all__ = [
-    "detect_clearance",
-    "read_sheet",
-    "eval_row",
-    "summarize",
-    "write_outputs",
-    "collect_expected_tokens",
-    "collect_ops_by_label",
+    "evaluate_workbook",
+    "tokens_of",
+    "normalize_token",
+    "make_eval_sanitized",
+    "minimal_diff",
 ]
+
+# Accept both <FOO> and [FOO]
+TOKEN_RX = re.compile(r"[<\[]([A-Z0-9_]+)[>\]]")
+
+# Recognize scrubbed-style tags like C3::EMAIL::deadbeef10
+SCRUB_TAG_RX = re.compile(r"\bC[1-5]::([A-Z0-9_]+)::[0-9a-f]{8,40}\b")
+
+def tokens_of(s: Optional[str]) -> List[str]:
+    if not s:
+        return []
+    return [m.group(1) for m in TOKEN_RX.finditer(s)]
+
+def normalize_token(t: str) -> str:
+    p = re.sub(r"__+", "_", t.strip().upper())
+    if p and p[-1].isdigit():
+        p = p[:-1]
+    return p
+
+def _columns(ws) -> Dict[str, int]:
+    hdr = [c.value for c in next(ws.iter_rows(min_row=1, max_row=1))]
+    return {name: idx for idx, name in enumerate(hdr)}
+
+def _best_raw_prompt_row(row_cells: List[Any], names: Dict[str, int]) -> Optional[str]:
+    # Search typical raw prompt column names, in priority order.
+    for key in ("Prompt", "Original Prompt", "Original", "Input", "Raw"):
+        if key in names:
+            v = row_cells[names[key]]
+            if v:
+                return v
+    return None
+
+def _http_post_scrub(api: str, text: str, clearance: str) -> Tuple[Optional[Dict[str, Any]], float]:
+    t0 = time.time()
+    try:
+        with httpx.Client(timeout=15.0) as client:
+            resp = client.post(
+                f"{api.rstrip('/')}/scrub",
+                json={"text": text, "clearance": clearance},
+            )
+            latency_ms = (time.time() - t0) * 1000.0
+            if resp.status_code == 200:
+                return resp.json(), latency_ms
+    except Exception:
+        pass
+    return None, (time.time() - t0) * 1000.0
+
+def _ensure_output_dir(outdir: str):
+    os.makedirs(outdir, exist_ok=True)
+
+def _write_summary(path: str, data: Dict[str, Any]):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+def _write_anomalies_md(path: str, missing_counts: List[Tuple[str, int]]):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("# Prompt Evaluator – Anomalies\n\n")
+        if not missing_counts:
+            f.write("No systematic missing tokens detected.\n")
+            return
+        f.write("## Top missing tokens (gold present, got absent)\n\n")
+        for t, n in missing_counts[:30]:
+            f.write(f"- {t}: {n}\n")
+
+def _bracket_style() -> Tuple[str, str]:
+    # SP_TOKEN_STYLE = "square" (default) or "angle"
+    style = os.environ.get("SP_TOKEN_STYLE", "square").strip().lower()
+    return ("[", "]") if style != "angle" else ("<", ">")
+
+def _label_token(label: str) -> str:
+    l, r = _bracket_style()
+    return f"{l}{normalize_token(label)}{r}"
+
+def _span_from_entity(e: Dict[str, Any]) -> Optional[Tuple[int, int]]:
+    # Prefer explicit start/end; fall back to legacy span = [start, end]
+    if "start" in e and "end" in e and isinstance(e["start"], int) and isinstance(e["end"], int):
+        return (e["start"], e["end"])
+    sp = e.get("span")
+    if isinstance(sp, (list, tuple)) and len(sp) == 2 and all(isinstance(x, int) for x in sp):
+        return (sp[0], sp[1])
+    return None
+
+def make_eval_sanitized(raw_text: str, entities: List[Dict[str, Any]]) -> str:
+    """
+    Build a bracket-tokenized string from the RAW prompt using entity spans.
+    Right-to-left replacement keeps indices stable.
+    """
+    if not raw_text or not entities:
+        return raw_text or ""
+
+    out = raw_text
+    repls: List[Tuple[int, int, str]] = []
+    for e in entities:
+        span = _span_from_entity(e)
+        label = e.get("label")
+        if span and label:
+            s, t = span
+            if 0 <= s <= t <= len(raw_text):
+                repls.append((s, t, _label_token(label)))
+
+    # sort by start desc, then end desc
+    repls.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    for s, t, tok in repls:
+        out = out[:s] + tok + out[t:]
+    return out
+
+def _fallback_tokenize_from_scrubbed(scrubbed: str) -> str:
+    """
+    As a safety net, convert Cx::LABEL::hash fragments to [LABEL]/<LABEL>.
+    """
+    if not scrubbed:
+        return ""
+    return SCRUB_TAG_RX.sub(lambda m: _label_token(m.group(1)), scrubbed)
+
+def _ensure_eval_columns(ws) -> Dict[str, int]:
+    """
+    Ensure we have the evaluation columns present, append if missing.
+    Returns a fresh mapping of headers -> index.
+    """
+    names = _columns(ws)
+    def _need(name: str):
+        nonlocal ws, names
+        if name not in names:
+            ws.cell(row=1, column=ws.max_column + 1, value=name)
+            names = _columns(ws)
+
+    # Where we store things
+    _need("Got_Sanitized_Prompt")            # original sanitized (from API)
+    _need("Got_Sanitized_Prompt_Eval")       # bracketized-for-eval view
+    _need("Gold_Tokens")
+    _need("Got_Tokens")
+    _need("TP")
+    _need("FP")
+    _need("FN")
+    _need("Missing_Tokens")
+    _need("Extra_Tokens")
+    _need("Entities_Count")
+    _need("APICallMs")
+    _need("Diff_Gold_vs_GotEval")
+    return names
+
+def minimal_diff(a: str, b: str, max_chars: int = 1000) -> str:
+    """
+    Produce a compact, minimally highlighted diff between a and b.
+    - Insertions are marked as [+...+]
+    - Deletions are marked as [-...-]
+    Output is truncated at max_chars to avoid huge cells.
+    """
+    a = a or ""
+    b = b or ""
+    sm = difflib.SequenceMatcher(a=a, b=b)
+    parts: List[str] = []
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            parts.append(b[j1:j2])
+        elif tag == "insert":
+            parts.append("[+" + b[j1:j2] + "+]")
+        elif tag == "delete":
+            parts.append("[-" + a[i1:i2] + "-]")
+        elif tag == "replace":
+            parts.append("[-" + a[i1:i2] + "-][+" + b[j1:j2] + "+]")
+    out = "".join(parts)
+    if len(out) > max_chars:
+        return out[: max_chars - 3] + "..."
+    return out
+
+def _apply_column_hiding(ws, keep_cols: Optional[Iterable[str]], topk: int) -> None:
+    """
+    Hide columns not explicitly kept.
+    If keep_cols is provided, we keep those exact names (case-insensitive match).
+    Else, if topk > 0, we keep the first K columns from a priority list that are present.
+    """
+    if not (keep_cols or topk > 0):
+        return
+
+    names = _columns(ws)  # name -> idx
+    keep_set: set[str] = set()
+
+    if keep_cols:
+        target = {c.strip().lower() for c in keep_cols if c and str(c).strip()}
+        for name, idx in names.items():
+            if name and name.strip().lower() in target:
+                keep_set.add(name)
+
+    if not keep_set and topk > 0:
+        # Priority list for evaluation ergonomics
+        priority = [
+            "Prompt", "Original Prompt", "Original", "Input",
+            "Sanitized Prompt",
+            "Got_Sanitized_Prompt_Eval",
+            "TP", "FN", "FP",
+            "Missing_Tokens", "Extra_Tokens",
+            "APICallMs", "Entities_Count",
+            "Got_Sanitized_Prompt",
+            "Gold_Tokens", "Got_Tokens",
+        ]
+        for name in priority:
+            if name in names:
+                keep_set.add(name)
+                if len(keep_set) >= topk:
+                    break
+
+    # Hide every column not in keep_set
+    for name, idx in names.items():
+        col_letter = get_column_letter(idx + 1)  # openpyxl is 1-based
+        if name not in keep_set:
+            ws.column_dimensions[col_letter].hidden = True
+
+def _add_anomalies_sheet(wb: Workbook, ws_src, rows_meta: List[Dict[str, Any]], top_missing: List[Tuple[str, int]]) -> None:
+    """
+    Create an 'Anomalies' sheet showing per-row missing/extra tokens, plus a summary of top missing tokens.
+    """
+    ws = wb.create_sheet("Anomalies")
+    ws.append([
+        "Row", "Missing_Tokens", "Extra_Tokens",
+        "Gold_Tokens", "Got_Tokens",
+        "TP", "FP", "FN", "Entities_Count", "APICallMs",
+    ])
+    for m in rows_meta:
+        if m["missing"] or m["extra"]:
+            ws.append([
+                m["row"],
+                ", ".join(sorted(m["missing"])) if m["missing"] else "",
+                ", ".join(sorted(m["extra"])) if m["extra"] else "",
+                ", ".join(sorted(m["E"])) if m["E"] else "",
+                ", ".join(sorted(m["G"])) if m["G"] else "",
+                m["tp"], m["fp"], m["fn"], m["entities"], m["lat_ms"],
+            ])
+
+    ws.append([])
+    ws.append(["Top Missing Tokens", "Count"])
+    for tok, cnt in top_missing[:50]:
+        ws.append([tok, cnt])
+
+def evaluate_workbook(
+    input_path: str,
+    clearance: str = "C3",
+    outdir: str = "reports",
+    add_anomalies_sheet: bool = True,
+    keep_cols: Optional[List[str]] = None,
+    keep_topk: int = 0,
+    diff_mode: str = "gold",  # "gold", "raw", or "none"
+) -> Dict[str, Any]:
+    """
+    Evaluate sanitized prompts by calling the SecurePrompt API, replacing entity
+    spans in the RAW prompt with bracket tokens to align with gold.
+    Writes:
+      - reports/*_eval.xlsx (annotated workbook)
+      - reports/prompt_eval_summary.json
+      - reports/prompt_eval_anomalies.md
+      - (optional) 'Anomalies' sheet inside the workbook
+    """
+    _ensure_output_dir(outdir)
+    wb = load_workbook(input_path)
+    ws = wb.active
+
+    names = _ensure_eval_columns(ws)
+
+    gold_col = names.get("Sanitized Prompt")
+    if gold_col is None:
+        raise ValueError("Workbook must contain 'Sanitized Prompt' header (gold).")
+
+    got_col          = names["Got_Sanitized_Prompt"]
+    got_eval_col     = names["Got_Sanitized_Prompt_Eval"]
+    gold_tokens_col  = names["Gold_Tokens"]
+    got_tokens_col   = names["Got_Tokens"]
+    tp_col           = names["TP"]
+    fp_col           = names["FP"]
+    fn_col           = names["FN"]
+    miss_col         = names["Missing_Tokens"]
+    extra_col        = names["Extra_Tokens"]
+    ents_cnt_col     = names["Entities_Count"]
+    latency_col      = names["APICallMs"]
+    diff_col         = names["Diff_Gold_vs_GotEval"]
+
+    api = os.environ.get("SCRUB_API", "http://127.0.0.1:8000")
+
+    tp = fp = fn = 0
+    total_entities = 0
+    missing_counter = collections.Counter()
+    got_counter = collections.Counter()
+    gold_counter = collections.Counter()
+    rows = 0
+
+    rows_meta: List[Dict[str, Any]] = []
+
+    for i, r in enumerate(ws.iter_rows(min_row=2, values_only=False), start=2):
+        rows += 1
+        # Pull cell values into a list
+        cells = [c.value for c in r]
+        raw = _best_raw_prompt_row(cells, names)
+        gold = cells[gold_col] if gold_col is not None else None
+
+        got_sanitized: Optional[str] = None
+        got_eval: Optional[str] = None
+        entities: List[Dict[str, Any]] = []
+        latency_ms: float = 0.0
+
+        if raw:
+            payload, latency_ms = _http_post_scrub(api, raw, clearance)
+            if payload:
+                got_sanitized = payload.get("scrubbed")
+                entities = payload.get("entities") or []
+                total_entities += len(entities)
+                # Build an eval view from RAW using spans; fallback to tag rewrite if needed.
+                got_eval = make_eval_sanitized(raw, entities)
+                if got_eval == raw and got_sanitized:
+                    got_eval = _fallback_tokenize_from_scrubbed(got_sanitized)
+            else:
+                got_sanitized = None
+                got_eval = None
+
+        # Write worksheet outputs
+        r[got_col].value = got_sanitized
+        r[got_eval_col].value = got_eval
+        r[ents_cnt_col].value = len(entities) if entities else 0
+        r[latency_col].value = round(latency_ms, 2)
+
+        # Token accounting
+        E = set(normalize_token(t) for t in tokens_of(gold))
+        G = set(normalize_token(t) for t in tokens_of(got_eval))
+
+        r[gold_tokens_col].value = ", ".join(sorted(E)) if E else ""
+        r[got_tokens_col].value  = ", ".join(sorted(G)) if G else ""
+
+        hit = E & G
+        extra = G - E
+        miss = E - G
+        r[tp_col].value = len(hit)
+        r[fp_col].value = len(extra)
+        r[fn_col].value = len(miss)
+        r[miss_col].value = ", ".join(sorted(miss)) if miss else ""
+        r[extra_col].value = ", ".join(sorted(extra)) if extra else ""
+
+        # Diff column
+        if diff_mode == "gold":
+            r[diff_col].value = minimal_diff(gold or "", got_eval or "")
+        elif diff_mode == "raw":
+            r[diff_col].value = minimal_diff(raw or "", got_eval or "")
+        else:
+            r[diff_col].value = ""
+
+        gold_counter.update(E)
+        got_counter.update(G)
+        missing_counter.update(miss)
+        tp += len(hit)
+        fp += len(extra)
+        fn += len(miss)
+
+        rows_meta.append({
+            "row": i,
+            "E": E, "G": G,
+            "missing": miss, "extra": extra,
+            "tp": len(hit), "fp": len(extra), "fn": len(miss),
+            "entities": len(entities), "lat_ms": round(latency_ms, 2),
+        })
+
+    # Optionally create anomalies sheet
+    if add_anomalies_sheet:
+        _add_anomalies_sheet(wb, ws, rows_meta, missing_counter.most_common())
+
+    # Optionally hide columns to reduce noise
+    _apply_column_hiding(ws, keep_cols=keep_cols, topk=keep_topk)
+
+    out_xlsx = os.path.join(outdir, os.path.basename(input_path).replace(".xlsx", "_eval.xlsx"))
+    wb.save(out_xlsx)
+
+    tot = tp + fn
+    prompt_acc = (tp / tot) if tot else 0.0
+
+    summary = {
+        "rows": rows,
+        "prompt_accuracy": prompt_acc,
+        "response_accuracy": None,
+        "total_response_entities": total_entities,
+        "tp": tp, "fp": fp, "fn": fn,
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "input": input_path,
+        "workbook": out_xlsx,
+        "api": api,
+        "top_missing": missing_counter.most_common(20),
+        "diff_mode": diff_mode,
+        "keep_topk": keep_topk,
+        "kept_columns": keep_cols or [],
+        "anomalies_sheet": add_anomalies_sheet,
+    }
+    _write_summary(os.path.join(outdir, "prompt_eval_summary.json"), summary)
+    _write_anomalies_md(os.path.join(outdir, "prompt_eval_anomalies.md"), missing_counter.most_common())
+    return summary
