@@ -367,10 +367,8 @@ def _short_diff(expected: Optional[str], got: Optional[str]) -> str:
     return "; ".join(snippets) or "differences detected"
 
 
-def tokens_of(text: Optional[str]) -> set[str]:
-    if not isinstance(text, str):
-        return set()
-    return {token.upper() for token in TOKEN_RX.findall(text)}
+def tokens_of(s: str | None) -> set[str]:
+    return set(TOKEN_RX.findall(s or ""))
 
 
 def _prepare_display(text: Optional[str]) -> str:
