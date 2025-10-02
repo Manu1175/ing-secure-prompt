@@ -1,0 +1,499 @@
+rules:
+- column: Year
+  priority: 2
+  recommended_classification: C1
+  detection:
+    type: regex
+    pattern: \b(?:19|20)\d{2}\b
+  placeholder: '{{YEAR}}'
+
+- column: Document Type
+  priority: 2
+  recommended_classification: C1
+  detection:
+    type: keyword
+    keywords:
+    - annual report
+    - policy
+    - guideline
+    - contract
+    - agreement
+    - specification
+  placeholder: '{{DOC_TYPE}}'
+
+- column: Link
+  priority: 1
+  recommended_classification: C1
+  detection:
+    type: regex
+    pattern: https?://[A-Za-z0-9./?=_\-#%&]+
+  placeholder: '{{URL}}'
+
+- column: Source_Filename
+  priority: 2
+  recommended_classification: C1
+  detection:
+    type: regex
+    pattern: '[\w\-\/]+\.[A-Za-z0-9]{1,6}'
+  placeholder: '{{FILENAME}}'
+
+- column: Classification_Level
+  priority: 2
+  recommended_classification: C1
+  detection:
+    type: keyword
+    keywords:
+    - C1
+    - C2
+    - C3
+    - C4
+  placeholder: '{{CLASS_LEVEL}}'
+
+- column: Classification_Description
+  priority: 2
+  recommended_classification: C1
+  detection:
+    type: keyword
+    keywords:
+    - public
+    - internal
+    - confidential
+    - restricted
+    - product offering
+  placeholder: '{{CLASS_DESC}}'
+
+- column: Term
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: keyword
+    keywords:
+    - SSN
+    - VAT
+    - IBAN
+    - account
+    - card
+    - password
+    - pin
+  placeholder: '{{TERM}}'
+
+- column: Category
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: keyword
+    keywords:
+    - finance
+    - it
+    - hr
+    - legal
+    - marketing
+    - product
+  placeholder: '{{CATEGORY}}'
+
+- column: Definition
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: keyword
+    keywords:
+    - means
+    - refers to
+    - definition
+    - is defined as
+  placeholder: '{{DEFINITION}}'
+
+- column: Example Usage
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: keyword
+    keywords:
+    - example
+    - for instance
+    - e.g.
+  placeholder: '{{EXAMPLE}}'
+
+- column: Source
+  priority: 3
+  recommended_classification: C1
+  detection:
+    type: keyword
+    keywords:
+    - internal
+    - external
+    - 3rd party
+    - vendor
+    - regulator
+  placeholder: '{{SOURCE}}'
+
+- column: Date
+  priority: 2
+  recommended_classification: C2
+  detection:
+    type: regex
+    pattern: \b\d{4}[-/]\d{1,2}[-/]\d{1,2}\b|\b\d{1,2}[-/]\d{1,2}[-/]\d{2,4}\b
+  placeholder: '{{DATE}}'
+
+- column: Person Name
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b[A-Z][a-z]+(?:\s[A-Z][a-z]+)*\b
+  placeholder: '{{NAME}}'
+
+- column: Full Name
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b[A-Z][a-z]+(?:\s[A-Z][a-z]+)+\b
+  placeholder: '{{FULL_NAME}}'
+
+- column: Status
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: keyword
+    keywords:
+    - active
+    - inactive
+    - archived
+    - draft
+    - published
+    - pending
+    - completed
+    - failed
+    - in progress
+    - cancelled
+  placeholder: '{{STATUS}}'
+
+- column: Operational Status
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: keyword
+    keywords:
+    - operational
+    - degraded
+    - down
+    - maintenance
+    - retired
+    - offline
+    - decommissioned
+    - active
+    - planned
+  placeholder: '{{OPERATIONAL_STATUS}}'
+
+- column: Environment
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: keyword
+    keywords:
+    - dev
+    - test
+    - uat
+    - prod
+    - staging
+  placeholder: '{{ENV}}'
+
+- column: IT Custodian
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: regex
+    pattern: \b[A-Z][a-z]+(?:\s[A-Z][a-z]+)*\b
+  placeholder: '{{IT_CUSTODIAN}}'
+
+- column: Asset Owner
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: regex
+    pattern: \b[A-Z][a-z]+(?:\s[A-Z][a-z]+)*\b
+  placeholder: '{{ASSET_OWNER}}'
+
+- column: Config group
+  priority: 3
+  recommended_classification: C2
+  detection:
+    type: keyword
+    keywords:
+    - default
+    - prod
+    - dev
+    - network
+    - security
+  placeholder: '{{CONFIG_GROUP}}'
+
+- column: Cost Center
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b[A-Z0-9\-]{3,12}\b
+  placeholder: '{{COST_CENTER}}'
+
+- column: Phone Number
+  priority: 1
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: (?:\+?\d{1,3})?[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}
+  placeholder: '{{PHONE}}'
+
+- column: Email
+  priority: 1
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'
+  placeholder: '{{EMAIL}}'
+
+- column: Currency
+  priority: 2
+  recommended_classification: C1
+  detection:
+    type: keyword
+    keywords:
+    - USD
+    - EUR
+    - GBP
+    - CHF
+    - JPY
+    - AUD
+    - CAD
+  placeholder: '{{CURRENCY}}'
+
+- column: Address
+  priority: 4
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \d{1,4}\s+[A-Z][A-Za-z0-9\s\.,'-]{3,120}
+  placeholder: '{{ADDRESS}}'
+
+- column: Street Name
+  priority: 5
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b[A-Z][a-z]+(?:\s[A-Z][a-z]+)*\b
+  placeholder: '{{STREET_NAME}}'
+
+- column: Account Number
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b\d{6,24}\b
+  placeholder: '{{ACCOUNT_NUMBER}}'
+
+- column: Account Balance
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b\d+(?:[.,]\d{3})*(?:\.\d{2})?\b
+  placeholder: '{{ACCOUNT_BALANCE}}'
+
+- column: IBAN
+  priority: 1
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b
+  placeholder: '{{IBAN}}'
+
+- column: Start Date
+  priority: 2
+  recommended_classification: C2
+  detection:
+    type: regex
+    pattern: \b\d{4}[-/]\d{2}[-/]\d{2}\b
+  placeholder: '{{START_DATE}}'
+
+- column: End Date
+  priority: 2
+  recommended_classification: C2
+  detection:
+    type: regex
+    pattern: \b\d{4}[-/]\d{2}[-/]\d{2}\b
+  placeholder: '{{END_DATE}}'
+
+- column: Date of Birth
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b\d{4}[-/]\d{2}[-/]\d{2}\b|\b\d{1,2}[-/]\d{1,2}[-/]\d{2,4}\b
+  placeholder: '{{DOB}}'
+
+- column: PIN
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b\d{4,6}\b
+  placeholder: '{{PIN}}'
+
+- column: PIN (masked)
+  priority: 2
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \*+|x+|#+
+  placeholder: '{{PIN_MASKED}}'
+
+- column: Password
+  priority: 5
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: '^[A-Za-z0-9!@#$%^&*()_+=\-]{6,}$'
+  placeholder: '{{PASSWORD}}'
+
+- column: Credit Card Number
+  priority: 1
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b(?:\d[ -]*?){13,19}\b
+  placeholder: '{{CREDIT_CARD}}'
+
+- column: CCV
+  priority: 1
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b\d{3,4}\b
+  placeholder: '{{CCV}}'
+
+- column: Expiry Date
+  priority: 1
+  recommended_classification: C4
+  detection:
+    type: regex
+    pattern: \b(0[1-9]|1[0-2])\/(\d{2}|\d{4})\b
+  placeholder: '{{EXPIRY_DATE}}'
+
+- column: Age
+  priority: 4
+  recommended_classification: C3
+  detection:
+    type: regex
+    pattern: \b(?:1[0-1][0-9]|[1-9]?[0-9])\b
+  placeholder: '{{AGE}}'
+
+- column: Gender
+  priority: 3
+  recommended_classification: C3
+  detection:
+    type: keyword
+    keywords:
+    - male
+    - female
+    - non-binary
+    - other
+    - prefer not to say
+  placeholder: '{{GENDER}}'
+
+- column: Marital Status
+  priority: 3
+  recommended_classification: C3
+  detection:
+    type: keyword
+    keywords:
+    - single
+    - married
+    - divorced
+    - separated
+    - widowed
+  placeholder: '{{MARITAL_STATUS}}'
+
+- column: Citizenship
+  priority: 3
+  recommended_classification: C3
+  detection:
+    type: keyword
+    keywords:
+    - belgian
+    - french
+    - german
+    - american
+    - british
+    - spanish
+    - italian
+  placeholder: '{{CITIZENSHIP}}'
+
+- column: Ethnic Origin
+  priority: 4
+  recommended_classification: C4
+  detection:
+    type: keyword
+    keywords:
+    - asian
+    - african
+    - european
+    - latino
+    - arab
+    - indigenous
+  placeholder: '{{ETHNIC_ORIGIN}}'
+
+- column: Biometric Data
+  priority: 4
+  recommended_classification: C4
+  detection:
+    type: keyword
+    keywords:
+    - fingerprint
+    - iris
+    - retina
+    - voice
+    - face
+    - biometric
+  placeholder: '{{BIOMETRIC}}'
+
+- column: Health
+  priority: 4
+  recommended_classification: C4
+  detection:
+    type: keyword
+    keywords:
+    - cancer
+    - diabetes
+    - HIV
+    - cancer survivor
+    - mental health
+    - disability
+  placeholder: '{{HEALTH}}'
+
+- column: Religious Beliefs
+  priority: 4
+  recommended_classification: C4
+  detection:
+    type: keyword
+    keywords:
+    - christian
+    - muslim
+    - jewish
+    - hindu
+    - buddhist
+    - atheist
+  placeholder: '{{RELIGION}}'
+
+- column: Sexual Orientation
+  priority: 4
+  recommended_classification: C4
+  detection:
+    type: keyword
+    keywords:
+    - heterosexual
+    - homosexual
+    - bisexual
+    - lesbian
+    - gay
+    - queer
+  placeholder: '{{SEXUAL_ORIENTATION}}'

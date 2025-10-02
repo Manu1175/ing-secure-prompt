@@ -1,0 +1,6527 @@
+non_sensitive:
+- Year
+- Document Type
+- Link
+- Source_Filename
+- Classification_Level
+- Classification_Description
+- System Name
+- Application Name
+- Hosting Type
+- Product Name
+- Product Type
+- Interest Rate
+- Fees
+- Eligibility Criteria
+- Regulatory Tags
+whitelist:
+- text: Product
+  type: domain_term
+- text: Responsible
+  type: domain_term
+- text: Mobile
+  type: domain_term
+- text: loan
+  type: domain_term
+- text: Heather
+  type: domain_term
+- text: Full
+  type: domain_term
+- text: sheet
+  type: domain_term
+- text: material
+  type: domain_term
+- text: storage
+  type: domain_term
+- text: shared
+  type: domain_term
+- text: Solutions
+  type: domain_term
+- text: application
+  type: domain_term
+- text: fields
+  type: domain_term
+- text: Katie
+  type: domain_term
+- text: Supply
+  type: domain_term
+- text: sources
+  type: domain_term
+- text: Security
+  type: domain_term
+- text: Tara
+  type: domain_term
+- text: Account
+  type: domain_term
+- text: Debit
+  type: domain_term
+- text: Asset
+  type: domain_term
+- text: check
+  type: domain_term
+- text: Reset
+  type: domain_term
+- text: Davis
+  type: domain_term
+- text: Assessment
+  type: domain_term
+- text: dormant
+  type: domain_term
+- text: Card
+  type: domain_term
+- text: Clark
+  type: domain_term
+- text: operational
+  type: domain_term
+- text: All
+  type: domain_term
+- text: Jeanette
+  type: domain_term
+- text: report
+  type: domain_term
+- text: Melissa
+  type: domain_term
+- text: Privacy
+  type: domain_term
+- text: flows
+  type: domain_term
+- text: Closure
+  type: domain_term
+- text: Half
+  type: domain_term
+- text: Retail
+  type: domain_term
+- text: Life
+  type: domain_term
+- text: Brown
+  type: domain_term
+- text: Elizabeth
+  type: domain_term
+- text: authorized
+  type: domain_term
+- text: Distribution
+  type: domain_term
+- text: Savings
+  type: domain_term
+- text: communications
+  type: domain_term
+- text: Approval
+  type: domain_term
+- text: Robert
+  type: domain_term
+- text: Running
+  type: domain_term
+- text: overdrafts
+  type: domain_term
+- text: Flag
+  type: domain_term
+- text: accounting
+  type: domain_term
+- text: Azure
+  type: domain_term
+- text: App
+  type: domain_term
+- text: merge
+  type: domain_term
+- text: from
+  type: domain_term
+- text: notification
+  type: domain_term
+- text: Consulting
+  type: domain_term
+- text: Holder
+  type: domain_term
+- text: Test
+  type: domain_term
+- text: Credit
+  type: domain_term
+- text: Operations
+  type: domain_term
+- text: Consent
+  type: domain_term
+- text: Pending
+  type: domain_term
+- text: Active
+  type: domain_term
+- text: Retired
+  type: domain_term
+- text: Shaun
+  type: domain_term
+- text: Onboarding
+  type: domain_term
+- text: reviewed
+  type: domain_term
+- text: OpEx
+  type: domain_term
+- text: Justin
+  type: domain_term
+- text: channels
+  type: domain_term
+- text: AML
+  type: domain_term
+- text: Date
+  type: domain_term
+- text: development
+  type: domain_term
+- text: EOM
+  type: domain_term
+- text: Transfers
+  type: domain_term
+- text: their
+  type: domain_term
+- text: Investment
+  type: domain_term
+- text: currently
+  type: domain_term
+- text: premium
+  type: domain_term
+- text: DLs
+  type: domain_term
+- text: vCPU
+  type: domain_term
+- text: the
+  type: domain_term
+- text: alert
+  type: domain_term
+- text: Regulatory
+  type: domain_term
+- text: Daniel
+  type: domain_term
+- text: Transfer
+  type: domain_term
+- text: for
+  type: domain_term
+- text: Annual
+  type: domain_term
+- text: Letter
+  type: domain_term
+- text: control
+  type: domain_term
+- text: terms
+  type: domain_term
+- text: category
+  type: domain_term
+- text: inactive
+  type: domain_term
+- text: link
+  type: domain_term
+- text: Officer
+  type: domain_term
+- text: Origination
+  type: domain_term
+- text: Calculation
+  type: domain_term
+- text: Stanley
+  type: domain_term
+- text: Industry
+  type: domain_term
+- text: Update
+  type: domain_term
+- text: his
+  type: domain_term
+- text: Password
+  type: domain_term
+- text: SEPA
+  type: domain_term
+- text: deposit
+  type: domain_term
+- text: process
+  type: domain_term
+- text: definitions
+  type: domain_term
+- text: DataBridge
+  type: domain_term
+- text: Richardson
+  type: domain_term
+- text: Invoice
+  type: domain_term
+- text: Premium
+  type: domain_term
+- text: Config
+  type: domain_term
+- text: Management
+  type: domain_term
+- text: Digital
+  type: domain_term
+- text: Current
+  type: domain_term
+- text: run
+  type: domain_term
+- text: Failed
+  type: domain_term
+- text: Code
+  type: domain_term
+- text: respective
+  type: domain_term
+- text: Graham
+  type: domain_term
+- text: Pillar
+  type: domain_term
+- text: replacement
+  type: domain_term
+- text: Machine
+  type: domain_term
+- text: guideline
+  type: domain_term
+- text: Income
+  type: domain_term
+- text: provider
+  type: domain_term
+- text: Laura
+  type: domain_term
+- text: several
+  type: domain_term
+- text: Johnson
+  type: domain_term
+- text: EUR
+  type: domain_term
+- text: Basel
+  type: domain_term
+- text: III
+  type: domain_term
+- text: Detection
+  type: domain_term
+- text: savings
+  type: domain_term
+- text: model
+  type: domain_term
+- text: her
+  type: domain_term
+- text: Data
+  type: domain_term
+- text: Maple
+  type: domain_term
+- text: Wolf
+  type: domain_term
+- text: board
+  type: domain_term
+- text: some
+  type: domain_term
+- text: Jones
+  type: domain_term
+- text: cheque
+  type: domain_term
+- text: full
+  type: domain_term
+- text: Oversight
+  type: domain_term
+- text: treat
+  type: domain_term
+- text: Line
+  type: domain_term
+- text: Order
+  type: domain_term
+- text: Development
+  type: domain_term
+- text: include
+  type: domain_term
+- text: Production
+  type: domain_term
+- text: Use
+  type: domain_term
+- text: push
+  type: domain_term
+- text: Statement
+  type: domain_term
+- text: retired
+  type: domain_term
+- text: Finance
+  type: domain_term
+- text: Erin
+  type: domain_term
+- text: valid
+  type: domain_term
+- text: usage
+  type: domain_term
+- text: Supplier
+  type: domain_term
+- text: Governance
+  type: domain_term
+- text: Emily
+  type: domain_term
+- text: Jimmy
+  type: domain_term
+- text: Trevor
+  type: domain_term
+- text: health
+  type: domain_term
+- text: CapEx
+  type: domain_term
+- text: Ghent
+  type: domain_term
+- text: Garcia
+  type: domain_term
+- text: Owner
+  type: domain_term
+- text: Mary
+  type: domain_term
+- text: but
+  type: domain_term
+- text: Report
+  type: domain_term
+- text: Reconciliation
+  type: domain_term
+- text: multiple
+  type: domain_term
+- text: Age
+  type: domain_term
+- text: Internal
+  type: domain_term
+- text: AWS
+  type: domain_term
+- text: Protection
+  type: domain_term
+- text: Review
+  type: domain_term
+- text: card
+  type: domain_term
+- text: API
+  type: domain_term
+- text: Personal
+  type: domain_term
+- text: Disclosure
+  type: domain_term
+- text: Reporting
+  type: domain_term
+- text: review
+  type: domain_term
+- text: cashback
+  type: domain_term
+- text: Address
+  type: domain_term
+- text: tests
+  type: domain_term
+- text: Disclosures
+  type: domain_term
+- text: customers
+  type: domain_term
+- text: USD
+  type: domain_term
+- text: policy
+  type: domain_term
+- text: customer
+  type: domain_term
+- text: Desk
+  type: domain_term
+- text: Screening
+  type: domain_term
+- text: Brussels
+  type: domain_term
+- text: Insurance
+  type: domain_term
+- text: Analytics
+  type: domain_term
+- text: responsible
+  type: domain_term
+- text: Completed
+  type: domain_term
+- text: before
+  type: domain_term
+- text: National
+  type: domain_term
+- text: last
+  type: domain_term
+- text: Custodian
+  type: domain_term
+- text: active
+  type: domain_term
+- text: Board
+  type: domain_term
+- text: Installed
+  type: domain_term
+- text: Agreement
+  type: domain_term
+- text: Kristy
+  type: domain_term
+- text: FATCA
+  type: domain_term
+- text: and
+  type: domain_term
+- text: Nicholas
+  type: domain_term
+- text: ATM
+  type: domain_term
+- text: Customer
+  type: domain_term
+- text: cost
+  type: domain_term
+- text: proof
+  type: domain_term
+- text: analytics
+  type: domain_term
+- text: Handling
+  type: domain_term
+- text: Operational
+  type: domain_term
+- text: Jonathan
+  type: domain_term
+- text: any
+  type: domain_term
+- text: typical
+  type: domain_term
+- text: Under
+  type: domain_term
+- text: supplier
+  type: domain_term
+- text: flags
+  type: domain_term
+- text: tickets
+  type: domain_term
+- text: Miguel
+  type: domain_term
+- text: Acceptance
+  type: domain_term
+- text: Loan
+  type: domain_term
+- text: Williams
+  type: domain_term
+- text: KYC
+  type: domain_term
+- text: annual
+  type: domain_term
+- text: Fitzgerald
+  type: domain_term
+- text: Miller
+  type: domain_term
+- text: Contract
+  type: domain_term
+- text: Deposit
+  type: domain_term
+- text: Policy
+  type: domain_term
+- text: Year
+  type: domain_term
+- text: service
+  type: domain_term
+- text: Standing
+  type: domain_term
+- text: restore
+  type: domain_term
+- text: Chris
+  type: domain_term
+- text: Online
+  type: domain_term
+- text: Scoring
+  type: domain_term
+- text: Anna
+  type: domain_term
+- text: Wire
+  type: domain_term
+- text: Fully
+  type: domain_term
+- text: Weekly
+  type: domain_term
+- text: Service
+  type: domain_term
+- text: read
+  type: domain_term
+- text: interaction
+  type: domain_term
+- text: raw
+  type: domain_term
+- text: Sims
+  type: domain_term
+- text: Linda
+  type: domain_term
+- text: Maintenance
+  type: domain_term
+- text: can
+  type: domain_term
+- text: Manager
+  type: domain_term
+- text: Cloud
+  type: domain_term
+- text: dates
+  type: domain_term
+- text: product
+  type: domain_term
+- text: Letters
+  type: domain_term
+- text: Smith
+  type: domain_term
+- text: ESG
+  type: domain_term
+- text: Taylor
+  type: domain_term
+- text: Gender
+  type: domain_term
+- text: him
+  type: domain_term
+- text: Guarantee
+  type: domain_term
+- text: owner
+  type: domain_term
+- text: mortgage
+  type: domain_term
+- text: Accrued
+  type: domain_term
+- text: Edward
+  type: domain_term
+- text: dashboard
+  type: domain_term
+- text: Monitoring
+  type: domain_term
+- text: Audit
+  type: domain_term
+- text: are
+  type: domain_term
+- text: briefing
+  type: domain_term
+- text: Google
+  type: domain_term
+- text: Portfolio
+  type: domain_term
+- text: RAM
+  type: domain_term
+- text: Generation
+  type: domain_term
+- text: GBP
+  type: domain_term
+- text: Sullivan
+  type: domain_term
+- text: agreements
+  type: domain_term
+- text: Verification
+  type: domain_term
+- text: insurance
+  type: domain_term
+- text: Lewis
+  type: domain_term
+- text: Postal
+  type: domain_term
+- text: Main
+  type: domain_term
+- text: Electronic
+  type: domain_term
+- text: Fraud
+  type: domain_term
+- text: Virtual
+  type: domain_term
+- text: Peterson
+  type: domain_term
+- text: Quarterly
+  type: domain_term
+- text: GDPR
+  type: domain_term
+- text: Compliance
+  type: domain_term
+- text: distribution
+  type: domain_term
+- text: Leuven
+  type: domain_term
+- text: downstream
+  type: domain_term
+- text: executed
+  type: domain_term
+- text: definition
+  type: domain_term
+- text: Agreements
+  type: domain_term
+- text: rate
+  type: domain_term
+- text: risk
+  type: domain_term
+- text: Interest
+  type: domain_term
+- text: Michael
+  type: domain_term
+- text: Alex
+  type: domain_term
+- text: Transaction
+  type: domain_term
+- text: Jane
+  type: domain_term
+- text: John
+  type: domain_term
+- text: Backup
+  type: domain_term
+- text: approval
+  type: domain_term
+- text: Complaint
+  type: domain_term
+- text: Deprecated
+  type: domain_term
+- text: hardware
+  type: domain_term
+- text: Direct
+  type: domain_term
+- text: Include
+  type: domain_term
+- text: Services
+  type: domain_term
+- text: Banking
+  type: domain_term
+- text: Additional
+  type: domain_term
+- text: Offer
+  type: domain_term
+- text: yet
+  type: domain_term
+- text: Box
+  type: domain_term
+- text: Tom
+  type: domain_term
+- text: TechNova
+  type: domain_term
+- text: press
+  type: domain_term
+- text: Female
+  type: domain_term
+- text: Mortgage
+  type: domain_term
+- text: ensure
+  type: domain_term
+- text: Risk
+  type: domain_term
+- text: with
+  type: domain_term
+- text: dept
+  type: domain_term
+- text: Cheque
+  type: domain_term
+- text: Results
+  type: domain_term
+- text: until
+  type: domain_term
+- text: channel
+  type: domain_term
+- text: Overdraft Product
+  type: domain_term
+- text: Jane Smith
+  type: domain_term
+- text: Reporting Semi Automated
+  type: domain_term
+- text: ing continues to
+  type: domain_term
+- text: Owner Justin Andersen Config
+  type: domain_term
+- text: first half
+  type: domain_term
+- text: Mortgage Active John
+  type: domain_term
+- text: Handling Governance Basel
+  type: domain_term
+- text: Daily run
+  type: domain_term
+- text: Reset Active Semi Automated
+  type: domain_term
+- text: User Active
+  type: domain_term
+- text: Annual report pdf http
+  type: domain_term
+- text: Smith emily
+  type: domain_term
+- text: Pillar III report https
+  type: domain_term
+- text: raw to least
+  type: domain_term
+- text: michael miller
+  type: domain_term
+- text: Internal Governance Bi
+  type: domain_term
+- text: economy and society
+  type: domain_term
+- text: Account JPY
+  type: domain_term
+- text: strong growth
+  type: domain_term
+- text: Michael Miller
+  type: domain_term
+- text: Approval Policy
+  type: domain_term
+- text: Digital Onboarding Standards advisory
+  type: domain_term
+- text: continues to deliver
+  type: domain_term
+- text: not merge
+  type: domain_term
+- text: Active Mortgage Inactive Offer
+  type: domain_term
+- text: Jonathan Perkins Trevor Montgomery
+  type: domain_term
+- text: deposit agreements CUST
+  type: domain_term
+- text: Alex Garcia
+  type: domain_term
+- text: him tom jones proximus
+  type: domain_term
+- text: PPDXJX
+  type: domain_term
+- text: Offer a
+  type: domain_term
+- text: elizabeth sullivan ing com
+  type: domain_term
+- text: EUR Supplier
+  type: domain_term
+- text: Compliance Team
+  type: domain_term
+- text: respective processes KYC
+  type: domain_term
+- text: AWS GCP Production Maintenance
+  type: domain_term
+- text: Agreements are
+  type: domain_term
+- text: Financial Internal
+  type: domain_term
+- text: Weekly Semi
+  type: domain_term
+- text: downstream Loan
+  type: domain_term
+- text: ing be
+  type: domain_term
+- text: Credit Scoring Under Review
+  type: domain_term
+- text: DLs Internal
+  type: domain_term
+- text: Tom Taylor Anna Davis
+  type: domain_term
+- text: Operational Production
+  type: domain_term
+- text: Review Fully Automated Weekly
+  type: domain_term
+- text: Inactive Offer mortgage
+  type: domain_term
+- text: Service Desk Lead
+  type: domain_term
+- text: Emily Taylor emily taylor
+  type: domain_term
+- text: Production Maintenance
+  type: domain_term
+- text: Flag risk
+  type: domain_term
+- text: Laura Taylor
+  type: domain_term
+- text: and rate
+  type: domain_term
+- text: its commitment to
+  type: domain_term
+- text: Handling Customer Support
+  type: domain_term
+- text: III report https assets
+  type: domain_term
+- text: Address Interest fields
+  type: domain_term
+- text: Loan Borrower Active
+  type: domain_term
+- text: cost model
+  type: domain_term
+- text: Mobile Banking Security Deprecated
+  type: domain_term
+- text: annual fee Branch
+  type: domain_term
+- text: Brussels his
+  type: domain_term
+- text: report ING Belgium SA
+  type: domain_term
+- text: Smith michael smith
+  type: domain_term
+- text: link https
+  type: domain_term
+- text: builds on strong results
+  type: domain_term
+- text: of Birth Postal
+  type: domain_term
+- text: Steward
+  type: domain_term
+- text: Tom Jones PO
+  type: domain_term
+- text: service channel Robert
+  type: domain_term
+- text: Review Internal Audit Fully
+  type: domain_term
+- text: IT Production
+  type: domain_term
+- text: Banking Inactive
+  type: domain_term
+- text: IT Risk
+  type: domain_term
+- text: and https assets ing
+  type: domain_term
+- text: business in analytics
+  type: domain_term
+- text: IP Address
+  type: domain_term
+- text: Taylor robert
+  type: domain_term
+- text: Flag risk of dormant
+  type: domain_term
+- text: Leuven Alex
+  type: domain_term
+- text: to least
+  type: domain_term
+- text: Robert Lewis Ghent
+  type: domain_term
+- text: laura miller
+  type: domain_term
+- text: lewis
+  type: domain_term
+- text: IT Department
+  type: domain_term
+- text: Accrued Interest definition
+  type: domain_term
+- text: Industry Consortium Annual
+  type: domain_term
+- text: Letter of
+  type: domain_term
+- text: Risk Management IT
+  type: domain_term
+- text: National Regulator
+  type: domain_term
+- text: IT Governance Policy
+  type: domain_term
+- text: the Interest
+  type: domain_term
+- text: Tom Taylor tom taylor
+  type: domain_term
+- text: jane
+  type: domain_term
+- text: Bi Annual review
+  type: domain_term
+- text: Address Phone
+  type: domain_term
+- text: ING Belgium SA
+  type: domain_term
+- text: Mobile Banking Active Robert
+  type: domain_term
+- text: Automated Finance
+  type: domain_term
+- text: ing be ing
+  type: domain_term
+- text: Semi Automated Daily
+  type: domain_term
+- text: Agreement Emily Williams
+  type: domain_term
+- text: storage capacity
+  type: domain_term
+- text: Brown Katie Williams
+  type: domain_term
+- text: Weekly Flag risk
+  type: domain_term
+- text: Daily IT
+  type: domain_term
+- text: Holder Overdraft Product
+  type: domain_term
+- text: Encryption
+  type: domain_term
+- text: Policy Retired Operations
+  type: domain_term
+- text: katie taylor telenet
+  type: domain_term
+- text: a card
+  type: domain_term
+- text: Management Compliance
+  type: domain_term
+- text: Committee Digital Services
+  type: domain_term
+- text: ensure restore tests
+  type: domain_term
+- text: Sustainability Industry
+  type: domain_term
+- text: with some Retired
+  type: domain_term
+- text: Analytics an
+  type: domain_term
+- text: Active Bi Annual review
+  type: domain_term
+- text: Digital Consent
+  type: domain_term
+- text: in analytics
+  type: domain_term
+- text: Weekly Retail
+  type: domain_term
+- text: Head Privacy Protection
+  type: domain_term
+- text: terms their respective
+  type: domain_term
+- text: Personal Loan Agreement
+  type: domain_term
+- text: review Board IT
+  type: domain_term
+- text: profit after
+  type: domain_term
+- text: review cycle
+  type: domain_term
+- text: be Linda
+  type: domain_term
+- text: taylor proximus be Brussels
+  type: domain_term
+- text: IT Vendor
+  type: domain_term
+- text: Katie Lewis
+  type: domain_term
+- text: Pillar III Report
+  type: domain_term
+- text: Safe Deposit Box Agreement
+  type: domain_term
+- text: to authorized teams
+  type: domain_term
+- text: john johnson proximus be
+  type: domain_term
+- text: positively on customers
+  type: domain_term
+- text: from the definitions sheet
+  type: domain_term
+- text: abff
+  type: domain_term
+- text: GDPR KYC Active
+  type: domain_term
+- text: Transfers include
+  type: domain_term
+- text: Joel Reed Tara Doyle
+  type: domain_term
+- text: john graham ing
+  type: domain_term
+- text: of income
+  type: domain_term
+- text: AML Screening Guidelines are
+  type: domain_term
+- text: KYC Verification Monthly Deprecated
+  type: domain_term
+- text: Robert Lewis
+  type: domain_term
+- text: Policy Board Bi
+  type: domain_term
+- text: emily taylor telenet be
+  type: domain_term
+- text: Half Year Results
+  type: domain_term
+- text: Mortgage Inactive Offer
+  type: domain_term
+- text: Active Finance Team Fully
+  type: domain_term
+- text: Birth Postal Address
+  type: domain_term
+- text: Bi Annual Active IT
+  type: domain_term
+- text: NV pdf
+  type: domain_term
+- text: On Demand
+  type: domain_term
+- text: Stanley ing
+  type: domain_term
+- text: Mortgage Inactive Offer mortgage
+  type: domain_term
+- text: Expired
+  type: domain_term
+- text: Customer Service IT Manager
+  type: domain_term
+- text: Privacy Protection Policy Retired
+  type: domain_term
+- text: versions
+  type: domain_term
+- text: Management Basel Committee Digital
+  type: domain_term
+- text: Risk Policy Under
+  type: domain_term
+- text: Chris Williams
+  type: domain_term
+- text: Service Desk Lead John
+  type: domain_term
+- text: read full report
+  type: domain_term
+- text: sources Industry
+  type: domain_term
+- text: Google Cloud
+  type: domain_term
+- text: Head IT Risk Assessment
+  type: domain_term
+- text: KYC and AML definitions
+  type: domain_term
+- text: Line of Credit Agreement
+  type: domain_term
+- text: AML Active
+  type: domain_term
+- text: Customer Onboarding
+  type: domain_term
+- text: Main St Leuven
+  type: domain_term
+- text: emily williams hotmail
+  type: domain_term
+- text: St Leuven
+  type: domain_term
+- text: telenet be Brussels Tom
+  type: domain_term
+- text: her emily williams hotmail
+  type: domain_term
+- text: reinforcing its
+  type: domain_term
+- text: Onboarding Standards
+  type: domain_term
+- text: Quarterly review
+  type: domain_term
+- text: Jane Miller
+  type: domain_term
+- text: Bruges emily jones
+  type: domain_term
+- text: hotmail com Michael
+  type: domain_term
+- text: michael smith gmail
+  type: domain_term
+- text: analytics raw to authorized
+  type: domain_term
+- text: Third Party Risk
+  type: domain_term
+- text: Regulator All
+  type: domain_term
+- text: EOM closes
+  type: domain_term
+- text: Compliance Policy Compliance Under
+  type: domain_term
+- text: Framework National
+  type: domain_term
+- text: Management National Regulator
+  type: domain_term
+- text: Letters of Credit CUST
+  type: domain_term
+- text: a mortgage health check
+  type: domain_term
+- text: Personal Loan Borrower
+  type: domain_term
+- text: IP Address Interest fields
+  type: domain_term
+- text: Generation Active Semi
+  type: domain_term
+- text: Deprecated Customer Onboarding
+  type: domain_term
+- text: Maintenance Supplier
+  type: domain_term
+- text: Loan Policy Retired
+  type: domain_term
+- text: Monthly
+  type: domain_term
+- text: Asset Owner Justin
+  type: domain_term
+- text: commitment to customers society
+  type: domain_term
+- text: Borrower Active Personal
+  type: domain_term
+- text: gmail
+  type: domain_term
+- text: Katie Brown
+  type: domain_term
+- text: Operational Status Operational
+  type: domain_term
+- text: Service Policy Active Responsible
+  type: domain_term
+- text: Interest Calculation
+  type: domain_term
+- text: com Nicholas Wolf nicolas
+  type: domain_term
+- text: her emily williams
+  type: domain_term
+- text: restore tests
+  type: domain_term
+- text: Results https newsroom ing
+  type: domain_term
+- text: brown telenet be
+  type: domain_term
+- text: nicolas
+  type: domain_term
+- text: Manual On Demand
+  type: domain_term
+- text: Board approval
+  type: domain_term
+- text: Fraud Detection Active Daily
+  type: domain_term
+- text: internal
+  type: domain_term
+- text: treat IaaS
+  type: domain_term
+- text: Emily Williams Line
+  type: domain_term
+- text: AML terms their
+  type: domain_term
+- text: Governance Bi
+  type: domain_term
+- text: linda jones telenet
+  type: domain_term
+- text: IT Board Quarterly review
+  type: domain_term
+- text: to customers
+  type: domain_term
+- text: addresses DOB
+  type: domain_term
+- text: CapEx Internal IT provider
+  type: domain_term
+- text: Azure AWS GCP Production
+  type: domain_term
+- text: Automated Daily Compliance
+  type: domain_term
+- text: smith gmail
+  type: domain_term
+- text: Monthly Deprecated Risk Office
+  type: domain_term
+- text: Smith michael smith gmail
+  type: domain_term
+- text: Emily Jones
+  type: domain_term
+- text: Customer Support
+  type: domain_term
+- text: Loan Policy Retired Risk
+  type: domain_term
+- text: also reflect positively
+  type: domain_term
+- text: growth
+  type: domain_term
+- text: ing belgium
+  type: domain_term
+- text: be Supplier
+  type: domain_term
+- text: Azure AWS
+  type: domain_term
+- text: listed
+  type: domain_term
+- text: Active Mortgage Inactive
+  type: domain_term
+- text: profit after first
+  type: domain_term
+- text: Gutierrez Justin Andersen
+  type: domain_term
+- text: Ghent Robert Taylor robert
+  type: domain_term
+- text: GCP Production Maintenance
+  type: domain_term
+- text: Internal Policy Internal
+  type: domain_term
+- text: taylor telenet be
+  type: domain_term
+- text: Security Deprecated National
+  type: domain_term
+- text: AML terms
+  type: domain_term
+- text: her set up Online
+  type: domain_term
+- text: Security Deprecated
+  type: domain_term
+- text: Subscriber Active Savings
+  type: domain_term
+- text: include IBANs Agreements
+  type: domain_term
+- text: Edward Jones
+  type: domain_term
+- text: Protocol category status
+  type: domain_term
+- text: III report https
+  type: domain_term
+- text: commitment to customers
+  type: domain_term
+- text: custodian
+  type: domain_term
+- text: Sims Service Desk
+  type: domain_term
+- text: Active Quarterly review
+  type: domain_term
+- text: Outsourcing
+  type: domain_term
+- text: taylor
+  type: domain_term
+- text: Chris Smith Tom
+  type: domain_term
+- text: CMDB
+  type: domain_term
+- text: press releases
+  type: domain_term
+- text: Party Risk Management guideline
+  type: domain_term
+- text: Mons Finance Traveling
+  type: domain_term
+- text: FATCA Mobile Online
+  type: domain_term
+- text: currently CapEx
+  type: domain_term
+- text: TechNova Solutions
+  type: domain_term
+- text: Policy Retired Risk Management
+  type: domain_term
+- text: raw to
+  type: domain_term
+- text: Monthly Deprecated
+  type: domain_term
+- text: Lead
+  type: domain_term
+- text: SANV
+  type: domain_term
+- text: graham ing com
+  type: domain_term
+- text: john graham ing com
+  type: domain_term
+- text: Williams Mortgage Borrower Active
+  type: domain_term
+- text: Compliance Policy Under
+  type: domain_term
+- text: phones addresses DOB IPs
+  type: domain_term
+- text: richardson ing com Mary
+  type: domain_term
+- text: com Erin Johnson
+  type: domain_term
+- text: jane taylor hotmail com
+  type: domain_term
+- text: Under Review On Demand
+  type: domain_term
+- text: confirm
+  type: domain_term
+- text: deliver strong growth in
+  type: domain_term
+- text: davis skynet be
+  type: domain_term
+- text: be Mons Finance
+  type: domain_term
+- text: SANV pdf
+  type: domain_term
+- text: Mobile ATM Branch
+  type: domain_term
+- text: Electronic Banking Agreement
+  type: domain_term
+- text: until replacement
+  type: domain_term
+- text: an Insurance Subscriber
+  type: domain_term
+- text: III https assets
+  type: domain_term
+- text: Mobile ATM Branch FATCA
+  type: domain_term
+- text: Emily Jones Electronic Banking
+  type: domain_term
+- text: AML Compliance Policy Bi
+  type: domain_term
+- text: User Active Mortgage
+  type: domain_term
+- text: IT Board
+  type: domain_term
+- text: Compliance Officer Bi
+  type: domain_term
+- text: Product Specification last
+  type: domain_term
+- text: Security Policy Active Customer
+  type: domain_term
+- text: linda
+  type: domain_term
+- text: Update Active
+  type: domain_term
+- text: Reporting Protocol Risk Management
+  type: domain_term
+- text: on strong results
+  type: domain_term
+- text: of Credit Terminated CUST
+  type: domain_term
+- text: Emily Williams emily
+  type: domain_term
+- text: Sustainability
+  type: domain_term
+- text: Annual Report link
+  type: domain_term
+- text: customer Premium
+  type: domain_term
+- text: Shaun Stanley ing
+  type: domain_term
+- text: michael taylor telenet
+  type: domain_term
+- text: Active Current
+  type: domain_term
+- text: sullivan ing com
+  type: domain_term
+- text: Responsible IT Board Quarterly
+  type: domain_term
+- text: results also
+  type: domain_term
+- text: Laura Lewis insurance
+  type: domain_term
+- text: johnson skynet be Leuven
+  type: domain_term
+- text: dept Compliance
+  type: domain_term
+- text: Reporting Protocol category
+  type: domain_term
+- text: NV Annual report
+  type: domain_term
+- text: Subscriber
+  type: domain_term
+- text: releases can be shared
+  type: domain_term
+- text: raw to authorized teams
+  type: domain_term
+- text: Transfer GBP
+  type: domain_term
+- text: heather johnson
+  type: domain_term
+- text: Tom Walker Supplier
+  type: domain_term
+- text: IP Address Interest
+  type: domain_term
+- text: proximus
+  type: domain_term
+- text: Banking Active Robert Williams
+  type: domain_term
+- text: Maintenance Running as
+  type: domain_term
+- text: NV Annual report pdf
+  type: domain_term
+- text: Annual Report link https
+  type: domain_term
+- text: clark
+  type: domain_term
+- text: of Credit CUST
+  type: domain_term
+- text: Subscriber Active Savings Account
+  type: domain_term
+- text: Heather Johnson heather johnson
+  type: domain_term
+- text: operational use
+  type: domain_term
+- text: Guidelines
+  type: domain_term
+- text: Erin Johnson Kristy Peterson
+  type: domain_term
+- text: Internal IT Production Maintenance
+  type: domain_term
+- text: on strong results with
+  type: domain_term
+- text: Tom Clark Supplier
+  type: domain_term
+- text: internal Transfers include
+  type: domain_term
+- text: Credit Agreement Emily Williams
+  type: domain_term
+- text: Management Industry
+  type: domain_term
+- text: Internal IT Production
+  type: domain_term
+- text: Chris Taylor
+  type: domain_term
+- text: emails phones addresses DOB
+  type: domain_term
+- text: IT Board Bi
+  type: domain_term
+- text: Sustainability Industry Consortium Bi
+  type: domain_term
+- text: Finance Team Weekly Flag
+  type: domain_term
+- text: alex johnson
+  type: domain_term
+- text: ESG dashboard
+  type: domain_term
+- text: Reporting Semi
+  type: domain_term
+- text: economy
+  type: domain_term
+- text: Michael Williams Gender
+  type: domain_term
+- text: internal Transfers include IBANs
+  type: domain_term
+- text: Smith Tom
+  type: domain_term
+- text: Active Fully Automated
+  type: domain_term
+- text: Active Savings
+  type: domain_term
+- text: sources Industry Standard Internal
+  type: domain_term
+- text: One off
+  type: domain_term
+- text: be shared
+  type: domain_term
+- text: Inactive mortgage health check
+  type: domain_term
+- text: report https assets ing
+  type: domain_term
+- text: the Additional Pillar
+  type: domain_term
+- text: Internal IT
+  type: domain_term
+- text: Operations Operations Head
+  type: domain_term
+- text: age flags Michael Williams
+  type: domain_term
+- text: emily smith telenet
+  type: domain_term
+- text: downstream Loan Origination Weekly
+  type: domain_term
+- text: skynet be Jane
+  type: domain_term
+- text: Debit Completed USD
+  type: domain_term
+- text: Management National
+  type: domain_term
+- text: respective processes KYC Verification
+  type: domain_term
+- text: Specification last reviewed
+  type: domain_term
+- text: Policy Retired Board approval
+  type: domain_term
+- text: her Mortgage
+  type: domain_term
+- text: full report
+  type: domain_term
+- text: Custodian Jonathan
+  type: domain_term
+- text: Annual Reports
+  type: domain_term
+- text: Basel Committee
+  type: domain_term
+- text: Under Review Manual On
+  type: domain_term
+- text: John Johnson john johnson
+  type: domain_term
+- text: of Birth
+  type: domain_term
+- text: mary sims
+  type: domain_term
+- text: Box Agreement
+  type: domain_term
+- text: Acceptance Installed but Non
+  type: domain_term
+- text: heather johnson ing com
+  type: domain_term
+- text: Jones linda jones
+  type: domain_term
+- text: FATCA KYC
+  type: domain_term
+- text: CapEx Financial
+  type: domain_term
+- text: Calculation Active Fully
+  type: domain_term
+- text: level Operations Fraud Detection
+  type: domain_term
+- text: CapEx Internal
+  type: domain_term
+- text: Verification Monthly
+  type: domain_term
+- text: emails phones
+  type: domain_term
+- text: Credit Agreement Emily
+  type: domain_term
+- text: Branches Bi Annual
+  type: domain_term
+- text: Deposit Box Agreement
+  type: domain_term
+- text: Banking Agreement
+  type: domain_term
+- text: Michael Smith michael
+  type: domain_term
+- text: Management Basel
+  type: domain_term
+- text: Service IT
+  type: domain_term
+- text: Brussels inactive
+  type: domain_term
+- text: Smith PO
+  type: domain_term
+- text: Life Insurance Subscriber
+  type: domain_term
+- text: Guidelines are Deprecated Risk
+  type: domain_term
+- text: clark gmail com
+  type: domain_term
+- text: outreach Katie Taylor
+  type: domain_term
+- text: Review Internal Audit
+  type: domain_term
+- text: Holder Overdraft Product Specification
+  type: domain_term
+- text: Operations Head IT Risk
+  type: domain_term
+- text: Clark michael clark
+  type: domain_term
+- text: Full Year Results https
+  type: domain_term
+- text: App Update Active
+  type: domain_term
+- text: heather johnson ing
+  type: domain_term
+- text: Emily Jones Mobile Banking
+  type: domain_term
+- text: https ing be
+  type: domain_term
+- text: Jane Smith her Mortgage
+  type: domain_term
+- text: Support Fully Automated On
+  type: domain_term
+- text: Emily Williams Mortgage Borrower
+  type: domain_term
+- text: continues
+  type: domain_term
+- text: ING
+  type: domain_term
+- text: brown
+  type: domain_term
+- text: assets ing com m
+  type: domain_term
+- text: williams skynet be Michael
+  type: domain_term
+- text: smith
+  type: domain_term
+- text: Finance Team Weekly
+  type: domain_term
+- text: card product
+  type: domain_term
+- text: On Demand Finance Team
+  type: domain_term
+- text: Interest Calculation process Active
+  type: domain_term
+- text: Sustainability Internal Governance Annual
+  type: domain_term
+- text: jane taylor
+  type: domain_term
+- text: reinforcing
+  type: domain_term
+- text: guideline Governance
+  type: domain_term
+- text: Jane Smith her
+  type: domain_term
+- text: Phone Email IP Address
+  type: domain_term
+- text: com Michael Taylor michael
+  type: domain_term
+- text: alex williams skynet
+  type: domain_term
+- text: Under Review Responsible IT
+  type: domain_term
+- text: Date of Birth Postal
+  type: domain_term
+- text: Framework Compliance
+  type: domain_term
+- text: Onboarding Standards Advisory Internal
+  type: domain_term
+- text: cycle
+  type: domain_term
+- text: Alex Johnson Mobile
+  type: domain_term
+- text: report https assets
+  type: domain_term
+- text: Daily
+  type: domain_term
+- text: treat IaaS CMDB as
+  type: domain_term
+- text: fee Online KYC FATCA
+  type: domain_term
+- text: least privilege
+  type: domain_term
+- text: Active Customer Service
+  type: domain_term
+- text: to least privileged
+  type: domain_term
+- text: Results https
+  type: domain_term
+- text: linda jones telenet be
+  type: domain_term
+- text: before EOM closes
+  type: domain_term
+- text: replacement flows are live
+  type: domain_term
+- text: Reporting Protocol Risk
+  type: domain_term
+- text: Check
+  type: domain_term
+- text: https assets ing
+  type: domain_term
+- text: KYC Policy Board Bi
+  type: domain_term
+- text: Number
+  type: domain_term
+- text: Taylor Jeanette
+  type: domain_term
+- text: Mobile Banking User Active
+  type: domain_term
+- text: Data Steward
+  type: domain_term
+- text: GDPR AML
+  type: domain_term
+- text: Digital Services Bi
+  type: domain_term
+- text: deliver
+  type: domain_term
+- text: be ing belgium
+  type: domain_term
+- text: Expired CUST
+  type: domain_term
+- text: Automated
+  type: domain_term
+- text: results also reflect
+  type: domain_term
+- text: Offer mortgage health check
+  type: domain_term
+- text: Responsible IT Board
+  type: domain_term
+- text: proximus be Michael
+  type: domain_term
+- text: Robert Williams interaction
+  type: domain_term
+- text: customer Premium Contract API
+  type: domain_term
+- text: Manual On Demand HR
+  type: domain_term
+- text: analytics raw
+  type: domain_term
+- text: years valid
+  type: domain_term
+- text: Manual On Demand run
+  type: domain_term
+- text: Letter of Credit Michael
+  type: domain_term
+- text: Brussels Technology
+  type: domain_term
+- text: overdrafts deposit
+  type: domain_term
+- text: press releases can be
+  type: domain_term
+- text: annual fee
+  type: domain_term
+- text: Jones Electronic Banking Agreement
+  type: domain_term
+- text: Smith Tom Davis
+  type: domain_term
+- text: customers economy and society
+  type: domain_term
+- text: Risk Policy Active
+  type: domain_term
+- text: ID proof of
+  type: domain_term
+- text: business in
+  type: domain_term
+- text: Protection Policy Retired
+  type: domain_term
+- text: Traveling
+  type: domain_term
+- text: Banking User Active Mortgage
+  type: domain_term
+- text: Karen Gutierrez
+  type: domain_term
+- text: Privacy Protection Policy
+  type: domain_term
+- text: tom taylor
+  type: domain_term
+- text: Johnson Security
+  type: domain_term
+- text: report ING
+  type: domain_term
+- text: emily davis
+  type: domain_term
+- text: in analytics raw to
+  type: domain_term
+- text: Deprecated HR Department
+  type: domain_term
+- text: Framework Compliance National Regulator
+  type: domain_term
+- text: michael miller telenet
+  type: domain_term
+- text: Chris Smith Tom Davis
+  type: domain_term
+- text: Miller Life
+  type: domain_term
+- text: Data Steward Erin Johnson
+  type: domain_term
+- text: Jonathan Perkins Trevor
+  type: domain_term
+- text: Emily Williams Supplier
+  type: domain_term
+- text: valid ID proof of
+  type: domain_term
+- text: Disclosures https
+  type: domain_term
+- text: Demand Deprecated Risk Office
+  type: domain_term
+- text: Mobile ATM
+  type: domain_term
+- text: subscription
+  type: domain_term
+- text: communications templates
+  type: domain_term
+- text: Closure Deprecated
+  type: domain_term
+- text: Wire Transfer EUR
+  type: domain_term
+- text: report pdf http assets
+  type: domain_term
+- text: Complaint Handling Governance Basel
+  type: domain_term
+- text: names emails phones
+  type: domain_term
+- text: ID proof
+  type: domain_term
+- text: Semi Automated Daily HR
+  type: domain_term
+- text: miller
+  type: domain_term
+- text: Mobile channel
+  type: domain_term
+- text: Full Year Results
+  type: domain_term
+- text: Perkins
+  type: domain_term
+- text: Specification last
+  type: domain_term
+- text: Privacy Officer Elizabeth Sullivan
+  type: domain_term
+- text: https newsroom ing
+  type: domain_term
+- text: Direct Debit Completed
+  type: domain_term
+- text: Kristy Peterson customer communications
+  type: domain_term
+- text: ID Number Date
+  type: domain_term
+- text: category status
+  type: domain_term
+- text: Fully Automated Daily
+  type: domain_term
+- text: Annual review cycle Compliance
+  type: domain_term
+- text: FATCA and
+  type: domain_term
+- text: report pdf
+  type: domain_term
+- text: Digital Onboarding Standards Advisory
+  type: domain_term
+- text: Kristy Peterson Shaun Stanley
+  type: domain_term
+- text: Online KYC Active
+  type: domain_term
+- text: Postal Address Phone Email
+  type: domain_term
+- text: IT Custodian Jonathan
+  type: domain_term
+- text: Wire Transfer GBP
+  type: domain_term
+- text: Credit Risk Policy Active
+  type: domain_term
+- text: annual Mobile
+  type: domain_term
+- text: KYC and
+  type: domain_term
+- text: jones proximus
+  type: domain_term
+- text: Brown Katie
+  type: domain_term
+- text: Review Semi
+  type: domain_term
+- text: Fully Automated Daily run
+  type: domain_term
+- text: Do not
+  type: domain_term
+- text: Framework Compliance National
+  type: domain_term
+- text: Under Review On
+  type: domain_term
+- text: Manager Customer Service Data
+  type: domain_term
+- text: set up Online Mobile
+  type: domain_term
+- text: Backup Under Review Manual
+  type: domain_term
+- text: Emily Smith Online Banking
+  type: domain_term
+- text: AWS GCP
+  type: domain_term
+- text: Laura Smith
+  type: domain_term
+- text: Insurance Subscriber Active Savings
+  type: domain_term
+- text: Industry Standard
+  type: domain_term
+- text: Controls
+  type: domain_term
+- text: Full Year Results http
+  type: domain_term
+- text: KYC Policy
+  type: domain_term
+- text: and AML
+  type: domain_term
+- text: Elizabeth Sullivan elizabeth
+  type: domain_term
+- text: Joel Reed Tara
+  type: domain_term
+- text: Laura Miller laura miller
+  type: domain_term
+- text: Outsourcing Agreement
+  type: domain_term
+- text: Active Fully
+  type: domain_term
+- text: Internal Policy
+  type: domain_term
+- text: AML Compliance
+  type: domain_term
+- text: CMDB as internal
+  type: domain_term
+- text: AUD
+  type: domain_term
+- text: ing be strong
+  type: domain_term
+- text: Michael Williams
+  type: domain_term
+- text: AML Compliance Policy Under
+  type: domain_term
+- text: Installed but Non Operational
+  type: domain_term
+- text: Results http
+  type: domain_term
+- text: payments alerts ing com
+  type: domain_term
+- text: Emily Taylor
+  type: domain_term
+- text: Perkins Trevor Montgomery
+  type: domain_term
+- text: Analytics an Annual
+  type: domain_term
+- text: Retired Risk
+  type: domain_term
+- text: original Annual
+  type: domain_term
+- text: Finance Team
+  type: domain_term
+- text: Line of Credit
+  type: domain_term
+- text: Standard Internal
+  type: domain_term
+- text: Mobile Online KYC
+  type: domain_term
+- text: respectively
+  type: domain_term
+- text: Under Review Internal
+  type: domain_term
+- text: Banking User
+  type: domain_term
+- text: sources Industry Standard
+  type: domain_term
+- text: Online Banking User Active
+  type: domain_term
+- text: Custodian Jonathan Perkins Asset
+  type: domain_term
+- text: Solutions active IT Vendor
+  type: domain_term
+- text: Security Agreement Expired CUST
+  type: domain_term
+- text: age flags
+  type: domain_term
+- text: Deprecated HR
+  type: domain_term
+- text: johnson ing com
+  type: domain_term
+- text: Cybersecurity
+  type: domain_term
+- text: NV report pdf
+  type: domain_term
+- text: Deprecated Cybersecurity
+  type: domain_term
+- text: https assets ing com
+  type: domain_term
+- text: an Annual
+  type: domain_term
+- text: interaction John Lewis
+  type: domain_term
+- text: Compliance Team Fully Automated
+  type: domain_term
+- text: last reviewed
+  type: domain_term
+- text: Services Deprecated
+  type: domain_term
+- text: Line of
+  type: domain_term
+- text: Generation Active Semi Automated
+  type: domain_term
+- text: Sean Taylor
+  type: domain_term
+- text: Emily Jones Bruges
+  type: domain_term
+- text: Policy Active Quarterly
+  type: domain_term
+- text: com john graham ing
+  type: domain_term
+- text: outreach
+  type: domain_term
+- text: Deprecated board
+  type: domain_term
+- text: Brussels Technology Katie
+  type: domain_term
+- text: IT Governance
+  type: domain_term
+- text: Semi Automated On Demand
+  type: domain_term
+- text: Mary Sims John Graham
+  type: domain_term
+- text: Reporting Under Review Internal
+  type: domain_term
+- text: Interest Financial Internal Policy
+  type: domain_term
+- text: Customer Complaint Handling Customer
+  type: domain_term
+- text: off Supplier
+  type: domain_term
+- text: Board Oversight Principles Sustainability
+  type: domain_term
+- text: dept Compliance Operations
+  type: domain_term
+- text: Jane Williams
+  type: domain_term
+- text: com Nicholas
+  type: domain_term
+- text: erin johnson ing com
+  type: domain_term
+- text: IPs income raw to
+  type: domain_term
+- text: On Demand run
+  type: domain_term
+- text: Origination Weekly
+  type: domain_term
+- text: emily jones skynet
+  type: domain_term
+- text: Onboarding Standards Sustainability Internal
+  type: domain_term
+- text: jones telenet
+  type: domain_term
+- text: customers and society
+  type: domain_term
+- text: Miller Line of Credit
+  type: domain_term
+- text: Katie Taylor
+  type: domain_term
+- text: Accrued Interest
+  type: domain_term
+- text: proximus be Brussels
+  type: domain_term
+- text: Taylor katie
+  type: domain_term
+- text: Contract API GDPR
+  type: domain_term
+- text: jane miller proximus be
+  type: domain_term
+- text: Date of
+  type: domain_term
+- text: telenet be Mons
+  type: domain_term
+- text: IT Custodian
+  type: domain_term
+- text: yet Account Closure
+  type: domain_term
+- text: IT provider
+  type: domain_term
+- text: Heather Johnson heather
+  type: domain_term
+- text: Personal Loan Borrower Active
+  type: domain_term
+- text: releases can
+  type: domain_term
+- text: Deprecated Customer
+  type: domain_term
+- text: customer GDPR and KYC
+  type: domain_term
+- text: Johnson alex johnson skynet
+  type: domain_term
+- text: Fully Automated Finance
+  type: domain_term
+- text: be Brussels his
+  type: domain_term
+- text: Officer Quarterly
+  type: domain_term
+- text: Pillar III https assets
+  type: domain_term
+- text: emily jones skynet be
+  type: domain_term
+- text: Loan Approval Policy Retired
+  type: domain_term
+- text: Screening Guidelines are
+  type: domain_term
+- text: ING Belgium SANV pdf
+  type: domain_term
+- text: Deprecated Risk Office
+  type: domain_term
+- text: DOB IPs income
+  type: domain_term
+- text: Verification Monthly Deprecated Risk
+  type: domain_term
+- text: Pillar III Disclosures
+  type: domain_term
+- text: Regulatory Body
+  type: domain_term
+- text: taylor telenet be Charleroi
+  type: domain_term
+- text: gmail com Terminated
+  type: domain_term
+- text: Deprecated Monthly
+  type: domain_term
+- text: Inactive mortgage health
+  type: domain_term
+- text: Team Weekly Flag risk
+  type: domain_term
+- text: Governance Policy Active Bi
+  type: domain_term
+- text: Doyle
+  type: domain_term
+- text: Development Operational
+  type: domain_term
+- text: reflect positively on customers
+  type: domain_term
+- text: Interest Rate
+  type: domain_term
+- text: Digital Services
+  type: domain_term
+- text: and AML terms their
+  type: domain_term
+- text: members
+  type: domain_term
+- text: outreach Katie Taylor katie
+  type: domain_term
+- text: alex johnson skynet
+  type: domain_term
+- text: CMDB Service Owner Mary
+  type: domain_term
+- text: addresses
+  type: domain_term
+- text: Electronic Banking Agreement CUST
+  type: domain_term
+- text: Borrower
+  type: domain_term
+- text: User Active Current Account
+  type: domain_term
+- text: IT Operations Head
+  type: domain_term
+- text: jane miller proximus
+  type: domain_term
+- text: Head IT Risk
+  type: domain_term
+- text: Lewis Bruges
+  type: domain_term
+- text: on strong
+  type: domain_term
+- text: Brussels Katie
+  type: domain_term
+- text: xlsx
+  type: domain_term
+- text: Head Privacy
+  type: domain_term
+- text: and AML definitions from
+  type: domain_term
+- text: alerts
+  type: domain_term
+- text: Credit Card GBP
+  type: domain_term
+- text: Investment Portfolio Investor Active
+  type: domain_term
+- text: on customers economy
+  type: domain_term
+- text: Smith Melissa
+  type: domain_term
+- text: Alex Johnson Mobile Banking
+  type: domain_term
+- text: Belgium
+  type: domain_term
+- text: positively on
+  type: domain_term
+- text: michael clark gmail com
+  type: domain_term
+- text: Regulatory Reporting Semi Automated
+  type: domain_term
+- text: Personal Loan
+  type: domain_term
+- text: Compliance Under Review
+  type: domain_term
+- text: Automated Finance Team
+  type: domain_term
+- text: emily smith
+  type: domain_term
+- text: hotmail
+  type: domain_term
+- text: Retired Board
+  type: domain_term
+- text: Jones Bruges
+  type: domain_term
+- text: Scoring Under Review Customer
+  type: domain_term
+- text: emily taylor
+  type: domain_term
+- text: Under Review Fully Automated
+  type: domain_term
+- text: GB PPDXJX
+  type: domain_term
+- text: Linda Lewis linda
+  type: domain_term
+- text: IPs income
+  type: domain_term
+- text: "miller telenet be Li\xE8ge"
+  type: domain_term
+- text: Service Policy Quarterly
+  type: domain_term
+- text: SA pdf
+  type: domain_term
+- text: Williams emily
+  type: domain_term
+- text: Department Fully
+  type: domain_term
+- text: newsroom ing
+  type: domain_term
+- text: Protocol Risk Management Industry
+  type: domain_term
+- text: Department Fully Automated On
+  type: domain_term
+- text: Johnson Mobile
+  type: domain_term
+- text: Risk Management Compliance Officer
+  type: domain_term
+- text: ATM Branch FATCA Active
+  type: domain_term
+- text: com Nicholas Wolf
+  type: domain_term
+- text: On Demand Finance
+  type: domain_term
+- text: Branch FATCA Active
+  type: domain_term
+- text: Transfer PO
+  type: domain_term
+- text: Handling Governance Basel Committee
+  type: domain_term
+- text: On Demand HR
+  type: domain_term
+- text: Fully Automated Weekly Compliance
+  type: domain_term
+- text: Ashlee Smith Melissa Navarro
+  type: domain_term
+- text: III https
+  type: domain_term
+- text: Sustainability Reporting Protocol Risk
+  type: domain_term
+- text: Fraud Detection
+  type: domain_term
+- text: Basel Committee Digital Services
+  type: domain_term
+- text: michael taylor telenet be
+  type: domain_term
+- text: Owner Justin
+  type: domain_term
+- text: strong results
+  type: domain_term
+- text: Credit Card USD AUD
+  type: domain_term
+- text: Solutions active
+  type: domain_term
+- text: Alex Jones
+  type: domain_term
+- text: supplier Consulting Agreement
+  type: domain_term
+- text: agreement
+  type: domain_term
+- text: emily davis skynet be
+  type: domain_term
+- text: Brown john brown telenet
+  type: domain_term
+- text: GCP Production
+  type: domain_term
+- text: Order PO
+  type: domain_term
+- text: Automated Daily IT
+  type: domain_term
+- text: reflect positively
+  type: domain_term
+- text: Ashlee Smith
+  type: domain_term
+- text: payments
+  type: domain_term
+- text: Account Holder FATCA and
+  type: domain_term
+- text: AML Compliance Policy
+  type: domain_term
+- text: graham ing
+  type: domain_term
+- text: Test Operational
+  type: domain_term
+- text: Alex Taylor
+  type: domain_term
+- text: income
+  type: domain_term
+- text: Azure AWS GCP
+  type: domain_term
+- text: Guidelines are
+  type: domain_term
+- text: davis skynet
+  type: domain_term
+- text: service channel Robert Williams
+  type: domain_term
+- text: OpEx Financial
+  type: domain_term
+- text: ing be ing continues
+  type: domain_term
+- text: Peterson policy communications DL
+  type: domain_term
+- text: Compliance National
+  type: domain_term
+- text: Head Quarterly
+  type: domain_term
+- text: katie
+  type: domain_term
+- text: Cybersecurity Controls
+  type: domain_term
+- text: Safe Deposit Box
+  type: domain_term
+- text: com Michael Taylor
+  type: domain_term
+- text: ing com Nicholas
+  type: domain_term
+- text: Joel Reed
+  type: domain_term
+- text: Financial Internal Policy
+  type: domain_term
+- text: Lewis Letter
+  type: domain_term
+- text: ing com
+  type: domain_term
+- text: Wire PO
+  type: domain_term
+- text: Results https ing be
+  type: domain_term
+- text: Acceptance Operational
+  type: domain_term
+- text: Brown Supplier
+  type: domain_term
+- text: of Credit Michael Clark
+  type: domain_term
+- text: Interest Calculation process
+  type: domain_term
+- text: Gender Female Age
+  type: domain_term
+- text: Policy Board
+  type: domain_term
+- text: katie taylor telenet be
+  type: domain_term
+- text: Governance Framework
+  type: domain_term
+- text: Semi Automated
+  type: domain_term
+- text: Retired Operations
+  type: domain_term
+- text: Birth Postal
+  type: domain_term
+- text: Holder FATCA
+  type: domain_term
+- text: also reflect positively on
+  type: domain_term
+- text: Digital Onboarding Standards Sustainability
+  type: domain_term
+- text: Alex Johnson alex johnson
+  type: domain_term
+- text: raw to authorized
+  type: domain_term
+- text: Standard Internal Policy Internal
+  type: domain_term
+- text: Review On Demand
+  type: domain_term
+- text: Phillips
+  type: domain_term
+- text: rate simulation
+  type: domain_term
+- text: IT Board Quarterly
+  type: domain_term
+- text: Desk Lead John Graham
+  type: domain_term
+- text: operational use DLs
+  type: domain_term
+- text: robert
+  type: domain_term
+- text: Credit Scoring
+  type: domain_term
+- text: Fully Automated Daily Compliance
+  type: domain_term
+- text: be Brussels Tom Taylor
+  type: domain_term
+- text: Robert Johnson
+  type: domain_term
+- text: premium savings
+  type: domain_term
+- text: Offer mortgage
+  type: domain_term
+- text: Emily Smith emily
+  type: domain_term
+- text: Cheque PO
+  type: domain_term
+- text: Office
+  type: domain_term
+- text: tests before EOM
+  type: domain_term
+- text: Half Year
+  type: domain_term
+- text: years valid ID proof
+  type: domain_term
+- text: analytics raw to
+  type: domain_term
+- text: definitions from
+  type: domain_term
+- text: Rate
+  type: domain_term
+- text: Miguel Fitzgerald
+  type: domain_term
+- text: commitment to
+  type: domain_term
+- text: Tom Jones
+  type: domain_term
+- text: Risk Management Basel Committee
+  type: domain_term
+- text: IaaS CMDB
+  type: domain_term
+- text: some Retired
+  type: domain_term
+- text: business
+  type: domain_term
+- text: Policy Compliance Under Review
+  type: domain_term
+- text: strong growth in
+  type: domain_term
+- text: Chris Miller Line of
+  type: domain_term
+- text: releases can be
+  type: domain_term
+- text: ing com John
+  type: domain_term
+- text: johnson skynet
+  type: domain_term
+- text: Michael Miller michael
+  type: domain_term
+- text: Safe
+  type: domain_term
+- text: Service Owner Mary Sims
+  type: domain_term
+- text: her Mortgage Borrower
+  type: domain_term
+- text: IT Manager Loan Approval
+  type: domain_term
+- text: erin johnson
+  type: domain_term
+- text: Loan Origination
+  type: domain_term
+- text: Automated On Demand Finance
+  type: domain_term
+- text: Taylor tom taylor proximus
+  type: domain_term
+- text: SEPA Credit Pending PO
+  type: domain_term
+- text: after first half
+  type: domain_term
+- text: Guidelines Compliance Internal Governance
+  type: domain_term
+- text: Miller michael
+  type: domain_term
+- text: Heather Johnson
+  type: domain_term
+- text: Jones PO
+  type: domain_term
+- text: an Account Holder
+  type: domain_term
+- text: Desk Lead
+  type: domain_term
+- text: KYC Active
+  type: domain_term
+- text: Robert Brown Katie
+  type: domain_term
+- text: edward richardson ing
+  type: domain_term
+- text: Owner Mary Sims
+  type: domain_term
+- text: Amortization Financial Regulatory
+  type: domain_term
+- text: Sims John Graham
+  type: domain_term
+- text: https newsroom ing be
+  type: domain_term
+- text: material exports
+  type: domain_term
+- text: Active Responsible IT
+  type: domain_term
+- text: Online GDPR
+  type: domain_term
+- text: newsroom ing be ing
+  type: domain_term
+- text: JPY
+  type: domain_term
+- text: for operational use
+  type: domain_term
+- text: Active Risk Management
+  type: domain_term
+- text: John Brown
+  type: domain_term
+- text: ing com PO
+  type: domain_term
+- text: AML Screening On Demand
+  type: domain_term
+- text: responsible department
+  type: domain_term
+- text: Mortgage Inactive mortgage health
+  type: domain_term
+- text: ing com Erin Johnson
+  type: domain_term
+- text: IT responsible department
+  type: domain_term
+- text: and AML Screening On
+  type: domain_term
+- text: jones
+  type: domain_term
+- text: Lewis Ghent
+  type: domain_term
+- text: tests before EOM closes
+  type: domain_term
+- text: Active Mortgage
+  type: domain_term
+- text: Insurance Subscriber
+  type: domain_term
+- text: Joel
+  type: domain_term
+- text: Davis Credit
+  type: domain_term
+- text: Reports Pillar
+  type: domain_term
+- text: Operations Operations
+  type: domain_term
+- text: taylor proximus be
+  type: domain_term
+- text: Insurance Distribution
+  type: domain_term
+- text: Industry Standard Internal Policy
+  type: domain_term
+- text: processes
+  type: domain_term
+- text: continues to deliver strong
+  type: domain_term
+- text: Protocol
+  type: domain_term
+- text: ING Belgium SA NV
+  type: domain_term
+- text: RAM Google Cloud
+  type: domain_term
+- text: Internal Governance
+  type: domain_term
+- text: Risk Office
+  type: domain_term
+- text: Data Security Policy Active
+  type: domain_term
+- text: Brussels Tom
+  type: domain_term
+- text: Lewis linda lewis hotmail
+  type: domain_term
+- text: Demand run
+  type: domain_term
+- text: Perkins Trevor
+  type: domain_term
+- text: Officer Elizabeth
+  type: domain_term
+- text: Standards Advisory
+  type: domain_term
+- text: Taylor emily taylor
+  type: domain_term
+- text: Transfer USD
+  type: domain_term
+- text: Party Risk
+  type: domain_term
+- text: ing com john
+  type: domain_term
+- text: Active AML Mobile Online
+  type: domain_term
+- text: Bi Annual review cycle
+  type: domain_term
+- text: ING Belgium Additional Pillar
+  type: domain_term
+- text: policy communications
+  type: domain_term
+- text: Mary Sims Service
+  type: domain_term
+- text: Stanley ing com
+  type: domain_term
+- text: Branch AML
+  type: domain_term
+- text: Michael Smith
+  type: domain_term
+- text: Operational Status
+  type: domain_term
+- text: All Branches Bi Annual
+  type: domain_term
+- text: Melissa Navarro Jonathan
+  type: domain_term
+- text: Privacy Guidelines Compliance Internal
+  type: domain_term
+- text: Mobile Online KYC FATCA
+  type: domain_term
+- text: Tom Walker
+  type: domain_term
+- text: John Miller
+  type: domain_term
+- text: Board Oversight
+  type: domain_term
+- text: Review Fully Automated
+  type: domain_term
+- text: Customer Complaint
+  type: domain_term
+- text: their respective processes KYC
+  type: domain_term
+- text: Report https assets
+  type: domain_term
+- text: ING Belgium SA pdf
+  type: domain_term
+- text: releases
+  type: domain_term
+- text: Mobile Banking Active Alex
+  type: domain_term
+- text: FATCA and KYC
+  type: domain_term
+- text: Risk Management guideline Governance
+  type: domain_term
+- text: Mons Finance
+  type: domain_term
+- text: johnson ing com Nicholas
+  type: domain_term
+- text: sims ing com John
+  type: domain_term
+- text: read full
+  type: domain_term
+- text: him tom
+  type: domain_term
+- text: IT Risk Assessment process
+  type: domain_term
+- text: are Do not
+  type: domain_term
+- text: Data Privacy Guidelines
+  type: domain_term
+- text: outreach Katie
+  type: domain_term
+- text: Williams his loan
+  type: domain_term
+- text: "Li\xE8ge"
+  type: domain_term
+- text: Reset Active
+  type: domain_term
+- text: Policy Internal
+  type: domain_term
+- text: IT responsible
+  type: domain_term
+- text: in outreach Katie Taylor
+  type: domain_term
+- text: Data Backup
+  type: domain_term
+- text: Controls Basel
+  type: domain_term
+- text: john graham
+  type: domain_term
+- text: Belgium SANV pdf
+  type: domain_term
+- text: ing be strong results
+  type: domain_term
+- text: Policy Under Review Responsible
+  type: domain_term
+- text: SA NV report
+  type: domain_term
+- text: Brussels Katie Taylor katie
+  type: domain_term
+- text: customers Digital
+  type: domain_term
+- text: Steward Erin
+  type: domain_term
+- text: Calculation process Active Fully
+  type: domain_term
+- text: status material
+  type: domain_term
+- text: are Do not merge
+  type: domain_term
+- text: with some
+  type: domain_term
+- text: his loan agreement
+  type: domain_term
+- text: and rate simulation
+  type: domain_term
+- text: HQ Only Bi
+  type: domain_term
+- text: ing
+  type: domain_term
+- text: John Lewis
+  type: domain_term
+- text: Active John
+  type: domain_term
+- text: an Annual Contract
+  type: domain_term
+- text: Status Operational
+  type: domain_term
+- text: AML Screening Deprecated On
+  type: domain_term
+- text: DOB
+  type: domain_term
+- text: Basel Committee Bi
+  type: domain_term
+- text: tom
+  type: domain_term
+- text: Team Weekly
+  type: domain_term
+- text: cycle Compliance Officer
+  type: domain_term
+- text: Head IT
+  type: domain_term
+- text: Password Reset Active
+  type: domain_term
+- text: http newsroom ing
+  type: domain_term
+- text: Board Quarterly
+  type: domain_term
+- text: Do not merge
+  type: domain_term
+- text: Management Basel Committee
+  type: domain_term
+- text: Jones Mobile Banking
+  type: domain_term
+- text: phones addresses DOB
+  type: domain_term
+- text: income FATCA
+  type: domain_term
+- text: OpEx Azure AWS
+  type: domain_term
+- text: Cybersecurity Controls Basel Committee
+  type: domain_term
+- text: Policy Internal Policy
+  type: domain_term
+- text: be strong
+  type: domain_term
+- text: after first half of
+  type: domain_term
+- text: Steward Erin Johnson
+  type: domain_term
+- text: Active IT responsible department
+  type: domain_term
+- text: On Demand Deprecated
+  type: domain_term
+- text: Production Retired
+  type: domain_term
+- text: Williams his loan agreement
+  type: domain_term
+- text: Customer Onboarding Deprecated HR
+  type: domain_term
+- text: Active Savings Account
+  type: domain_term
+- text: Steward Erin Johnson erin
+  type: domain_term
+- text: Operations Fraud Detection Active
+  type: domain_term
+- text: Compliance Operations
+  type: domain_term
+- text: Manager Loan Approval
+  type: domain_term
+- text: Generation Active
+  type: domain_term
+- text: Graham Erin Johnson
+  type: domain_term
+- text: Credit Terminated CUST
+  type: domain_term
+- text: Standards Sustainability
+  type: domain_term
+- text: Current Account
+  type: domain_term
+- text: Reporting Protocol category status
+  type: domain_term
+- text: Investor Active
+  type: domain_term
+- text: Data Security
+  type: domain_term
+- text: johnson proximus
+  type: domain_term
+- text: names status material
+  type: domain_term
+- text: multiple in Maintenance Running
+  type: domain_term
+- text: Installed but Non
+  type: domain_term
+- text: Jimmy Phillips
+  type: domain_term
+- text: Active Risk Management Compliance
+  type: domain_term
+- text: Brussels Tom Taylor tom
+  type: domain_term
+- text: IBANs
+  type: domain_term
+- text: Failed Standing
+  type: domain_term
+- text: Advisory Internal
+  type: domain_term
+- text: Wire Transfer PO
+  type: domain_term
+- text: Williams an
+  type: domain_term
+- text: Oversight Principles
+  type: domain_term
+- text: Update Active Fully
+  type: domain_term
+- text: Smith Online
+  type: domain_term
+- text: Mortgage Borrower Active Personal
+  type: domain_term
+- text: Mary Sims mary sims
+  type: domain_term
+- text: Management Compliance Officer Bi
+  type: domain_term
+- text: Committee HQ Only Bi
+  type: domain_term
+- text: Laura Lewis insurance subscription
+  type: domain_term
+- text: be ing belgium builds
+  type: domain_term
+- text: Thomas
+  type: domain_term
+- text: Transaction Monitoring
+  type: domain_term
+- text: Compliance Check Regulatory
+  type: domain_term
+- text: Inactive Offer
+  type: domain_term
+- text: Risk Assessment
+  type: domain_term
+- text: John Graham
+  type: domain_term
+- text: telenet be
+  type: domain_term
+- text: Smith Melissa Navarro Jonathan
+  type: domain_term
+- text: emails phones addresses
+  type: domain_term
+- text: Mary Sims Service Desk
+  type: domain_term
+- text: Responsible IT Board Bi
+  type: domain_term
+- text: Williams an Account Holder
+  type: domain_term
+- text: skynet be Jane Taylor
+  type: domain_term
+- text: Sustainability Reporting Protocol
+  type: domain_term
+- text: Ghent Robert
+  type: domain_term
+- text: Michael Taylor michael
+  type: domain_term
+- text: Contract API GDPR AML
+  type: domain_term
+- text: Onboarding Standards advisory
+  type: domain_term
+- text: Active Fully Automated Daily
+  type: domain_term
+- text: Audit Regulatory Reporting
+  type: domain_term
+- text: Board level Operations Fraud
+  type: domain_term
+- text: a mortgage
+  type: domain_term
+- text: economy and
+  type: domain_term
+- text: assets
+  type: domain_term
+- text: III Report
+  type: domain_term
+- text: and AML terms
+  type: domain_term
+- text: Holder Active Mortgage
+  type: domain_term
+- text: Johnson erin johnson
+  type: domain_term
+- text: Active Risk Management IT
+  type: domain_term
+- text: lewis hotmail com
+  type: domain_term
+- text: its
+  type: domain_term
+- text: Active Quarterly
+  type: domain_term
+- text: Taylor robert taylor proximus
+  type: domain_term
+- text: Disclosures https assets ing
+  type: domain_term
+- text: press releases can
+  type: domain_term
+- text: DOB IPs
+  type: domain_term
+- text: Justin Andersen Config
+  type: domain_term
+- text: Risk Governance
+  type: domain_term
+- text: be Michael Miller
+  type: domain_term
+- text: deposit agreements
+  type: domain_term
+- text: Demand
+  type: domain_term
+- text: ing be ing belgium
+  type: domain_term
+- text: Bruges emily jones skynet
+  type: domain_term
+- text: flags Michael Williams Gender
+  type: domain_term
+- text: belgium builds
+  type: domain_term
+- text: Running Production
+  type: domain_term
+- text: be premium
+  type: domain_term
+- text: Lewis linda
+  type: domain_term
+- text: Handling Customer Support Fully
+  type: domain_term
+- text: GB RAM
+  type: domain_term
+- text: annual fee Branch AML
+  type: domain_term
+- text: JPY EUR
+  type: domain_term
+- text: Johnson john johnson proximus
+  type: domain_term
+- text: taylor proximus be Anna
+  type: domain_term
+- text: application storage
+  type: domain_term
+- text: Screening Deprecated On
+  type: domain_term
+- text: valid ID proof
+  type: domain_term
+- text: SA NV pdf
+  type: domain_term
+- text: Privacy Officer Elizabeth
+  type: domain_term
+- text: taylor telenet be Brussels
+  type: domain_term
+- text: IAAS
+  type: domain_term
+- text: Controls Advisory
+  type: domain_term
+- text: million
+  type: domain_term
+- text: Loan Approval Policy
+  type: domain_term
+- text: Banking Active Robert
+  type: domain_term
+- text: Current Account Holder Active
+  type: domain_term
+- text: Risk Management IT Manager
+  type: domain_term
+- text: Half Year Results https
+  type: domain_term
+- text: telenet be Charleroi
+  type: domain_term
+- text: Belgium Additional Pillar
+  type: domain_term
+- text: Risk Management National
+  type: domain_term
+- text: jones telenet be
+  type: domain_term
+- text: Peterson customer communications templates
+  type: domain_term
+- text: Security Policy Active
+  type: domain_term
+- text: Branch AML Active
+  type: domain_term
+- text: linda lewis hotmail com
+  type: domain_term
+- text: Management Industry Consortium Annual
+  type: domain_term
+- text: Active Finance
+  type: domain_term
+- text: III report
+  type: domain_term
+- text: Erin Johnson erin johnson
+  type: domain_term
+- text: Acceptance Installed Operational
+  type: domain_term
+- text: Chris Taylor John
+  type: domain_term
+- text: Pending Standing
+  type: domain_term
+- text: least privileged roles
+  type: domain_term
+- text: hotmail com Michael Taylor
+  type: domain_term
+- text: original Annual report
+  type: domain_term
+- text: be Michael
+  type: domain_term
+- text: but Non
+  type: domain_term
+- text: Compliance Check
+  type: domain_term
+- text: Mortgage Active John Lewis
+  type: domain_term
+- text: Internal Policy Internal Policy
+  type: domain_term
+- text: health check
+  type: domain_term
+- text: Kristy Peterson
+  type: domain_term
+- text: of income FATCA KYC
+  type: domain_term
+- text: Fully Automated Weekly
+  type: domain_term
+- text: to deliver strong growth
+  type: domain_term
+- text: AWS GCP Production
+  type: domain_term
+- text: be premium savings
+  type: domain_term
+- text: Taylor michael taylor
+  type: domain_term
+- text: Credit Pending PO
+  type: domain_term
+- text: Principles Sustainability Industry Consortium
+  type: domain_term
+- text: PII
+  type: domain_term
+- text: Robert Brown Katie Williams
+  type: domain_term
+- text: Officer Bi Annual
+  type: domain_term
+- text: annual Mobile Online KYC
+  type: domain_term
+- text: health check and
+  type: domain_term
+- text: Miller Line of
+  type: domain_term
+- text: an Account
+  type: domain_term
+- text: Oversight Principles Sustainability Industry
+  type: domain_term
+- text: Governance Basel Committee Bi
+  type: domain_term
+- text: cycle Compliance Officer Risk
+  type: domain_term
+- text: com John Graham
+  type: domain_term
+- text: Card cashback Alex Jones
+  type: domain_term
+- text: channel Robert Williams
+  type: domain_term
+- text: Michael Taylor michael taylor
+  type: domain_term
+- text: society
+  type: domain_term
+- text: Jane Miller Life Insurance
+  type: domain_term
+- text: Consulting Agreement API
+  type: domain_term
+- text: AML Mobile Online
+  type: domain_term
+- text: Tom Smith
+  type: domain_term
+- text: Azure application storage capacity
+  type: domain_term
+- text: Screening Deprecated On Demand
+  type: domain_term
+- text: Protection Policy Retired Operations
+  type: domain_term
+- text: the definitions sheet
+  type: domain_term
+- text: Risk Management National Regulator
+  type: domain_term
+- text: for operational
+  type: domain_term
+- text: also
+  type: domain_term
+- text: Policy Active Customer Service
+  type: domain_term
+- text: Standards Sustainability Internal
+  type: domain_term
+- text: Banking Active Alex Williams
+  type: domain_term
+- text: Report ING Belgium SA
+  type: domain_term
+- text: Mortgage Borrower Active
+  type: domain_term
+- text: Branch
+  type: domain_term
+- text: laura miller telenet be
+  type: domain_term
+- text: Taylor Jeanette Joseph
+  type: domain_term
+- text: Acceptance Installed
+  type: domain_term
+- text: belgium builds on
+  type: domain_term
+- text: commitment
+  type: domain_term
+- text: dormant alerts
+  type: domain_term
+- text: miller proximus be
+  type: domain_term
+- text: Mortgage last
+  type: domain_term
+- text: Daily Compliance Team
+  type: domain_term
+- text: tom jones proximus
+  type: domain_term
+- text: ID Number Date of
+  type: domain_term
+- text: ID Number
+  type: domain_term
+- text: Customer Service Policy
+  type: domain_term
+- text: Closure Deprecated Compliance
+  type: domain_term
+- text: Active Personal Loan Borrower
+  type: domain_term
+- text: Clark michael
+  type: domain_term
+- text: for operational use DLs
+  type: domain_term
+- text: Emily Jones Bruges emily
+  type: domain_term
+- text: Pending PO
+  type: domain_term
+- text: Backup Under Review
+  type: domain_term
+- text: richardson ing com
+  type: domain_term
+- text: Postal Address
+  type: domain_term
+- text: Customer Complaint Handling
+  type: domain_term
+- text: flows are
+  type: domain_term
+- text: Online KYC FATCA Active
+  type: domain_term
+- text: Policy Active Responsible
+  type: domain_term
+- text: Gender Female
+  type: domain_term
+- text: original ING Belgium Additional
+  type: domain_term
+- text: Non Operational
+  type: domain_term
+- text: emily jones
+  type: domain_term
+- text: SA NV Annual
+  type: domain_term
+- text: Active Daily
+  type: domain_term
+- text: and https
+  type: domain_term
+- text: Sims mary sims
+  type: domain_term
+- text: Taylor tom taylor
+  type: domain_term
+- text: Department Fully Automated
+  type: domain_term
+- text: Banking User Active Current
+  type: domain_term
+- text: User Active Mortgage Borrower
+  type: domain_term
+- text: Risk Policy Under Review
+  type: domain_term
+- text: bdaa
+  type: domain_term
+- text: ING Belgium
+  type: domain_term
+- text: Disclosures https assets
+  type: domain_term
+- text: processes KYC Verification Monthly
+  type: domain_term
+- text: Maintenance Google
+  type: domain_term
+- text: Taylor katie taylor telenet
+  type: domain_term
+- text: the Additional Pillar III
+  type: domain_term
+- text: Linda Jones linda
+  type: domain_term
+- text: Review Responsible IT
+  type: domain_term
+- text: Pillar III report
+  type: domain_term
+- text: Review Fully Automated Daily
+  type: domain_term
+- text: Industry Consortium
+  type: domain_term
+- text: Risk Management Compliance
+  type: domain_term
+- text: Chris Garcia
+  type: domain_term
+- text: Policy Under Review
+  type: domain_term
+- text: alerts ing
+  type: domain_term
+- text: ensure restore
+  type: domain_term
+- text: Jane Lewis Letter
+  type: domain_term
+- text: On Demand HR Department
+  type: domain_term
+- text: Jonathan Perkins Asset Owner
+  type: domain_term
+- text: TechNova Solutions active
+  type: domain_term
+- text: OpEx Azure AWS GCP
+  type: domain_term
+- text: Alex Williams
+  type: domain_term
+- text: process Active
+  type: domain_term
+- text: the Additional
+  type: domain_term
+- text: an Insurance
+  type: domain_term
+- text: edward richardson
+  type: domain_term
+- text: pdf http
+  type: domain_term
+- text: AML Screening Guidelines
+  type: domain_term
+- text: Assessment process
+  type: domain_term
+- text: BPOXTYWJ
+  type: domain_term
+- text: Governance Bi Annual
+  type: domain_term
+- text: wolf
+  type: domain_term
+- text: Jane Miller Life
+  type: domain_term
+- text: Management Industry Consortium
+  type: domain_term
+- text: Chris Williams an
+  type: domain_term
+- text: Savings Account
+  type: domain_term
+- text: Linda Lewis linda lewis
+  type: domain_term
+- text: Williams his
+  type: domain_term
+- text: related
+  type: domain_term
+- text: Navarro Jonathan Perkins Trevor
+  type: domain_term
+- text: Loan Origination Weekly Semi
+  type: domain_term
+- text: Transfer EUR
+  type: domain_term
+- text: terms their respective processes
+  type: domain_term
+- text: privilege
+  type: domain_term
+- text: Bi Annual
+  type: domain_term
+- text: status
+  type: domain_term
+- text: IBANs Agreements are
+  type: domain_term
+- text: AML terms their respective
+  type: domain_term
+- text: risk of dormant
+  type: domain_term
+- text: fee Branch AML Active
+  type: domain_term
+- text: fee Online GDPR KYC
+  type: domain_term
+- text: Perkins Asset
+  type: domain_term
+- text: Statement Generation
+  type: domain_term
+- text: Standards advisory
+  type: domain_term
+- text: Retired Risk Management
+  type: domain_term
+- text: johnson ing
+  type: domain_term
+- text: be strong results also
+  type: domain_term
+- text: Operations Fraud
+  type: domain_term
+- text: Active Robert
+  type: domain_term
+- text: privileged
+  type: domain_term
+- text: NV report
+  type: domain_term
+- text: Sims mary sims ing
+  type: domain_term
+- text: Emily Taylor emily
+  type: domain_term
+- text: Income or
+  type: domain_term
+- text: telenet be Brussels
+  type: domain_term
+- text: risk of dormant alerts
+  type: domain_term
+- text: Audit Regulatory Reporting Under
+  type: domain_term
+- text: Operational Risk Policy
+  type: domain_term
+- text: Risk Assessment process
+  type: domain_term
+- text: Mortgage Borrower
+  type: domain_term
+- text: Manager Customer
+  type: domain_term
+- text: are Deprecated
+  type: domain_term
+- text: Guidelines Compliance
+  type: domain_term
+- text: yet Account Closure Deprecated
+  type: domain_term
+- text: Screening On Demand Deprecated
+  type: domain_term
+- text: smith telenet
+  type: domain_term
+- text: Active interaction John
+  type: domain_term
+- text: Johnson Kristy Peterson policy
+  type: domain_term
+- text: Department
+  type: domain_term
+- text: CorpKeys
+  type: domain_term
+- text: john brown
+  type: domain_term
+- text: proximus be premium
+  type: domain_term
+- text: IaaS CMDB as internal
+  type: domain_term
+- text: ATM Branch
+  type: domain_term
+- text: be Jane
+  type: domain_term
+- text: Head
+  type: domain_term
+- text: Belgium SA
+  type: domain_term
+- text: Pillar III
+  type: domain_term
+- text: use DLs
+  type: domain_term
+- text: graham
+  type: domain_term
+- text: Reporting Semi Automated On
+  type: domain_term
+- text: "jones proximus be Li\xE8ge"
+  type: domain_term
+- text: One off Supplier
+  type: domain_term
+- text: Kristy Peterson Shaun
+  type: domain_term
+- text: Risk Assessment process Under
+  type: domain_term
+- text: Inactive John Taylor
+  type: domain_term
+- text: jane miller
+  type: domain_term
+- text: Committee Bi
+  type: domain_term
+- text: Email IP Address
+  type: domain_term
+- text: pdf read
+  type: domain_term
+- text: Belgium SANV
+  type: domain_term
+- text: Holder Active
+  type: domain_term
+- text: to authorized
+  type: domain_term
+- text: million profit after
+  type: domain_term
+- text: first
+  type: domain_term
+- text: https ing
+  type: domain_term
+- text: Completed Wire PO
+  type: domain_term
+- text: Taylor emily taylor telenet
+  type: domain_term
+- text: Manager Loan Approval Policy
+  type: domain_term
+- text: Data Privacy
+  type: domain_term
+- text: Reporting Under
+  type: domain_term
+- text: annual Online KYC
+  type: domain_term
+- text: telenet be Mobile channel
+  type: domain_term
+- text: Standard Internal Policy
+  type: domain_term
+- text: Weekly Compliance
+  type: domain_term
+- text: Automated On
+  type: domain_term
+- text: Detection Active
+  type: domain_term
+- text: Update Active Fully Automated
+  type: domain_term
+- text: Email IP Address Income
+  type: domain_term
+- text: Chris Miller Line
+  type: domain_term
+- text: alex williams
+  type: domain_term
+- text: mortgage health check and
+  type: domain_term
+- text: Taylor Anna
+  type: domain_term
+- text: Michael Williams Gender Female
+  type: domain_term
+- text: level Operations Fraud
+  type: domain_term
+- text: Year Results https newsroom
+  type: domain_term
+- text: Peterson Shaun
+  type: domain_term
+- text: Digital Services Deprecated
+  type: domain_term
+- text: Laura Taylor Supplier
+  type: domain_term
+- text: multiple in Maintenance
+  type: domain_term
+- text: ing com Erin
+  type: domain_term
+- text: Mortgage Inactive Offer a
+  type: domain_term
+- text: skynet be
+  type: domain_term
+- text: Consortium Bi
+  type: domain_term
+- text: Policy Retired Risk
+  type: domain_term
+- text: Regulatory Reporting Under
+  type: domain_term
+- text: Weekly Semi Automated
+  type: domain_term
+- text: Active FATCA Mobile Online
+  type: domain_term
+- text: skynet be Michael
+  type: domain_term
+- text: can be shared
+  type: domain_term
+- text: and Maintenance
+  type: domain_term
+- text: be ing
+  type: domain_term
+- text: Weekly Flag risk of
+  type: domain_term
+- text: ing com Mary Sims
+  type: domain_term
+- text: Charleroi
+  type: domain_term
+- text: Maple Dr
+  type: domain_term
+- text: Credit Michael Clark
+  type: domain_term
+- text: Lewis insurance subscription
+  type: domain_term
+- text: Borrower Active Personal Loan
+  type: domain_term
+- text: KYC and AML terms
+  type: domain_term
+- text: Retail Banking
+  type: domain_term
+- text: privilege roles
+  type: domain_term
+- text: first half of
+  type: domain_term
+- text: positively
+  type: domain_term
+- text: Consent active
+  type: domain_term
+- text: Subscriber Active
+  type: domain_term
+- text: Standing Order PO
+  type: domain_term
+- text: Internal Audit
+  type: domain_term
+- text: Standard
+  type: domain_term
+- text: in outreach Katie
+  type: domain_term
+- text: Customer Onboarding Deprecated
+  type: domain_term
+- text: Sean
+  type: domain_term
+- text: Online Mobile
+  type: domain_term
+- text: Results https newsroom
+  type: domain_term
+- text: Year Results http
+  type: domain_term
+- text: Automated On Demand
+  type: domain_term
+- text: Card USD
+  type: domain_term
+- text: Perkins Asset Owner
+  type: domain_term
+- text: Goods
+  type: domain_term
+- text: PII business in analytics
+  type: domain_term
+- text: Team Fully
+  type: domain_term
+- text: IT Governance Policy Active
+  type: domain_term
+- text: be Anna Davis
+  type: domain_term
+- text: Smith her Mortgage Borrower
+  type: domain_term
+- text: KYC Verification Deprecated
+  type: domain_term
+- text: Manager Customer Service
+  type: domain_term
+- text: Active Fully Automated Weekly
+  type: domain_term
+- text: Bi Annual Active
+  type: domain_term
+- text: newsroom ing be strong
+  type: domain_term
+- text: Advisory Basel
+  type: domain_term
+- text: taylor proximus be Michael
+  type: domain_term
+- text: are live
+  type: domain_term
+- text: Results http newsroom ing
+  type: domain_term
+- text: AML Screening On
+  type: domain_term
+- text: proximus be Anna Davis
+  type: domain_term
+- text: Sims Service Desk Lead
+  type: domain_term
+- text: Installed Operational Production
+  type: domain_term
+- text: Life Insurance Subscriber Active
+  type: domain_term
+- text: Direct Debit
+  type: domain_term
+- text: III Disclosures
+  type: domain_term
+- text: Interest fields
+  type: domain_term
+- text: their respective
+  type: domain_term
+- text: GCP
+  type: domain_term
+- text: Support Supplier
+  type: domain_term
+- text: Johnson heather
+  type: domain_term
+- text: Agreement API
+  type: domain_term
+- text: com Michael
+  type: domain_term
+- text: Additional Pillar III report
+  type: domain_term
+- text: Jane Miller Ghent
+  type: domain_term
+- text: in Maintenance Running
+  type: domain_term
+- text: Williams Mortgage Borrower
+  type: domain_term
+- text: Check Regulatory
+  type: domain_term
+- text: board briefing
+  type: domain_term
+- text: Mobile Banking Security
+  type: domain_term
+- text: Premium Contract
+  type: domain_term
+- text: Owner Justin Andersen
+  type: domain_term
+- text: Security Deprecated National Regulator
+  type: domain_term
+- text: names
+  type: domain_term
+- text: Demand Deprecated
+  type: domain_term
+- text: Leuven Alex Johnson alex
+  type: domain_term
+- text: Risk Management Industry Consortium
+  type: domain_term
+- text: the Interest Calculation process
+  type: domain_term
+- text: least
+  type: domain_term
+- text: http assets ing
+  type: domain_term
+- text: Committee Digital Services Bi
+  type: domain_term
+- text: Advisory
+  type: domain_term
+- text: Operations Head
+  type: domain_term
+- text: miller proximus be premium
+  type: domain_term
+- text: CMDB as internal Transfers
+  type: domain_term
+- text: Management guideline Governance
+  type: domain_term
+- text: KYC FATCA
+  type: domain_term
+- text: com John
+  type: domain_term
+- text: ING Belgium Pillar III
+  type: domain_term
+- text: sims ing com john
+  type: domain_term
+- text: Governance Policy Active Risk
+  type: domain_term
+- text: michael miller telenet be
+  type: domain_term
+- text: Industry Standard Internal
+  type: domain_term
+- text: customer communications
+  type: domain_term
+- text: Goods Supply Supplier
+  type: domain_term
+- text: Active Current Account
+  type: domain_term
+- text: KYC Policy Board
+  type: domain_term
+- text: IT Operations
+  type: domain_term
+- text: Officer Elizabeth Sullivan
+  type: domain_term
+- text: original EN
+  type: domain_term
+- text: ing com m
+  type: domain_term
+- text: Smith her
+  type: domain_term
+- text: gender
+  type: domain_term
+- text: Amortization
+  type: domain_term
+- text: Portfolio Investor Active
+  type: domain_term
+- text: in Maintenance Running as
+  type: domain_term
+- text: Report link
+  type: domain_term
+- text: Credit Scoring Under
+  type: domain_term
+- text: Deprecated Risk Management National
+  type: domain_term
+- text: tom taylor proximus
+  type: domain_term
+- text: CorpKeys for
+  type: domain_term
+- text: hotmail com Active
+  type: domain_term
+- text: Nicholas Wolf nicolas
+  type: domain_term
+- text: Life Insurance
+  type: domain_term
+- text: Card Agreement
+  type: domain_term
+- text: Include channels versions
+  type: domain_term
+- text: Annual Active
+  type: domain_term
+- text: Lewis Letter of Credit
+  type: domain_term
+- text: Risk Assessment Operational
+  type: domain_term
+- text: Daniel Taylor
+  type: domain_term
+- text: Account Holder FATCA
+  type: domain_term
+- text: john brown telenet be
+  type: domain_term
+- text: Johnson Kristy Peterson Shaun
+  type: domain_term
+- text: taylor proximus
+  type: domain_term
+- text: tom taylor proximus be
+  type: domain_term
+- text: taylor telenet
+  type: domain_term
+- text: williams hotmail
+  type: domain_term
+- text: IT Manager
+  type: domain_term
+- text: mortgage health
+  type: domain_term
+- text: michael clark
+  type: domain_term
+- text: original ING BE Pillar
+  type: domain_term
+- text: Industry Consortium Bi Annual
+  type: domain_term
+- text: Fraud Detection Active Finance
+  type: domain_term
+- text: Fully Automated On
+  type: domain_term
+- text: laura
+  type: domain_term
+- text: Digital Services Deprecated Annual
+  type: domain_term
+- text: Management guideline Governance Basel
+  type: domain_term
+- text: Board Bi Annual
+  type: domain_term
+- text: Loan Agreement
+  type: domain_term
+- text: AML Screening Guidelines Digital
+  type: domain_term
+- text: Risk Policy
+  type: domain_term
+- text: CMDB Service Owner
+  type: domain_term
+- text: Deprecated board briefing
+  type: domain_term
+- text: Deprecated Cybersecurity Controls Basel
+  type: domain_term
+- text: Financial Regulatory
+  type: domain_term
+- text: Basel Committee HQ Only
+  type: domain_term
+- text: Deprecated Cybersecurity Controls
+  type: domain_term
+- text: Banking Agreement CUST
+  type: domain_term
+- text: Emily Davis Credit Card
+  type: domain_term
+- text: Demand HR Department
+  type: domain_term
+- text: Holder Overdraft
+  type: domain_term
+- text: IPs income raw
+  type: domain_term
+- text: Policy Board Bi Annual
+  type: domain_term
+- text: Online Banking User
+  type: domain_term
+- text: Letters of Credit
+  type: domain_term
+- text: robert taylor proximus be
+  type: domain_term
+- text: tom jones
+  type: domain_term
+- text: Supply Supplier
+  type: domain_term
+- text: Operations Head Privacy Protection
+  type: domain_term
+- text: growth in
+  type: domain_term
+- text: SA NV report pdf
+  type: domain_term
+- text: III https assets ing
+  type: domain_term
+- text: Erin Johnson
+  type: domain_term
+- text: Account GBP
+  type: domain_term
+- text: assets ing com
+  type: domain_term
+- text: smith telenet be Mons
+  type: domain_term
+- text: fee Online GDPR
+  type: domain_term
+- text: Compliance Officer Risk Management
+  type: domain_term
+- text: Reporting Protocol
+  type: domain_term
+- text: Detection Active Finance Team
+  type: domain_term
+- text: Laura Miller laura
+  type: domain_term
+- text: Risk Management Basel
+  type: domain_term
+- text: SGBBFX
+  type: domain_term
+- text: Advisory Internal Governance
+  type: domain_term
+- text: Management guideline
+  type: domain_term
+- text: reinforcing its commitment
+  type: domain_term
+- text: reviewed dates
+  type: domain_term
+- text: channel Robert
+  type: domain_term
+- text: Address Interest
+  type: domain_term
+- text: IT Manager Loan
+  type: domain_term
+- text: Service Policy
+  type: domain_term
+- text: Banking Active Alex
+  type: domain_term
+- text: be Brussels
+  type: domain_term
+- text: johnson proximus be Linda
+  type: domain_term
+- text: CMDB Service
+  type: domain_term
+- text: Miller Life Insurance Subscriber
+  type: domain_term
+- text: Peterson policy
+  type: domain_term
+- text: annual Mobile ATM
+  type: domain_term
+- text: customers economy and
+  type: domain_term
+- text: Policy Active Bi
+  type: domain_term
+- text: ing com Mary
+  type: domain_term
+- text: Miller John
+  type: domain_term
+- text: Specification Product
+  type: domain_term
+- text: michael smith
+  type: domain_term
+- text: Review On
+  type: domain_term
+- text: Detection Active Daily
+  type: domain_term
+- text: Thomas Stein
+  type: domain_term
+- text: Risk Governance Framework Compliance
+  type: domain_term
+- text: reinforcing its commitment to
+  type: domain_term
+- text: Taylor michael taylor telenet
+  type: domain_term
+- text: outsourcing related
+  type: domain_term
+- text: Board Quarterly review
+  type: domain_term
+- text: Vendor
+  type: domain_term
+- text: IaaS CMDB as
+  type: domain_term
+- text: Williams Line
+  type: domain_term
+- text: active IT Vendor
+  type: domain_term
+- text: Business
+  type: domain_term
+- text: Tyler Fernandez
+  type: domain_term
+- text: sheet reviewed
+  type: domain_term
+- text: Customer Service Policy Active
+  type: domain_term
+- text: are Do
+  type: domain_term
+- text: Solutions active IT
+  type: domain_term
+- text: original
+  type: domain_term
+- text: Policy Annual
+  type: domain_term
+- text: and AML definitions
+  type: domain_term
+- text: deliver strong
+  type: domain_term
+- text: Taylor John
+  type: domain_term
+- text: hotmail com
+  type: domain_term
+- text: Team Weekly Flag
+  type: domain_term
+- text: John Graham Erin
+  type: domain_term
+- text: Emily Davis emily
+  type: domain_term
+- text: ATM Reconciliation
+  type: domain_term
+- text: currently CapEx Internal IT
+  type: domain_term
+- text: report pdf http
+  type: domain_term
+- text: Belgium SA NV Annual
+  type: domain_term
+- text: to customers and society
+  type: domain_term
+- text: strong results also
+  type: domain_term
+- text: AML Regulatory
+  type: domain_term
+- text: richardson ing
+  type: domain_term
+- text: Agreement Emily Williams emily
+  type: domain_term
+- text: belgium builds on strong
+  type: domain_term
+- text: original ING BE
+  type: domain_term
+- text: lewis hotmail
+  type: domain_term
+- text: ING BE
+  type: domain_term
+- text: ensure restore tests before
+  type: domain_term
+- text: com
+  type: domain_term
+- text: be Anna
+  type: domain_term
+- text: Lead John Graham
+  type: domain_term
+- text: michael clark gmail
+  type: domain_term
+- text: definitions from the
+  type: domain_term
+- text: Alex Johnson
+  type: domain_term
+- text: Loan Borrower
+  type: domain_term
+- text: Bank
+  type: domain_term
+- text: restore tests before
+  type: domain_term
+- text: Non
+  type: domain_term
+- text: ING Belgium SANV
+  type: domain_term
+- text: emily davis skynet
+  type: domain_term
+- text: Robert Williams his
+  type: domain_term
+- text: Asset Owner
+  type: domain_term
+- text: Laura Smith Insurance Distribution
+  type: domain_term
+- text: Active Mortgage Borrower
+  type: domain_term
+- text: Emily Jones Electronic
+  type: domain_term
+- text: Wolf nicolas
+  type: domain_term
+- text: to customers and
+  type: domain_term
+- text: Deprecated National
+  type: domain_term
+- text: addresses DOB IPs
+  type: domain_term
+- text: Policy Active Responsible IT
+  type: domain_term
+- text: Onboarding Deprecated HR Department
+  type: domain_term
+- text: Results https ing
+  type: domain_term
+- text: Report ING Belgium
+  type: domain_term
+- text: Credit Risk Policy
+  type: domain_term
+- text: Virtual Machine
+  type: domain_term
+- text: Report ING
+  type: domain_term
+- text: payments alerts
+  type: domain_term
+- text: Taylor jane taylor hotmail
+  type: domain_term
+- text: Deprecated National Regulator
+  type: domain_term
+- text: Wolf nicolas wolf
+  type: domain_term
+- text: https
+  type: domain_term
+- text: johnson skynet be Jane
+  type: domain_term
+- text: One
+  type: domain_term
+- text: process Under
+  type: domain_term
+- text: Branches Bi
+  type: domain_term
+- text: BE Pillar
+  type: domain_term
+- text: Financial Regulatory Body
+  type: domain_term
+- text: customers economy
+  type: domain_term
+- text: Linda Smith PO
+  type: domain_term
+- text: Annual Active IT
+  type: domain_term
+- text: assets ing
+  type: domain_term
+- text: IaaS
+  type: domain_term
+- text: Jones Mobile
+  type: domain_term
+- text: Inactive John
+  type: domain_term
+- text: Active Customer
+  type: domain_term
+- text: Birth
+  type: domain_term
+- text: Policy Bi Annual
+  type: domain_term
+- text: Basel Committee Digital
+  type: domain_term
+- text: proof of income FATCA
+  type: domain_term
+- text: Karen
+  type: domain_term
+- text: Semi
+  type: domain_term
+- text: emily smith telenet be
+  type: domain_term
+- text: original ING
+  type: domain_term
+- text: last reviewed dates
+  type: domain_term
+- text: Automated Daily IT Department
+  type: domain_term
+- text: Robert Taylor robert taylor
+  type: domain_term
+- text: Automated Daily HR
+  type: domain_term
+- text: Third Party
+  type: domain_term
+- text: Standards Sustainability Internal Governance
+  type: domain_term
+- text: Governance Framework National Regulator
+  type: domain_term
+- text: john johnson proximus
+  type: domain_term
+- text: cashback Alex Jones
+  type: domain_term
+- text: Credit Card cashback Alex
+  type: domain_term
+- text: wolf ing
+  type: domain_term
+- text: Finance Traveling
+  type: domain_term
+- text: nicolas wolf ing
+  type: domain_term
+- text: Emily Williams
+  type: domain_term
+- text: Taylor jane taylor
+  type: domain_term
+- text: results with
+  type: domain_term
+- text: Robert Taylor
+  type: domain_term
+- text: Standards
+  type: domain_term
+- text: Pending Standing Order
+  type: domain_term
+- text: Cybersecurity Controls Advisory
+  type: domain_term
+- text: Johnson Kristy Peterson customer
+  type: domain_term
+- text: fee Online
+  type: domain_term
+- text: Credit CUST
+  type: domain_term
+- text: level Operations
+  type: domain_term
+- text: business in analytics raw
+  type: domain_term
+- text: Miller Line
+  type: domain_term
+- text: Bruges emily
+  type: domain_term
+- text: be Mons Finance Traveling
+  type: domain_term
+- text: Party Risk Management
+  type: domain_term
+- text: https assets
+  type: domain_term
+- text: Mortgage Inactive mortgage
+  type: domain_term
+- text: Under Review
+  type: domain_term
+- text: a card product
+  type: domain_term
+- text: of Credit Pending
+  type: domain_term
+- text: Complaint Handling Customer Support
+  type: domain_term
+- text: also reflect
+  type: domain_term
+- text: Portfolio Investor
+  type: domain_term
+- text: sims ing com PO
+  type: domain_term
+- text: Kristy Peterson customer
+  type: domain_term
+- text: Production Running
+  type: domain_term
+- text: Johnson john johnson
+  type: domain_term
+- text: Compliance Policy Bi
+  type: domain_term
+- text: Governance Framework National
+  type: domain_term
+- text: phones addresses
+  type: domain_term
+- text: Additional Pillar III https
+  type: domain_term
+- text: Letter of Credit
+  type: domain_term
+- text: Only
+  type: domain_term
+- text: Jane Lewis Letter of
+  type: domain_term
+- text: Overdraft
+  type: domain_term
+- text: definitions sheet
+  type: domain_term
+- text: Audit Fully Automated Daily
+  type: domain_term
+- text: age flags Michael
+  type: domain_term
+- text: Analytics an Annual Contract
+  type: domain_term
+- text: Operations Fraud Detection
+  type: domain_term
+- text: Justin Andersen
+  type: domain_term
+- text: Loan Policy
+  type: domain_term
+- text: Detection Policy Retired Board
+  type: domain_term
+- text: from the
+  type: domain_term
+- text: Account Holder Overdraft Product
+  type: domain_term
+- text: GB RAM Google
+  type: domain_term
+- text: Davis Credit Card
+  type: domain_term
+- text: Williams her emily
+  type: domain_term
+- text: Results releases
+  type: domain_term
+- text: Holder Active Mortgage Inactive
+  type: domain_term
+- text: Automated Weekly Compliance Team
+  type: domain_term
+- text: http
+  type: domain_term
+- text: Date of Birth
+  type: domain_term
+- text: All Branches
+  type: domain_term
+- text: Address Income or
+  type: domain_term
+- text: John Taylor
+  type: domain_term
+- text: PII business
+  type: domain_term
+- text: Controls Advisory Basel Committee
+  type: domain_term
+- text: Review Internal
+  type: domain_term
+- text: age
+  type: domain_term
+- text: Customer Data Steward Erin
+  type: domain_term
+- text: ID proof of income
+  type: domain_term
+- text: ATM Branch FATCA
+  type: domain_term
+- text: Robert Taylor robert
+  type: domain_term
+- text: before EOM
+  type: domain_term
+- text: retired development
+  type: domain_term
+- text: http newsroom
+  type: domain_term
+- text: Wire Transfer
+  type: domain_term
+- text: DataBridge Analytics an Annual
+  type: domain_term
+- text: Controls Basel Committee HQ
+  type: domain_term
+- text: KYC Policy Active Responsible
+  type: domain_term
+- text: Address Phone Email
+  type: domain_term
+- text: Agreement CUST
+  type: domain_term
+- text: Oversight Principles Sustainability
+  type: domain_term
+- text: Smith Melissa Navarro
+  type: domain_term
+- text: Banking Active
+  type: domain_term
+- text: Regulatory Reporting Semi
+  type: domain_term
+- text: strong results also reflect
+  type: domain_term
+- text: Account Closure Deprecated Compliance
+  type: domain_term
+- text: Running as
+  type: domain_term
+- text: annual Mobile ATM Branch
+  type: domain_term
+- text: proximus be premium savings
+  type: domain_term
+- text: AML definitions from the
+  type: domain_term
+- text: Insurance Subscriber Active
+  type: domain_term
+- text: strong results with
+  type: domain_term
+- text: Annual Report https assets
+  type: domain_term
+- text: Regulator All Branches
+  type: domain_term
+- text: Use KYC
+  type: domain_term
+- text: Framework
+  type: domain_term
+- text: their respective processes
+  type: domain_term
+- text: Active interaction John Lewis
+  type: domain_term
+- text: customer communications templates
+  type: domain_term
+- text: Product Specification Product
+  type: domain_term
+- text: of dormant alerts
+  type: domain_term
+- text: "proximus be Li\xE8ge"
+  type: domain_term
+- text: Holder FATCA and KYC
+  type: domain_term
+- text: Johnson Kristy
+  type: domain_term
+- text: interaction John
+  type: domain_term
+- text: Alex Williams Bruges
+  type: domain_term
+- text: Sullivan elizabeth sullivan
+  type: domain_term
+- text: Johnson alex johnson
+  type: domain_term
+- text: Deprecated Compliance Team Fully
+  type: domain_term
+- text: Luis
+  type: domain_term
+- text: least privileged
+  type: domain_term
+- text: Active Robert Williams interaction
+  type: domain_term
+- text: Customer Data Steward
+  type: domain_term
+- text: Active Savings Account Holder
+  type: domain_term
+- text: Jane Miller John Taylor
+  type: domain_term
+- text: Screening Guidelines
+  type: domain_term
+- text: Verification Deprecated
+  type: domain_term
+- text: Online Mobile Banking
+  type: domain_term
+- text: terms their
+  type: domain_term
+- text: Services Supply Supplier
+  type: domain_term
+- text: Johnson heather johnson ing
+  type: domain_term
+- text: Andersen Config
+  type: domain_term
+- text: Anna Williams an
+  type: domain_term
+- text: can be
+  type: domain_term
+- text: Demand Active
+  type: domain_term
+- text: income raw to
+  type: domain_term
+- text: internal Transfers
+  type: domain_term
+- text: John Graham Erin Johnson
+  type: domain_term
+- text: Account Holder
+  type: domain_term
+- text: telenet be Mobile
+  type: domain_term
+- text: Active Customer Service IT
+  type: domain_term
+- text: ing com Nicholas Wolf
+  type: domain_term
+- text: Anna Williams
+  type: domain_term
+- text: Elizabeth Sullivan
+  type: domain_term
+- text: Framework National Regulator
+  type: domain_term
+- text: Investment Portfolio
+  type: domain_term
+- text: annual Online
+  type: domain_term
+- text: Female Age
+  type: domain_term
+- text: advisory
+  type: domain_term
+- text: Automated Daily Compliance Team
+  type: domain_term
+- text: commitment to customers and
+  type: domain_term
+- text: Mobile App Update
+  type: domain_term
+- text: HQ Only
+  type: domain_term
+- text: Jones Bruges emily
+  type: domain_term
+- text: Emily Jones Mobile
+  type: domain_term
+- text: Interest Financial Internal
+  type: domain_term
+- text: Third Party Risk Management
+  type: domain_term
+- text: of dormant
+  type: domain_term
+- text: John Brown john brown
+  type: domain_term
+- text: alex johnson skynet be
+  type: domain_term
+- text: Additional Pillar III Report
+  type: domain_term
+- text: Brussels Tom Taylor
+  type: domain_term
+- text: Terminated
+  type: domain_term
+- text: Trevor Montgomery
+  type: domain_term
+- text: review Board
+  type: domain_term
+- text: Smith Insurance
+  type: domain_term
+- text: Loan Approval
+  type: domain_term
+- text: John Johnson
+  type: domain_term
+- text: Deprecated HR Department Fully
+  type: domain_term
+- text: Acceptance Installed but
+  type: domain_term
+- text: level
+  type: domain_term
+- text: Contract API
+  type: domain_term
+- text: Management IT
+  type: domain_term
+- text: Review Manual On
+  type: domain_term
+- text: Failed Standing Order PO
+  type: domain_term
+- text: be John
+  type: domain_term
+- text: review cycle Compliance Officer
+  type: domain_term
+- text: Deprecated On
+  type: domain_term
+- text: Risk Management
+  type: domain_term
+- text: Governance Policy Active
+  type: domain_term
+- text: until replacement flows are
+  type: domain_term
+- text: outsourcing related SUP
+  type: domain_term
+- text: Smith Insurance Distribution
+  type: domain_term
+- text: IBANs Agreements are Do
+  type: domain_term
+- text: Deposit Box
+  type: domain_term
+- text: Data Backup Under
+  type: domain_term
+- text: Online KYC FATCA
+  type: domain_term
+- text: Williams an Insurance
+  type: domain_term
+- text: Smith Online Banking
+  type: domain_term
+- text: Emily Smith emily smith
+  type: domain_term
+- text: Azure application
+  type: domain_term
+- text: Guidelines Digital
+  type: domain_term
+- text: Navarro Jonathan
+  type: domain_term
+- text: Officer Risk
+  type: domain_term
+- text: Annual Contract
+  type: domain_term
+- text: Screening On
+  type: domain_term
+- text: Interest definition
+  type: domain_term
+- text: Taylor michael
+  type: domain_term
+- text: Mortgage Borrower Active interaction
+  type: domain_term
+- text: Automated Weekly Compliance
+  type: domain_term
+- text: CapEx Internal IT
+  type: domain_term
+- text: On Demand Active
+  type: domain_term
+- text: smith gmail com
+  type: domain_term
+- text: Sean Taylor Jeanette
+  type: domain_term
+- text: Active Mortgage Inactive mortgage
+  type: domain_term
+- text: Direct Debit PO
+  type: domain_term
+- text: Policy Retired Board
+  type: domain_term
+- text: Sustainability Reporting Protocol category
+  type: domain_term
+- text: Ghent Robert Taylor
+  type: domain_term
+- text: proximus be Linda Jones
+  type: domain_term
+- text: Demand Deprecated Risk
+  type: domain_term
+- text: Principles Sustainability Industry
+  type: domain_term
+- text: but Non Operational
+  type: domain_term
+- text: Head Privacy Protection Policy
+  type: domain_term
+- text: Credit Terminated
+  type: domain_term
+- text: DataBridge Analytics an
+  type: domain_term
+- text: Flag risk of
+  type: domain_term
+- text: Lead John
+  type: domain_term
+- text: Governance Annual
+  type: domain_term
+- text: her confirm
+  type: domain_term
+- text: Smith emily smith
+  type: domain_term
+- text: Mortgage Active interaction
+  type: domain_term
+- text: Internal Audit Under Review
+  type: domain_term
+- text: Detection Policy Retired
+  type: domain_term
+- text: Reporting Under Review
+  type: domain_term
+- text: GDPR KYC
+  type: domain_term
+- text: Brussels inactive in
+  type: domain_term
+- text: Asset Owner Justin Andersen
+  type: domain_term
+- text: IT Manager Customer Service
+  type: domain_term
+- text: GDPR and
+  type: domain_term
+- text: Credit Card
+  type: domain_term
+- text: Williams emily williams
+  type: domain_term
+- text: Verification Monthly Deprecated
+  type: domain_term
+- text: Operations Head Privacy
+  type: domain_term
+- text: Year Results releases
+  type: domain_term
+- text: annual Mobile Online
+  type: domain_term
+- text: Banking Security Deprecated
+  type: domain_term
+- text: AML definitions
+  type: domain_term
+- text: Finance Team Fully Automated
+  type: domain_term
+- text: Mary Sims mary
+  type: domain_term
+- text: Cybersecurity Controls Basel
+  type: domain_term
+- text: Fully Automated On Demand
+  type: domain_term
+- text: Johnson Mobile Banking
+  type: domain_term
+- text: Policy Active Quarterly review
+  type: domain_term
+- text: Under Review Internal Audit
+  type: domain_term
+- text: Number Date
+  type: domain_term
+- text: channel Robert Williams his
+  type: domain_term
+- text: Interest Calculation Active
+  type: domain_term
+- text: original report
+  type: domain_term
+- text: Use KYC and
+  type: domain_term
+- text: half
+  type: domain_term
+- text: Guidelines Digital Services
+  type: domain_term
+- text: Joseph
+  type: domain_term
+- text: rate alert
+  type: domain_term
+- text: Reed
+  type: domain_term
+- text: Internal Only
+  type: domain_term
+- text: Lewis Letter of
+  type: domain_term
+- text: Katie Taylor katie
+  type: domain_term
+- text: taylor hotmail com Michael
+  type: domain_term
+- text: health check and rate
+  type: domain_term
+- text: Supply Agreement
+  type: domain_term
+- text: Online Banking Inactive John
+  type: domain_term
+- text: taylor hotmail
+  type: domain_term
+- text: xlsx https
+  type: domain_term
+- text: up Online Mobile
+  type: domain_term
+- text: Peterson customer
+  type: domain_term
+- text: com Supplier
+  type: domain_term
+- text: Team Fully Automated
+  type: domain_term
+- text: Borrower Active interaction
+  type: domain_term
+- text: income raw to least
+  type: domain_term
+- text: Banking Security
+  type: domain_term
+- text: Andersen
+  type: domain_term
+- text: Banking Inactive John
+  type: domain_term
+- text: Taylor tom
+  type: domain_term
+- text: Jane Taylor jane taylor
+  type: domain_term
+- text: nicolas wolf
+  type: domain_term
+- text: Luis Montoya
+  type: domain_term
+- text: http assets
+  type: domain_term
+- text: his loan
+  type: domain_term
+- text: valid ID
+  type: domain_term
+- text: Automated Daily
+  type: domain_term
+- text: Audit Fully
+  type: domain_term
+- text: Service Owner Mary
+  type: domain_term
+- text: RAM Google
+  type: domain_term
+- text: Party
+  type: domain_term
+- text: fee Branch
+  type: domain_term
+- text: treat IaaS CMDB
+  type: domain_term
+- text: Audit Under Review Fully
+  type: domain_term
+- text: Kristy Peterson policy
+  type: domain_term
+- text: process Under Review Fully
+  type: domain_term
+- text: KYC Policy Active
+  type: domain_term
+- text: Password Reset
+  type: domain_term
+- text: owner Compliance
+  type: domain_term
+- text: Only Bi
+  type: domain_term
+- text: Risk Management Industry
+  type: domain_term
+- text: Perkins Asset Owner Justin
+  type: domain_term
+- text: Johnson alex
+  type: domain_term
+- text: pdf http assets
+  type: domain_term
+- text: jones skynet
+  type: domain_term
+- text: Digital Services Bi Annual
+  type: domain_term
+- text: IPs
+  type: domain_term
+- text: Governance Policy
+  type: domain_term
+- text: Specification last reviewed dates
+  type: domain_term
+- text: USD AUD
+  type: domain_term
+- text: com m
+  type: domain_term
+- text: Online channel
+  type: domain_term
+- text: Smith her Mortgage
+  type: domain_term
+- text: williams skynet be
+  type: domain_term
+- text: Active Semi
+  type: domain_term
+- text: Manual
+  type: domain_term
+- text: authorized teams
+  type: domain_term
+- text: Card cashback Alex
+  type: domain_term
+- text: Belgium Pillar III Disclosures
+  type: domain_term
+- text: Report link https
+  type: domain_term
+- text: Emily Smith
+  type: domain_term
+- text: CorpKeys for operational use
+  type: domain_term
+- text: Fernandez
+  type: domain_term
+- text: Inactive Offer a
+  type: domain_term
+- text: review cycle Compliance
+  type: domain_term
+- text: her emily
+  type: domain_term
+- text: Montoya
+  type: domain_term
+- text: Monitoring Deprecated
+  type: domain_term
+- text: Privacy Guidelines Compliance
+  type: domain_term
+- text: Regulator
+  type: domain_term
+- text: Active Personal Loan
+  type: domain_term
+- text: Active Personal
+  type: domain_term
+- text: GB RAM Google Cloud
+  type: domain_term
+- text: com Terminated
+  type: domain_term
+- text: Holder FATCA and
+  type: domain_term
+- text: Under Review Customer
+  type: domain_term
+- text: flags Michael Williams
+  type: domain_term
+- text: Status
+  type: domain_term
+- text: replacement flows
+  type: domain_term
+- text: Compliance Officer Bi Annual
+  type: domain_term
+- text: Chris Smith
+  type: domain_term
+- text: Manager Loan
+  type: domain_term
+- text: Data Backup Under Review
+  type: domain_term
+- text: com john
+  type: domain_term
+- text: cheque PO
+  type: domain_term
+- text: ING Belgium Pillar
+  type: domain_term
+- text: Internal Audit Under
+  type: domain_term
+- text: be Jane Taylor
+  type: domain_term
+- text: Team Fully Automated Daily
+  type: domain_term
+- text: Report https assets ing
+  type: domain_term
+- text: Katie Brown Supplier
+  type: domain_term
+- text: Montgomery
+  type: domain_term
+- text: Technology Leuven
+  type: domain_term
+- text: Completed Wire Transfer PO
+  type: domain_term
+- text: guideline Governance Basel
+  type: domain_term
+- text: Mobile App
+  type: domain_term
+- text: Annual Report
+  type: domain_term
+- text: Inactive
+  type: domain_term
+- text: App Update Active Fully
+  type: domain_term
+- text: emails
+  type: domain_term
+- text: Account Holder Active
+  type: domain_term
+- text: Privacy Protection
+  type: domain_term
+- text: Onboarding Deprecated
+  type: domain_term
+- text: Michael Clark
+  type: domain_term
+- text: Michael Clark michael
+  type: domain_term
+- text: a mortgage health
+  type: domain_term
+- text: be ing continues to
+  type: domain_term
+- text: ing continues
+  type: domain_term
+- text: miller proximus
+  type: domain_term
+- text: sims ing
+  type: domain_term
+- text: Risk Management guideline
+  type: domain_term
+- text: positively on customers economy
+  type: domain_term
+- text: KYC Verification Monthly
+  type: domain_term
+- text: Internal Governance Bi Annual
+  type: domain_term
+- text: reflect positively on
+  type: domain_term
+- text: Karen Gutierrez Justin Andersen
+  type: domain_term
+- text: Policy Compliance Under
+  type: domain_term
+- text: builds on strong
+  type: domain_term
+- text: Running multiple in
+  type: domain_term
+- text: Third
+  type: domain_term
+- text: Onboarding Standards Advisory
+  type: domain_term
+- text: Account Closure Deprecated
+  type: domain_term
+- text: Davis emily davis skynet
+  type: domain_term
+- text: Phone Email IP
+  type: domain_term
+- text: Michael Taylor
+  type: domain_term
+- text: flags Michael
+  type: domain_term
+- text: Agreement Expired
+  type: domain_term
+- text: Policy Retired
+  type: domain_term
+- text: of Birth Postal Address
+  type: domain_term
+- text: typical review
+  type: domain_term
+- text: GDPR and KYC
+  type: domain_term
+- text: Transaction Monitoring Deprecated
+  type: domain_term
+- text: capacity
+  type: domain_term
+- text: Premium Contract API
+  type: domain_term
+- text: hotmail com Supplier
+  type: domain_term
+- text: Miller michael miller telenet
+  type: domain_term
+- text: be Charleroi
+  type: domain_term
+- text: Online GDPR KYC
+  type: domain_term
+- text: Service Data Backup
+  type: domain_term
+- text: Anna Williams an Insurance
+  type: domain_term
+- text: http assets ing com
+  type: domain_term
+- text: AML Compliance Policy Compliance
+  type: domain_term
+- text: phones
+  type: domain_term
+- text: customers Digital Consent active
+  type: domain_term
+- text: Active Bi
+  type: domain_term
+- text: Calculation Active Fully Automated
+  type: domain_term
+- text: skynet
+  type: domain_term
+- text: Jones linda
+  type: domain_term
+- text: Sims John Graham Erin
+  type: domain_term
+- text: fee Branch AML
+  type: domain_term
+- text: respective processes
+  type: domain_term
+- text: Goods Supply Agreement
+  type: domain_term
+- text: Year Results https
+  type: domain_term
+- text: Belgium Additional Pillar III
+  type: domain_term
+- text: Handling Governance
+  type: domain_term
+- text: xlsx the
+  type: domain_term
+- text: Privacy Guidelines
+  type: domain_term
+- text: ing continues to deliver
+  type: domain_term
+- text: Automated Weekly Retail
+  type: domain_term
+- text: Williams Bruges
+  type: domain_term
+- text: Board level Operations
+  type: domain_term
+- text: Service Policy Active Quarterly
+  type: domain_term
+- text: pdf
+  type: domain_term
+- text: Terminated CUST
+  type: domain_term
+- text: IT Risk Assessment
+  type: domain_term
+- text: not
+  type: domain_term
+- text: Running as listed
+  type: domain_term
+- text: payments alerts ing
+  type: domain_term
+- text: Management IT Manager Loan
+  type: domain_term
+- text: customer GDPR
+  type: domain_term
+- text: Miller michael miller
+  type: domain_term
+- text: Technology Leuven Alex Johnson
+  type: domain_term
+- text: until replacement flows
+  type: domain_term
+- text: Agreements are Do
+  type: domain_term
+- text: status material exports
+  type: domain_term
+- text: John Johnson john
+  type: domain_term
+- text: Officer Elizabeth Sullivan elizabeth
+  type: domain_term
+- text: Body
+  type: domain_term
+- text: profit after first half
+  type: domain_term
+- text: names emails
+  type: domain_term
+- text: sims
+  type: domain_term
+- text: Letters of
+  type: domain_term
+- text: clark gmail
+  type: domain_term
+- text: Katie Lewis Bruges
+  type: domain_term
+- text: Postal Address Phone
+  type: domain_term
+- text: Katie Taylor katie taylor
+  type: domain_term
+- text: Stein
+  type: domain_term
+- text: newsroom
+  type: domain_term
+- text: Governance Basel
+  type: domain_term
+- text: DOCSGBBFX
+  type: domain_term
+- text: Banking Inactive John Taylor
+  type: domain_term
+- text: Maintenance Google Cloud
+  type: domain_term
+- text: John Brown john
+  type: domain_term
+- text: National Regulator All Branches
+  type: domain_term
+- text: after first
+  type: domain_term
+- text: Maintenance Running
+  type: domain_term
+- text: Complaint Handling Customer
+  type: domain_term
+- text: Active Alex
+  type: domain_term
+- text: check and rate
+  type: domain_term
+- text: Review Fully
+  type: domain_term
+- text: process Under Review
+  type: domain_term
+- text: Management IT Manager
+  type: domain_term
+- text: Linda Jones
+  type: domain_term
+- text: Test Maintenance
+  type: domain_term
+- text: teams
+  type: domain_term
+- text: custodian Jimmy Phillips
+  type: domain_term
+- text: loan agreement
+  type: domain_term
+- text: agreements CUST
+  type: domain_term
+- text: Mortgage Active
+  type: domain_term
+- text: Basel Committee Bi Annual
+  type: domain_term
+- text: proximus be Anna
+  type: domain_term
+- text: CUST
+  type: domain_term
+- text: Compliance Policy Under Review
+  type: domain_term
+- text: Demand HR
+  type: domain_term
+- text: Emily Davis
+  type: domain_term
+- text: communications DL
+  type: domain_term
+- text: Williams Gender Female Age
+  type: domain_term
+- text: Johnson Security Agreement
+  type: domain_term
+- text: Taylor katie taylor
+  type: domain_term
+- text: Active Responsible
+  type: domain_term
+- text: Monthly Deprecated Risk
+  type: domain_term
+- text: On Demand Deprecated Risk
+  type: domain_term
+- text: FATCA Active
+  type: domain_term
+- text: link https assets
+  type: domain_term
+- text: related SUP
+  type: domain_term
+- text: Finance Team Fully
+  type: domain_term
+- text: names status
+  type: domain_term
+- text: Belgium Pillar
+  type: domain_term
+- text: an Account Holder FATCA
+  type: domain_term
+- text: Active Finance Team
+  type: domain_term
+- text: Navarro
+  type: domain_term
+- text: Banking User Active
+  type: domain_term
+- text: Closure Deprecated Compliance Team
+  type: domain_term
+- text: Full Year
+  type: domain_term
+- text: Compliance Operations Head
+  type: domain_term
+- text: Tara Doyle
+  type: domain_term
+- text: HR Department Fully
+  type: domain_term
+- text: Additional Disclosures
+  type: domain_term
+- text: Active Mortgage Borrower Active
+  type: domain_term
+- text: Navarro Jonathan Perkins
+  type: domain_term
+- text: Committee HQ Only
+  type: domain_term
+- text: Review Semi Automated
+  type: domain_term
+- text: continues to
+  type: domain_term
+- text: Fully Automated Weekly Retail
+  type: domain_term
+- text: Automated Daily HR Department
+  type: domain_term
+- text: million profit
+  type: domain_term
+- text: customer GDPR and
+  type: domain_term
+- text: Service IT Manager
+  type: domain_term
+- text: Service Data
+  type: domain_term
+- text: telenet be Mons Finance
+  type: domain_term
+- text: National Regulator All
+  type: domain_term
+- text: Taylor robert taylor
+  type: domain_term
+- text: emily
+  type: domain_term
+- text: Annual review
+  type: domain_term
+- text: johnson skynet be
+  type: domain_term
+- text: Johnson john
+  type: domain_term
+- text: Offer a mortgage health
+  type: domain_term
+- text: as internal
+  type: domain_term
+- text: Screening Guidelines Digital
+  type: domain_term
+- text: Online Banking
+  type: domain_term
+- text: Taylor emily
+  type: domain_term
+- text: application storage capacity
+  type: domain_term
+- text: Agreement Expired CUST
+  type: domain_term
+- text: supplier Consulting Agreement API
+  type: domain_term
+- text: KYC Verification
+  type: domain_term
+- text: Annual Report https
+  type: domain_term
+- text: Account Holder Active Mortgage
+  type: domain_term
+- text: linda jones
+  type: domain_term
+- text: Emily Williams Mortgage
+  type: domain_term
+- text: as listed
+  type: domain_term
+- text: Branch FATCA
+  type: domain_term
+- text: process Active Fully
+  type: domain_term
+- text: IT Operations Head Quarterly
+  type: domain_term
+- text: Privacy Officer
+  type: domain_term
+- text: Reed Tara
+  type: domain_term
+- text: Mobile Banking
+  type: domain_term
+- text: Responsible IT
+  type: domain_term
+- text: Basel Committee HQ
+  type: domain_term
+- text: Board Bi Annual Active
+  type: domain_term
+- text: Tom Taylor Anna
+  type: domain_term
+- text: All Branches Bi
+  type: domain_term
+- text: OpEx Azure
+  type: domain_term
+- text: Belgium SA NV pdf
+  type: domain_term
+- text: laura miller telenet
+  type: domain_term
+- text: Review Semi Automated On
+  type: domain_term
+- text: Regulator All Branches Bi
+  type: domain_term
+- text: HQ Only Bi Annual
+  type: domain_term
+- text: Team Fully Automated On
+  type: domain_term
+- text: proximus be
+  type: domain_term
+- text: Internal IT provider
+  type: domain_term
+- text: Credit Card cashback
+  type: domain_term
+- text: Reed Tara Doyle
+  type: domain_term
+- text: Mortgage Active interaction John
+  type: domain_term
+- text: Jones Electronic
+  type: domain_term
+- text: builds on
+  type: domain_term
+- text: Data Privacy Guidelines Compliance
+  type: domain_term
+- text: mortgage health check
+  type: domain_term
+- text: Safe Deposit
+  type: domain_term
+- text: Walker
+  type: domain_term
+- text: Compliance Under
+  type: domain_term
+- text: Anna Davis
+  type: domain_term
+- text: IT Manager Customer
+  type: domain_term
+- text: Responsible IT Operations Head
+  type: domain_term
+- text: proximus be Linda
+  type: domain_term
+- text: cycle Compliance
+  type: domain_term
+- text: overdrafts deposit agreements CUST
+  type: domain_term
+- text: Robert Brown
+  type: domain_term
+- text: Governance Framework Compliance National
+  type: domain_term
+- text: tests before
+  type: domain_term
+- text: Jones Bruges emily jones
+  type: domain_term
+- text: Williams her
+  type: domain_term
+- text: Smith emily smith telenet
+  type: domain_term
+- text: Principles
+  type: domain_term
+- text: Reset Active Semi
+  type: domain_term
+- text: Johnson Security Agreement Expired
+  type: domain_term
+- text: multiple in
+  type: domain_term
+- text: gender age
+  type: domain_term
+- text: Jane Lewis
+  type: domain_term
+- text: Gutierrez
+  type: domain_term
+- text: Azure application storage
+  type: domain_term
+- text: Taylor Anna Davis
+  type: domain_term
+- text: Compliance Internal
+  type: domain_term
+- text: to deliver strong
+  type: domain_term
+- text: Belgium SA NV report
+  type: domain_term
+- text: operational use DLs Internal
+  type: domain_term
+- text: alerts ing com Erin
+  type: domain_term
+- text: elizabeth
+  type: domain_term
+- text: Laura Lewis
+  type: domain_term
+- text: Policy Retired Operations Head
+  type: domain_term
+- text: Clark michael clark gmail
+  type: domain_term
+- text: Emily Davis emily davis
+  type: domain_term
+- text: up Online
+  type: domain_term
+- text: Security Agreement
+  type: domain_term
+- text: https ing be ing
+  type: domain_term
+- text: taylor hotmail com
+  type: domain_term
+- text: elizabeth sullivan ing
+  type: domain_term
+- text: Sullivan elizabeth sullivan ing
+  type: domain_term
+- text: insurance subscription
+  type: domain_term
+- text: Tom Taylor
+  type: domain_term
+- text: Semi Automated On
+  type: domain_term
+- text: Advisory ESG dashboard
+  type: domain_term
+- text: use
+  type: domain_term
+- text: Williams Line of
+  type: domain_term
+- text: Screening Deprecated
+  type: domain_term
+- text: Wolf nicolas wolf ing
+  type: domain_term
+- text: Operations Head Quarterly
+  type: domain_term
+- text: Completed Wire
+  type: domain_term
+- text: Johnson heather johnson
+  type: domain_term
+- text: income raw
+  type: domain_term
+- text: restore tests before EOM
+  type: domain_term
+- text: Johnson erin
+  type: domain_term
+- text: Chris Williams an Account
+  type: domain_term
+- text: Linda Lewis
+  type: domain_term
+- text: be Mobile
+  type: domain_term
+- text: Credit Agreement
+  type: domain_term
+- text: Installed but
+  type: domain_term
+- text: Elizabeth Sullivan elizabeth sullivan
+  type: domain_term
+- text: Manual On
+  type: domain_term
+- text: jones proximus be
+  type: domain_term
+- text: alex
+  type: domain_term
+- text: clark gmail com Terminated
+  type: domain_term
+- text: com Mary
+  type: domain_term
+- text: Annual report pdf
+  type: domain_term
+- text: Active Risk
+  type: domain_term
+- text: Daily IT Department
+  type: domain_term
+- text: Offer a mortgage
+  type: domain_term
+- text: API GDPR AML
+  type: domain_term
+- text: half of
+  type: domain_term
+- text: Savings Account Holder
+  type: domain_term
+- text: Detection Policy
+  type: domain_term
+- text: Sullivan elizabeth
+  type: domain_term
+- text: years
+  type: domain_term
+- text: sullivan ing
+  type: domain_term
+- text: CapEx Internal IT Production
+  type: domain_term
+- text: Compliance Policy Compliance
+  type: domain_term
+- text: Management Compliance Officer Quarterly
+  type: domain_term
+- text: Service Policy Active
+  type: domain_term
+- text: Shaun Stanley
+  type: domain_term
+- text: him tom jones
+  type: domain_term
+- text: Operational Risk Policy Under
+  type: domain_term
+- text: her set
+  type: domain_term
+- text: Production Operational
+  type: domain_term
+- text: Active Responsible IT Board
+  type: domain_term
+- text: Electronic Banking
+  type: domain_term
+- text: Credit Pending
+  type: domain_term
+- text: Results http newsroom
+  type: domain_term
+- text: Branches
+  type: domain_term
+- text: miller telenet be
+  type: domain_term
+- text: active IT
+  type: domain_term
+- text: Standing Order
+  type: domain_term
+- text: Accrued Interest Financial Internal
+  type: domain_term
+- text: Miller Life Insurance
+  type: domain_term
+- text: telenet be John
+  type: domain_term
+- text: ing belgium builds
+  type: domain_term
+- text: Brown john brown
+  type: domain_term
+- text: Debit PO
+  type: domain_term
+- text: Officer Risk Management
+  type: domain_term
+- text: Audit Regulatory
+  type: domain_term
+- text: annual fee Online GDPR
+  type: domain_term
+- text: income FATCA KYC
+  type: domain_term
+- text: Davis Credit Card Agreement
+  type: domain_term
+- text: Risk Policy Annual
+  type: domain_term
+- text: Goods Supply
+  type: domain_term
+- text: Miller laura miller
+  type: domain_term
+- text: Guidelines Compliance Internal
+  type: domain_term
+- text: TechNova Solutions active IT
+  type: domain_term
+- text: Graham Erin
+  type: domain_term
+- text: on customers economy and
+  type: domain_term
+- text: Active John Lewis
+  type: domain_term
+- text: HR Department
+  type: domain_term
+- text: Reporting Under Review Semi
+  type: domain_term
+- text: Semi Automated Daily executed
+  type: domain_term
+- text: Weekly Compliance Team
+  type: domain_term
+- text: and society
+  type: domain_term
+- text: of Credit Michael
+  type: domain_term
+- text: annual fee Online KYC
+  type: domain_term
+- text: Address Phone Email IP
+  type: domain_term
+- text: customer Premium Contract
+  type: domain_term
+- text: of Credit
+  type: domain_term
+- text: com Erin
+  type: domain_term
+- text: Protocol Risk
+  type: domain_term
+- text: Mobile Banking User
+  type: domain_term
+- text: tom jones proximus be
+  type: domain_term
+- text: Protection Policy
+  type: domain_term
+- text: User
+  type: domain_term
+- text: service channel
+  type: domain_term
+- text: Demand Finance
+  type: domain_term
+- text: williams hotmail com
+  type: domain_term
+- text: and AML Screening
+  type: domain_term
+- text: Controls Basel Committee
+  type: domain_term
+- text: live
+  type: domain_term
+- text: Product Specification
+  type: domain_term
+- text: Jones Mobile Banking User
+  type: domain_term
+- text: Under Review Fully
+  type: domain_term
+- text: Ashlee Smith Melissa
+  type: domain_term
+- text: use DLs Internal Only
+  type: domain_term
+- text: Karen Gutierrez Justin
+  type: domain_term
+- text: Melissa Navarro Jonathan Perkins
+  type: domain_term
+- text: Miller John Taylor
+  type: domain_term
+- text: the definitions sheet reviewed
+  type: domain_term
+- text: Brown john
+  type: domain_term
+- text: Alex Johnson alex
+  type: domain_term
+- text: Compliance Officer
+  type: domain_term
+- text: be Mons
+  type: domain_term
+- text: Active Bi Annual
+  type: domain_term
+- text: Internal Audit Regulatory Reporting
+  type: domain_term
+- text: Specification
+  type: domain_term
+- text: Annual Active IT responsible
+  type: domain_term
+- text: Operational Risk
+  type: domain_term
+- text: Customer Complaint Handling Governance
+  type: domain_term
+- text: Smith michael
+  type: domain_term
+- text: Digital Consent active
+  type: domain_term
+- text: Report https
+  type: domain_term
+- text: Support Fully
+  type: domain_term
+- text: Risk Governance Framework
+  type: domain_term
+- text: Sims Service
+  type: domain_term
+- text: be Linda Jones linda
+  type: domain_term
+- text: IP Address Income
+  type: domain_term
+- text: Customer Service
+  type: domain_term
+- text: Guidelines are Deprecated
+  type: domain_term
+- text: Mons
+  type: domain_term
+- text: KYC Verification Deprecated Monthly
+  type: domain_term
+- text: telenet
+  type: domain_term
+- text: Compliance Internal Governance
+  type: domain_term
+- text: Peterson policy communications
+  type: domain_term
+- text: AML Screening
+  type: domain_term
+- text: Protocol Risk Management
+  type: domain_term
+- text: AML Mobile
+  type: domain_term
+- text: Michael Clark michael clark
+  type: domain_term
+- text: Technology Katie Taylor katie
+  type: domain_term
+- text: williams
+  type: domain_term
+- text: Policy Under
+  type: domain_term
+- text: Backup Under
+  type: domain_term
+- text: VM IAAS
+  type: domain_term
+- text: Board Bi
+  type: domain_term
+- text: customers and
+  type: domain_term
+- text: Business Account
+  type: domain_term
+- text: sullivan
+  type: domain_term
+- text: Scoring Under
+  type: domain_term
+- text: Compliance National Regulator
+  type: domain_term
+- text: Peterson customer communications
+  type: domain_term
+- text: Internal Audit Regulatory
+  type: domain_term
+- text: Deprecated On Demand
+  type: domain_term
+- text: policy communications DL
+  type: domain_term
+- text: Letter of Credit Pending
+  type: domain_term
+- text: Credit Risk Policy Annual
+  type: domain_term
+- text: years valid ID
+  type: domain_term
+- text: Active Robert Williams
+  type: domain_term
+- text: miller telenet
+  type: domain_term
+- text: Risk Governance Framework National
+  type: domain_term
+- text: Line of Credit Terminated
+  type: domain_term
+- text: Policy Quarterly
+  type: domain_term
+- text: be ing continues
+  type: domain_term
+- text: Walker Supplier
+  type: domain_term
+- text: be Michael Miller michael
+  type: domain_term
+- text: gmail com
+  type: domain_term
+- text: Interest Calculation Active Fully
+  type: domain_term
+- text: Running multiple
+  type: domain_term
+- text: templates
+  type: domain_term
+- text: com PO
+  type: domain_term
+- text: SEPA Credit
+  type: domain_term
+- text: Mobile Online
+  type: domain_term
+- text: Premium Contract API GDPR
+  type: domain_term
+- text: Under Review Manual
+  type: domain_term
+- text: of income FATCA
+  type: domain_term
+- text: deliver strong growth
+  type: domain_term
+- text: Digital Onboarding
+  type: domain_term
+- text: Scoring Under Review
+  type: domain_term
+- text: Credit Michael
+  type: domain_term
+- text: Amortization Financial Regulatory Body
+  type: domain_term
+- text: Number Date of Birth
+  type: domain_term
+- text: Tom Davis
+  type: domain_term
+- text: the definitions
+  type: domain_term
+- text: results
+  type: domain_term
+- text: Taylor jane
+  type: domain_term
+- text: with several
+  type: domain_term
+- text: KYC and AML
+  type: domain_term
+- text: Regulatory Reporting Under Review
+  type: domain_term
+- text: builds
+  type: domain_term
+- text: Detection Active Finance
+  type: domain_term
+- text: Cybersecurity Controls Advisory Basel
+  type: domain_term
+- text: Review Responsible
+  type: domain_term
+- text: KYC FATCA Active
+  type: domain_term
+- text: Fully Automated
+  type: domain_term
+- text: Services Supply Agreement
+  type: domain_term
+- text: customers Digital Consent
+  type: domain_term
+- text: Board Oversight Principles
+  type: domain_term
+- text: Policy Active
+  type: domain_term
+- text: Inactive mortgage
+  type: domain_term
+- text: Phone
+  type: domain_term
+- text: Account Holder Overdraft
+  type: domain_term
+- text: Michael Smith michael smith
+  type: domain_term
+- text: Compliance Policy Bi Annual
+  type: domain_term
+- text: michael
+  type: domain_term
+- text: Services Deprecated Annual
+  type: domain_term
+- text: IGBRAZ
+  type: domain_term
+- text: Inactive Offer mortgage health
+  type: domain_term
+- text: in Maintenance
+  type: domain_term
+- text: be Michael Smith
+  type: domain_term
+- text: from the definitions
+  type: domain_term
+- text: John Johnson Security Agreement
+  type: domain_term
+- text: Chris Taylor John Miller
+  type: domain_term
+- text: Compliance Operations Head Privacy
+  type: domain_term
+- text: Edward Richardson
+  type: domain_term
+- text: Jane Jones
+  type: domain_term
+- text: Customer Support Fully
+  type: domain_term
+- text: her set up
+  type: domain_term
+- text: Robert Williams
+  type: domain_term
+- text: Policy Active Risk Management
+  type: domain_term
+- text: proximus be Michael Miller
+  type: domain_term
+- text: be Mobile channel
+  type: domain_term
+- text: com john graham
+  type: domain_term
+- text: Fully Automated Finance Team
+  type: domain_term
+- text: Security Agreement Expired
+  type: domain_term
+- text: Weekly Flag
+  type: domain_term
+- text: Pending Standing Order PO
+  type: domain_term
+- text: Miller laura miller telenet
+  type: domain_term
+- text: pdf read full report
+  type: domain_term
+- text: be Leuven
+  type: domain_term
+- text: Committee HQ
+  type: domain_term
+- text: DataBridge Analytics
+  type: domain_term
+- text: Davis emily davis
+  type: domain_term
+- text: CMDB as
+  type: domain_term
+- text: com Active
+  type: domain_term
+- text: million profit after first
+  type: domain_term
+- text: supplier Consulting
+  type: domain_term
+- text: be Jane Taylor jane
+  type: domain_term
+- text: downstream Loan Origination
+  type: domain_term
+- text: use DLs Internal
+  type: domain_term
+- text: erin johnson ing
+  type: domain_term
+- text: nicolas wolf ing com
+  type: domain_term
+- text: Service Owner
+  type: domain_term
+- text: ing com John Graham
+  type: domain_term
+- text: gender age flags
+  type: domain_term
+- text: Automated Daily run
+  type: domain_term
+- text: Graham Erin Johnson Kristy
+  type: domain_term
+- text: Jones Electronic Banking
+  type: domain_term
+- text: be John Johnson john
+  type: domain_term
+- text: brown telenet be Brussels
+  type: domain_term
+- text: Ashlee
+  type: domain_term
+- text: Approval Policy Retired
+  type: domain_term
+- text: Automated Weekly
+  type: domain_term
+- text: emily williams
+  type: domain_term
+- text: richardson
+  type: domain_term
+- text: to deliver
+  type: domain_term
+- text: ing belgium builds on
+  type: domain_term
+- text: Sims mary
+  type: domain_term
+- text: Services Bi Annual
+  type: domain_term
+- text: "be Li\xE8ge"
+  type: domain_term
+- text: Transfers include IBANs
+  type: domain_term
+- text: Brussels inactive in outreach
+  type: domain_term
+- text: taylor telenet be John
+  type: domain_term
+- text: linda lewis hotmail
+  type: domain_term
+- text: Fraud Detection Policy
+  type: domain_term
+- text: emily williams hotmail com
+  type: domain_term
+- text: push notification
+  type: domain_term
+- text: Support
+  type: domain_term
+- text: Jonathan Perkins Asset
+  type: domain_term
+- text: flows are live
+  type: domain_term
+- text: Security Policy
+  type: domain_term
+- text: Year Results https ing
+  type: domain_term
+- text: Advisory ESG
+  type: domain_term
+- text: Automated Finance Team Weekly
+  type: domain_term
+- text: john johnson
+  type: domain_term
+- text: Brussels Technology Katie Taylor
+  type: domain_term
+- text: App Update
+  type: domain_term
+- text: johnson
+  type: domain_term
+- text: NV Annual
+  type: domain_term
+- text: skynet be Supplier
+  type: domain_term
+- text: Active Semi Automated
+  type: domain_term
+- text: Number Date of
+  type: domain_term
+- text: Internal Governance Annual
+  type: domain_term
+- text: Williams an Account
+  type: domain_term
+- text: link https assets ing
+  type: domain_term
+- text: lewis hotmail com Supplier
+  type: domain_term
+- text: DOB IPs income raw
+  type: domain_term
+- text: Board level
+  type: domain_term
+- text: Technology Leuven Alex
+  type: domain_term
+- text: Jane Taylor
+  type: domain_term
+- text: annual fee Online
+  type: domain_term
+- text: Account Closure
+  type: domain_term
+- text: Under Review Customer Support
+  type: domain_term
+- text: Financial
+  type: domain_term
+- text: ING BE Pillar
+  type: domain_term
+- text: Linda Jones linda jones
+  type: domain_term
+- text: API GDPR
+  type: domain_term
+- text: Melissa Navarro
+  type: domain_term
+- text: Protocol category
+  type: domain_term
+- text: Savings Account JPY
+  type: domain_term
+- text: annual Online KYC Active
+  type: domain_term
+- text: Compliance Officer Quarterly
+  type: domain_term
+- text: inactive in
+  type: domain_term
+- text: Katie Williams
+  type: domain_term
+- text: jones skynet be
+  type: domain_term
+- text: SA NV Annual report
+  type: domain_term
+- text: up Online Mobile Banking
+  type: domain_term
+- text: Johnson erin johnson ing
+  type: domain_term
+- text: Credit Michael Clark michael
+  type: domain_term
+- text: outsourcing
+  type: domain_term
+- text: on customers
+  type: domain_term
+- text: Calculation Active
+  type: domain_term
+- text: belgium
+  type: domain_term
+- text: Reporting Under Review On
+  type: domain_term
+- text: currently CapEx Internal
+  type: domain_term
+- text: inactive in outreach Katie
+  type: domain_term
+- text: several Retired
+  type: domain_term
+- text: Consortium Bi Annual
+  type: domain_term
+- text: Amortization Financial
+  type: domain_term
+- text: Consortium
+  type: domain_term
+- text: VM PH
+  type: domain_term
+- text: Belgium Pillar III
+  type: domain_term
+- text: Installed Operational
+  type: domain_term
+- text: Operations Head IT
+  type: domain_term
+- text: Belgium Additional
+  type: domain_term
+- text: Complaint Handling Governance
+  type: domain_term
+- text: in analytics raw
+  type: domain_term
+- text: "telenet be Li\xE8ge"
+  type: domain_term
+- text: Emily Smith Online
+  type: domain_term
+- text: Active FATCA
+  type: domain_term
+- text: of Credit Agreement Emily
+  type: domain_term
+- text: Birth Postal Address Phone
+  type: domain_term
+- text: Committee
+  type: domain_term
+- text: guideline Governance Basel Committee
+  type: domain_term
+- text: http newsroom ing be
+  type: domain_term
+- text: Bank Guarantee
+  type: domain_term
+- text: are Deprecated Risk
+  type: domain_term
+- text: Daily HR Department
+  type: domain_term
+- text: Brussels Katie Taylor
+  type: domain_term
+- text: Active Quarterly review Board
+  type: domain_term
+- text: Completed Wire Transfer
+  type: domain_term
+- text: telenet be Brussels his
+  type: domain_term
+- text: AML definitions from
+  type: domain_term
+- text: mary
+  type: domain_term
+- text: Active Alex Williams
+  type: domain_term
+- text: williams skynet
+  type: domain_term
+- text: Under Review Semi
+  type: domain_term
+- text: com Erin Johnson Kristy
+  type: domain_term
+- text: Retired Operations Head
+  type: domain_term
+- text: Services Bi
+  type: domain_term
+- text: income FATCA KYC Active
+  type: domain_term
+- text: model provider
+  type: domain_term
+- text: results also reflect positively
+  type: domain_term
+- text: yet Account
+  type: domain_term
+- text: Fully Automated Daily IT
+  type: domain_term
+- text: Belgium SA NV
+  type: domain_term
+- text: John Johnson Security
+  type: domain_term
+- text: Review Customer
+  type: domain_term
+- text: be Linda Jones
+  type: domain_term
+- text: Mobile Banking Active
+  type: domain_term
+- text: profit
+  type: domain_term
+- text: Main St
+  type: domain_term
+- text: Jane Taylor jane
+  type: domain_term
+- text: FATCA KYC Active
+  type: domain_term
+- text: Pillar III https
+  type: domain_term
+- text: Williams her emily williams
+  type: domain_term
+- text: dept Compliance Operations Head
+  type: domain_term
+- text: Standards Advisory Internal Governance
+  type: domain_term
+- text: Year Results http newsroom
+  type: domain_term
+- text: Sims John
+  type: domain_term
+- text: Owner Mary Sims Service
+  type: domain_term
+- text: Technology
+  type: domain_term
+- text: Use KYC and AML
+  type: domain_term
+- text: com Mary Sims
+  type: domain_term
+- text: Assessment process Under Review
+  type: domain_term
+- text: exports
+  type: domain_term
+- text: Active IT responsible
+  type: domain_term
+- text: Under Review Semi Automated
+  type: domain_term
+- text: Completed USD
+  type: domain_term
+- text: Advisory Basel Committee
+  type: domain_term
+- text: Management Compliance Officer
+  type: domain_term
+- text: Assessment Operational
+  type: domain_term
+- text: Handling Customer
+  type: domain_term
+- text: Owner Mary
+  type: domain_term
+- text: Party Risk Management Basel
+  type: domain_term
+- text: Include channels
+  type: domain_term
+- text: Katie Smith
+  type: domain_term
+- text: Responsible IT Operations
+  type: domain_term
+- text: department
+  type: domain_term
+- text: Jeanette Joseph
+  type: domain_term
+- text: smith telenet be
+  type: domain_term
+- text: include IBANs Agreements are
+  type: domain_term
+- text: definitions sheet reviewed
+  type: domain_term
+- text: risk of
+  type: domain_term
+- text: set up
+  type: domain_term
+- text: edward richardson ing com
+  type: domain_term
+- text: Calculation process
+  type: domain_term
+- text: Data Security Policy
+  type: domain_term
+- text: davis
+  type: domain_term
+- text: elizabeth sullivan
+  type: domain_term
+- text: mary sims ing com
+  type: domain_term
+- text: Johnson Kristy Peterson
+  type: domain_term
+- text: Emily Davis Credit
+  type: domain_term
+- text: Board IT
+  type: domain_term
+- text: Services Supply
+  type: domain_term
+- text: xlsx the Additional Pillar
+  type: domain_term
+- text: Williams Line of Credit
+  type: domain_term
+- text: Jane Williams Supplier
+  type: domain_term
+- text: Review Responsible IT Operations
+  type: domain_term
+- text: its commitment
+  type: domain_term
+- text: Policy Active Customer
+  type: domain_term
+- text: Quarterly review Board
+  type: domain_term
+- text: Jones linda jones telenet
+  type: domain_term
+- text: to least privileged roles
+  type: domain_term
+- text: Additional Pillar III
+  type: domain_term
+- text: its commitment to customers
+  type: domain_term
+- text: xlsx https assets ing
+  type: domain_term
+- text: Outsourcing Supplier
+  type: domain_term
+- text: Digital Onboarding Standards
+  type: domain_term
+- text: wolf ing com
+  type: domain_term
+- text: of Credit Agreement
+  type: domain_term
+- text: Laura Miller
+  type: domain_term
+- text: Erin Johnson Kristy
+  type: domain_term
+- text: Committee Bi Annual
+  type: domain_term
+- text: Erin Johnson erin
+  type: domain_term
+- text: PII business in
+  type: domain_term
+- text: IP Address Income or
+  type: domain_term
+- text: Standards Advisory Internal
+  type: domain_term
+- text: Address Income
+  type: domain_term
+- text: Online KYC
+  type: domain_term
+- text: Daily executed
+  type: domain_term
+- text: Credit Card Agreement
+  type: domain_term
+- text: in outreach
+  type: domain_term
+- text: Compliance Policy
+  type: domain_term
+- text: Principles Sustainability
+  type: domain_term
+- text: proof of
+  type: domain_term
+- text: Running multiple in Maintenance
+  type: domain_term
+- text: Mary Sims John
+  type: domain_term
+- text: roles
+  type: domain_term
+- text: Peterson Shaun Stanley
+  type: domain_term
+- text: Mortgage Inactive
+  type: domain_term
+- text: replacement flows are
+  type: domain_term
+- text: Inactive Offer a mortgage
+  type: domain_term
+- text: proof of income
+  type: domain_term
+- text: Customer Data
+  type: domain_term
+- text: Review Customer Support
+  type: domain_term
+- text: Verification Deprecated Monthly
+  type: domain_term
+- text: Internal Audit Fully Automated
+  type: domain_term
+- text: her Mortgage Borrower Active
+  type: domain_term
+- text: Sustainability Internal Governance
+  type: domain_term
+- text: Online GDPR KYC Active
+  type: domain_term
+- text: Deprecated Annual
+  type: domain_term
+- text: overdrafts deposit agreements
+  type: domain_term
+- text: Review Manual
+  type: domain_term
+- text: Daily HR
+  type: domain_term
+- text: privileged roles
+  type: domain_term
+- text: Complaint Handling
+  type: domain_term
+- text: Jane Miller John
+  type: domain_term
+- text: Automated On Demand Active
+  type: domain_term
+- text: and Retired
+  type: domain_term
+- text: Sean Taylor Jeanette Joseph
+  type: domain_term
+- text: Year Results
+  type: domain_term
+- text: names status material exports
+  type: domain_term
+- text: Laura Smith Insurance
+  type: domain_term
+- text: Active AML Mobile
+  type: domain_term
+- text: with several Retired
+  type: domain_term
+- text: Williams emily williams hotmail
+  type: domain_term
+- text: Chris Miller
+  type: domain_term
+- text: Support Fully Automated
+  type: domain_term
+- text: Origination Weekly Semi
+  type: domain_term
+- text: Service Desk
+  type: domain_term
+- text: fee
+  type: domain_term
+- text: FATCA Mobile
+  type: domain_term
+- text: skynet be Michael Smith
+  type: domain_term
+- text: Governance Framework Compliance
+  type: domain_term
+- text: be strong results
+  type: domain_term
+- text: skynet be Leuven
+  type: domain_term
+- text: Active Semi Automated Daily
+  type: domain_term
+- text: inactive in outreach
+  type: domain_term
+- text: Sustainability Reporting
+  type: domain_term
+- text: original ING Belgium
+  type: domain_term
+- text: SA NV
+  type: domain_term
+- text: ING Belgium Additional
+  type: domain_term
+- text: Consulting Agreement
+  type: domain_term
+- text: Miller laura
+  type: domain_term
+- text: Bruges
+  type: domain_term
+- text: jane taylor hotmail
+  type: domain_term
+- text: Deprecated Compliance Team
+  type: domain_term
+- text: Industry Consortium Bi
+  type: domain_term
+- text: Wire Transfer USD
+  type: domain_term
+- text: Service Data Backup Under
+  type: domain_term
+- text: Emily Williams her emily
+  type: domain_term
+- text: report https
+  type: domain_term
+- text: Johnson Mobile Banking User
+  type: domain_term
+- text: Williams an Insurance Subscriber
+  type: domain_term
+- text: pdf http assets ing
+  type: domain_term
+- text: channels versions
+  type: domain_term
+- text: Offer mortgage health
+  type: domain_term
+- text: Overdraft Product Specification last
+  type: domain_term
+- text: simulation
+  type: domain_term
+- text: Onboarding Deprecated HR
+  type: domain_term
+- text: erin
+  type: domain_term
+- text: Guidelines Digital Services Deprecated
+  type: domain_term
+- text: davis skynet be Supplier
+  type: domain_term
+- text: Onboarding Standards Sustainability
+  type: domain_term
+- text: Smith Online Banking User
+  type: domain_term
+- text: Williams Mortgage
+  type: domain_term
+- text: Debit Completed
+  type: domain_term
+- text: Borrower Active
+  type: domain_term
+- text: cost model provider
+  type: domain_term
+- text: IT Production Maintenance
+  type: domain_term
+- text: Password Reset Active Semi
+  type: domain_term
+- text: Origination Weekly Semi Automated
+  type: domain_term
+- text: definitions from the definitions
+  type: domain_term
+- text: Retired Risk Management Compliance
+  type: domain_term
+- text: CorpKeys for operational
+  type: domain_term
+- text: be Brussels Tom
+  type: domain_term
+- text: Running AWS
+  type: domain_term
+- text: Investment Portfolio Investor
+  type: domain_term
+- text: xlsx the Additional
+  type: domain_term
+- text: Fraud Detection Policy Retired
+  type: domain_term
+- text: Custodian Jonathan Perkins
+  type: domain_term
+- text: Online Banking Inactive
+  type: domain_term
+- text: Compliance Internal Governance Bi
+  type: domain_term
+- text: Kristy Peterson policy communications
+  type: domain_term
+- text: Direct Debit Completed USD
+  type: domain_term
+- text: report ING Belgium SANV
+  type: domain_term
+- text: Automated Daily executed
+  type: domain_term
+- text: Sustainability Industry Consortium
+  type: domain_term
+- text: Williams Gender Female
+  type: domain_term
+- text: Leuven Alex Johnson
+  type: domain_term
+- text: Customer Support Fully Automated
+  type: domain_term
+- text: Card USD AUD
+  type: domain_term
+- text: Framework National Regulator All
+  type: domain_term
+- text: sims ing com
+  type: domain_term
+- text: Committee Digital
+  type: domain_term
+- text: Card GBP
+  type: domain_term
+- text: Report link https assets
+  type: domain_term
+- text: Team
+  type: domain_term
+- text: Calculation process Active
+  type: domain_term
+- text: gender age flags Michael
+  type: domain_term
+- text: Taylor Supplier
+  type: domain_term
+- text: Deprecated Risk Management
+  type: domain_term
+- text: Statement Generation Active Semi
+  type: domain_term
+- text: check and rate simulation
+  type: domain_term
+- text: williams hotmail com Active
+  type: domain_term
+- text: report ING Belgium
+  type: domain_term
+- text: Policy Active Risk
+  type: domain_term
+- text: DLs Internal Only
+  type: domain_term
+- text: heather
+  type: domain_term
+- text: Lewis insurance
+  type: domain_term
+- text: Agreement Emily
+  type: domain_term
+- text: michael taylor
+  type: domain_term
+- text: emily taylor telenet
+  type: domain_term
+- text: Daily Compliance
+  type: domain_term
+- text: Controls Advisory Basel
+  type: domain_term
+- text: Quarterly review Board IT
+  type: domain_term
+- text: SUP
+  type: domain_term
+- text: Policy Bi
+  type: domain_term
+- text: process Active Fully Automated
+  type: domain_term
+- text: Audit Fully Automated
+  type: domain_term
+- text: addresses DOB IPs income
+  type: domain_term
+- text: robert taylor proximus
+  type: domain_term
+- text: reflect
+  type: domain_term
+- text: alerts ing com
+  type: domain_term
+- text: IT Board Bi Annual
+  type: domain_term
+- text: Under Review Responsible
+  type: domain_term
+- text: Williams Supplier
+  type: domain_term
+- text: Review Customer Support Fully
+  type: domain_term
+- text: katie taylor
+  type: domain_term
+- text: Emily Williams her
+  type: domain_term
+- text: Technology Katie Taylor
+  type: domain_term
+- text: custodian Jimmy
+  type: domain_term
+- text: Davis emily
+  type: domain_term
+- text: Miller Ghent
+  type: domain_term
+- text: brown telenet
+  type: domain_term
+- text: Data Steward Erin
+  type: domain_term
+- text: Active interaction
+  type: domain_term
+- text: and https assets
+  type: domain_term
+- text: Customer Service IT
+  type: domain_term
+- text: Active FATCA Mobile
+  type: domain_term
+- text: 'off'
+  type: domain_term
+- text: Officer Bi
+  type: domain_term
+- text: Policy Compliance
+  type: domain_term
+- text: after
+  type: domain_term
+- text: processes KYC Verification
+  type: domain_term
+- text: john brown telenet
+  type: domain_term
+- text: Peterson Shaun Stanley ing
+  type: domain_term
+- text: miller telenet be Mobile
+  type: domain_term
+- text: as internal Transfers
+  type: domain_term
+- text: Phone Email
+  type: domain_term
+- text: AML Screening Deprecated
+  type: domain_term
+- text: Annual report
+  type: domain_term
+- text: closes
+  type: domain_term
+- text: customers society
+  type: domain_term
+- text: Additional Disclosure
+  type: domain_term
+- text: Deprecated Compliance
+  type: domain_term
+- text: Investor
+  type: domain_term
+- text: Retired Board approval
+  type: domain_term
+- text: processes KYC
+  type: domain_term
+- text: Email
+  type: domain_term
+- text: as internal Transfers include
+  type: domain_term
+- text: Review Manual On Demand
+  type: domain_term
+- text: Active IT
+  type: domain_term
+- text: Compliance Team Fully
+  type: domain_term
+- text: are Deprecated Risk Management
+  type: domain_term
+- text: Additional Pillar
+  type: domain_term
+- text: Technology Katie
+  type: domain_term
+- text: check and
+  type: domain_term
+- text: Agreements are Do not
+  type: domain_term
+- text: Customer Service Data
+  type: domain_term
+- text: Linda Smith
+  type: domain_term
+- text: alex williams skynet be
+  type: domain_term
+- text: and KYC
+  type: domain_term
+- text: Loan Origination Weekly
+  type: domain_term
+- text: Assessment process Under
+  type: domain_term
+- text: Sustainability Internal
+  type: domain_term
+- text: Annual review cycle
+  type: domain_term
+- text: SEPA Credit Pending
+  type: domain_term
+- text: Desk Lead John
+  type: domain_term
+- text: set up Online
+  type: domain_term
+- text: Tom Clark
+  type: domain_term
+- text: Audit Under
+  type: domain_term
+- text: Annual Reports Pillar
+  type: domain_term
+- text: Interest Financial
+  type: domain_term
+- text: Clark Supplier
+  type: domain_term
+- text: Jonathan Perkins
+  type: domain_term
+- text: Consortium Annual
+  type: domain_term
+- text: Internal Audit Fully
+  type: domain_term
+- text: https newsroom
+  type: domain_term
+- text: raw to least privileged
+  type: domain_term
+- text: HR Department Fully Automated
+  type: domain_term
+- text: strong
+  type: domain_term
+- text: include IBANs
+  type: domain_term
+- text: Regulatory Reporting
+  type: domain_term
+- text: john
+  type: domain_term
+- text: Email IP
+  type: domain_term
+- text: Policy Active Bi Annual
+  type: domain_term
+- text: Lewis linda lewis
+  type: domain_term
+- text: Belgium SA pdf
+  type: domain_term
+- text: johnson proximus be
+  type: domain_term
+- text: Audit Under Review
+  type: domain_term
+- text: michael smith gmail com
+  type: domain_term
+- text: Credit Risk
+  type: domain_term
+- text: Maintenance Running as listed
+  type: domain_term
+- text: KYC Regulatory
+  type: domain_term
+- text: Screening On Demand
+  type: domain_term
+- text: Emily Williams Line of
+  type: domain_term
+- text: ing com john graham
+  type: domain_term
+- text: Fraud Detection Active
+  type: domain_term
+- text: Active Current Account Holder
+  type: domain_term
+- text: Active AML
+  type: domain_term
+- text: Weekly Retail Banking
+  type: domain_term
+- text: Tyler
+  type: domain_term
+- text: IT Custodian Jonathan Perkins
+  type: domain_term
+- text: to customers society
+  type: domain_term
+- text: Governance Basel Committee
+  type: domain_term
+- text: edward
+  type: domain_term
+- text: Compliance Officer Risk
+  type: domain_term
+- text: Transfers include IBANs Agreements
+  type: domain_term
+- text: newsroom ing be
+  type: domain_term
+- text: of Credit Terminated
+  type: domain_term
+- text: User Active Current
+  type: domain_term
+- text: Full Year Results releases
+  type: domain_term
+- text: Statement Generation Active
+  type: domain_term
+- text: Business Account GBP
+  type: domain_term
+- text: Current Account Holder
+  type: domain_term
+- text: Nicholas Wolf nicolas wolf
+  type: domain_term
+- text: Reports
+  type: domain_term
+- text: Credit Card USD
+  type: domain_term
+- text: Shaun Stanley ing com
+  type: domain_term
+- text: Taylor John Miller
+  type: domain_term
+- text: Banking Security Deprecated National
+  type: domain_term
+- text: Automated Weekly Retail Banking
+  type: domain_term
+- text: Nicholas Wolf
+  type: domain_term
+- text: Product Specification last reviewed
+  type: domain_term
+- text: xlsx https assets
+  type: domain_term
+- text: Screening Guidelines Digital Services
+  type: domain_term
+- text: Customer Service Policy Quarterly
+  type: domain_term
+- text: IBANs Agreements
+  type: domain_term
+- text: Savings Account Holder Active
+  type: domain_term
+- text: linda lewis
+  type: domain_term
+- text: Robert Williams his loan
+  type: domain_term
+- text: cashback Alex
+  type: domain_term
+- text: Mobile App Update Active
+  type: domain_term
+- text: the Interest Calculation
+  type: domain_term
+- text: Failed Standing Order
+  type: domain_term
+- text: Deprecated Risk
+  type: domain_term
+- text: Overdraft Agreement
+  type: domain_term
+- text: Gutierrez Justin
+  type: domain_term
+- text: Accrued Interest Financial
+  type: domain_term
+- text: robert taylor
+  type: domain_term
+- text: Customer Service Data Backup
+  type: domain_term
+- text: pdf read full
+  type: domain_term
+- text: Demand Finance Team
+  type: domain_term
+- text: Mary Sims
+  type: domain_term
+- text: telenet be John Johnson
+  type: domain_term
+- text: Williams interaction
+  type: domain_term
+- text: least privilege roles
+  type: domain_term
+- text: Williams Gender
+  type: domain_term
+- text: Card cashback
+  type: domain_term
+- text: set
+  type: domain_term
+- text: names emails phones addresses
+  type: domain_term
+- text: fee Online KYC
+  type: domain_term
+- text: Screening Guidelines are Deprecated
+  type: domain_term
+- text: mary sims ing
+  type: domain_term
+- text: Only Bi Annual
+  type: domain_term
+- text: be John Johnson
+  type: domain_term
+- text: Overdraft Product Specification
+  type: domain_term
