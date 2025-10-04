@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>SecurePrompt · Audit Trail</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://unpkg.com/@picocss/pico@1.5.10/css/pico.min.css" rel="stylesheet">
+  <style>
+    body{padding:1.2rem} header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+    .chips{display:flex;flex-wrap:wrap;gap:.25rem}.chip{font-size:.75rem;background:#eef;border-radius:999px;padding:.1rem .5rem}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+    .muted{color:#667}.nowrap{white-space:nowrap}.warn{color:#b55} details pre{max-height:40vh;overflow:auto}
+    .toolbar{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+  </style>
+</head>
+<body>
+<header>
+  <h3 style="margin:0">Audit Trail</h3>
+  <label>Limit <input id="limit" type="number" min="1" value="100" style="width:7rem"></label>
+  <label>Filter <input id="filter" type="search" placeholder="label:EMAIL role:reviewer endpoint:/scrub …"></label>
+  <div class="toolbar">
+    <a href="/audit/jsonl" class="secondary">Download JSONL</a>
+    <button id="refresh" class="contrast">Refresh</button>
+  </div>
+</header>
+
+<div id="summary" style="margin:.5rem 0 1rem 0; display:none">
+  <small class="muted">Summary:&nbsp;
+    <span id="sum-receipts"></span>, <span id="sum-entities"></span>&nbsp;·&nbsp;
+    <span id="sum-actions"></span>
+  </small>
+</div>
+
+<article id="empty" class="warn" style="display:none">
+  No audit entries yet. Scrub text or files to populate the log.
+</article>
+
+<table role="grid">
+  <thead>
+    <tr><th class="nowrap">Time</th><th>Actor</th><th>Endpoint</th><th>C-level</th><th>Entities</th><th>Hashes</th><th>More</th></tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<script>
+const $ = s => document.querySelector(s);
+const rows = $("#rows"), empty = $("#empty");
+const limitI = $("#limit"), filterI = $("#filter"), btn = $("#refresh");
+
+const chip = s => `<span class="chip">${s}</span>`;
+const esc = s => String(s||'').replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtTs = ts => { try{ return new Date(ts).toLocaleString(); }catch{ return ts||''; } };
+
+function normalizeResponse(data){
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.items)) return data.items;
+  if (data && typeof data==='object'){
+    for(const k of Object.keys(data)) if(Array.isArray(data[k])) return data[k];
+  }
+  return [];
+}
+function matchesFilter(item, q){
+  if (!q) return true;
+  const terms=q.trim().split(/\s+/), flat=JSON.stringify(item).toLowerCase();
+  for (const t of terms){
+    if (!t) continue;
+    if (t.includes(':')){
+      const [k,v]=t.toLowerCase().split(':');
+      const cand=(item[k] ?? item.actor?.[k] ?? item.policy?.[k] ?? item.client?.[k] ?? item.counts?.[k] ?? '');
+      if (String(cand).toLowerCase().indexOf(v)===-1) return false;
+    } else if (flat.indexOf(t.toLowerCase())===-1){
+      return false;
+    }
+  }
+  return true;
+}
+function entityChips(ents){
+  if (!Array.isArray(ents)||!ents.length) return '<span class="muted">–</span>';
+  const by={};
+  for (const e of ents){
+    const k=(e.label||'').toString().toUpperCase();
+    by[k]=(by[k]||0)+1;
+  }
+  return '<div class="chips">'+Object.entries(by).map(([k,v])=>chip(`${k} ×${v}`)).join('')+'</div>';
+}
+function row(item){
+  const ents=item.entities||[];
+  const lh=(item.original_hash||'').slice(0,12), sh=(item.scrubbed_hash||'').slice(0,12);
+  const op=item.operation_id ? `<div class="mono">${esc(item.operation_id)}</div>` : '';
+  const role=item.role ? `<div class="muted">role: ${esc(item.role)}</div>` : '';
+  const just=item.justification ? `<div class="muted">just: ${esc(item.justification)}</div>` : '';
+  const endpoint=esc(item.endpoint||''), actor=esc(item.actor||item.actor_name||'');
+  const ip=esc(item.client_ip||item.client?.ip||''), clevel=esc(item.c_level||item.policy?.clearance||'—');
+  return `
+    <tr>
+      <td class="nowrap">${fmtTs(item.ts)}</td>
+      <td><div>${actor||'—'}</div><div class="muted">${ip}</div></td>
+      <td><div class="mono">${endpoint}</div>${op}${role}${just}</td>
+      <td>${clevel}</td>
+      <td>${entityChips(ents)}</td>
+      <td class="mono"><div>orig: ${lh||'—'}</div><div>scrb: ${sh||'—'}</div></td>
+      <td><details><summary>JSON</summary><pre class="mono">${esc(JSON.stringify(item,null,2))}</pre></details></td>
+    </tr>`;
+}
+
+async function loadSummary(){
+  try{
+    const r = await fetch('/metrics');
+    if(!r.ok) return;
+    const data = await r.json();
+    const actions = data.by_action_no_unknown || {};
+    const chips = Object.entries(actions).map(([k,v])=>chip(`${k} ×${v}`)).join(' ');
+    document.querySelector('#sum-receipts').textContent = `receipts: ${data.receipts||0}`;
+    document.querySelector('#sum-entities').textContent = `entities: ${data.entities||0}`;
+    document.querySelector('#sum-actions').innerHTML = chips || '<span class="muted">no actions yet</span>';
+    document.querySelector('#summary').style.display='block';
+  }catch{
+    document.querySelector('#summary').style.display='none';
+  }
+}
+
+async function load(){
+  rows.innerHTML = '<tr><td colspan="7">Loading…</td></tr>';
+  empty.style.display='none';
+  const limit = Number(limitI.value)||100;
+  const res = await fetch(`/audit?limit=${limit}&_=${Date.now()}`);
+  if (!res.ok){ rows.innerHTML = `<tr><td colspan="7" class="warn">Error ${res.status}: cannot fetch /audit</td></tr>`; return; }
+  const items = normalizeResponse(await res.json()).filter(i=>matchesFilter(i, filterI.value));
+  if (!items.length){ rows.innerHTML=''; empty.style.display='block'; return; }
+  rows.innerHTML = items.map(row).join('');
+}
+
+btn.addEventListener('click', ()=>{ loadSummary(); load(); });
+filterI.addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
+loadSummary();
+load();
+</script>
+</body>
+</html>

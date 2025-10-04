@@ -25,7 +25,7 @@ from fastapi import (
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from secureprompt.scrub.pipeline import scrub_text
 from secureprompt.receipts.store import read_receipt
@@ -37,6 +37,7 @@ from secureprompt.files.ocr import ocr_image_to_text
 from secureprompt.files.xlsx import scrub_workbook
 from secureprompt.prompt.lexicon import iter_spans as _lex_iter_spans
 from secureprompt.audit.store import AuditStore
+from secureprompt.descrub.service import descrub as _descrub
 
 try:  # pragma: no cover - optional helper
     from secureprompt.files.redact import write_redacted_text
@@ -61,8 +62,6 @@ ACTIONS_ALLOW = {"admin", "auditor"}
 CLEARANCE_OPTIONS = ("C1", "C2", "C3", "C4")
 TEXT_EXTENSIONS = {".txt", ".text", ".html", ".htm", ".csv"}
 ALLOWED_EXTENSIONS = TEXT_EXTENSIONS | {".pdf", ".png", ".xlsx"}
-
-templates = Jinja2Templates(directory="templates")
 
 _LABEL_PRIORITY = {
     "DOCUMENT_TYPE": 20,
@@ -168,13 +167,12 @@ class ScrubWithFileResponse(ScrubResponse):
 
 
 class DescrubRequest(BaseModel):
-    text: Optional[str] = None
-    ids: Optional[List[str]] = None
-    justification: Optional[str] = None
-    role: Optional[str] = None
-    clearance: Optional[str] = None
-    operation_id: Optional[str] = None
-    receipt_path: Optional[str] = None
+    operation_id: str = Field(..., min_length=8)
+    identifiers: List[str] = Field(default_factory=list)
+    justification: Optional[str] = Field(default=None, min_length=5)
+
+    class Config:
+        extra = "allow"
 
 
 class DescrubResponse(BaseModel):
@@ -461,6 +459,128 @@ def api_scrub(request: Request, req: ScrubRequest = Body(...)) -> ScrubResponse:
     _emit_audit_event(event)
 
     return ScrubResponse.model_validate(result)
+
+
+@app.post("/descrub")
+def api_descrub(req: DescrubRequest, request: Request):
+    allowed = {r.strip().lower() for r in os.environ.get("SECUREPROMPT_DESCRUB_ROLES", "admin,reviewer").split(",")}
+    role = (
+        (request.headers.get("X-Role") or getattr(req, "role", "") or "")
+        .strip()
+        .lower()
+    )
+    if role not in allowed:
+        _emit_audit_event(
+            {
+                "event": "descrub",
+                "operation_id": req.operation_id,
+                "actor": _default_actor(role or "user"),
+                "client": _client_meta(request),
+                "source": {
+                    "type": "vault",
+                    "path": None,
+                    "filename": None,
+                    "mime": "application/json",
+                    "bytes": 0,
+                },
+                "policy": {"clearance": "C3", "matrix_version": "v1"},
+                "counts": _entity_counts([], "C3"),
+                "hashes": _hashes_payload(original_hash=None, scrubbed_text=None, receipt_path=None),
+                "receipt_path": None,
+                "status": "denied",
+            }
+        )
+        raise HTTPException(status_code=422, detail="Forbidden: role not allowed")
+
+    justification = (req.justification or "").strip()
+    if not justification:
+        justification = (request.headers.get("X-Justification") or "").strip()
+    if not justification:
+        justification = "legacy-request"
+
+    try:
+        text, ctx = _descrub(req.operation_id, req.identifiers)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Receipt not found")
+
+    AUDIT.append({
+        "actor": request.headers.get("X-Actor") or "api",
+        "endpoint": "/descrub",
+        "client_ip": request.client.host if request.client else None,
+        "operation_id": req.operation_id,
+        "identifiers": req.identifiers,
+        "restored": ctx.get("restored"),
+        "justification": justification,
+        "role": role,
+    })
+
+    _emit_audit_event(
+        {
+            "event": "descrub",
+            "operation_id": req.operation_id,
+            "actor": _default_actor(role or "user"),
+            "client": _client_meta(request),
+            "source": {
+                "type": "vault",
+                "path": None,
+                "filename": None,
+                "mime": "application/json",
+                "bytes": 0,
+            },
+            "policy": {"clearance": "C3", "matrix_version": "v1"},
+            "counts": _entity_counts([], "C3"),
+            "hashes": _hashes_payload(original_hash=None, scrubbed_text=None, receipt_path=None),
+            "receipt_path": None,
+            "status": "approved",
+            "restored": ctx.get("restored"),
+            "justification": justification,
+        }
+    )
+
+    return {
+        "operation_id": req.operation_id,
+        "restored": ctx.get("restored"),
+        "descrubbed": text,
+    }
+
+
+# --- Metrics summary endpoint (additive) --------------------------------------
+try:
+    from secureprompt.audit.metrics import summarize_metrics as _sp_summarize_metrics  # type: ignore
+except Exception:
+    _sp_summarize_metrics = None  # type: ignore
+
+
+@app.get("/metrics")
+def api_metrics():
+    if _sp_summarize_metrics is None:
+        return {
+            "receipts": 0,
+            "entities": 0,
+            "by_label": {},
+            "by_action": {},
+            "by_action_no_unknown": {},
+            "latency_ms": {"p50": 0, "p90": 0},
+        }
+    return _sp_summarize_metrics()
+# -----------------------------------------------------------------------------#
+
+
+# --- Human Audit page ---------------------------------------------------------
+def _load_templates() -> Jinja2Templates:
+    candidates = [Path("templates"), Path("secureprompt/ui/templates")]
+    for candidate in candidates:
+        if candidate.exists():
+            return Jinja2Templates(directory=str(candidate))
+    candidates[0].mkdir(parents=True, exist_ok=True)
+    return Jinja2Templates(directory=str(candidates[0]))
+
+
+templates = _load_templates()
+
+@app.get("/ui/audit", response_class=HTMLResponse)
+async def ui_audit(request: Request):
+    return templates.TemplateResponse("audit.html", {"request": request})
 
 
 @app.post("/files/redact-text", response_model=ScrubWithFileResponse)
@@ -891,3 +1011,4 @@ except Exception:
     # Non-fatal if app is not yet defined in this module context
     pass
 # --- END: favicon shim (idempotent) ---
+from fastapi.responses import HTMLResponse
