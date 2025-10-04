@@ -12,6 +12,7 @@ from ..entities.confidence import add_confidence
 
 CLEARANCE_ORDER = {"C1": 1, "C2": 2, "C3": 3, "C4": 4}
 from ..receipts.store import write_receipt
+from ..audit.vault import Vault
 
 ENTITY_DEFAULT_C_LEVEL = {
     "EMAIL": "C3",
@@ -55,12 +56,17 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
     entities: List[Dict[str, Any]] = []
     receipt_entities: List[Dict[str, Any]] = []
 
+    value_map: Dict[str, str] = {}
+
     for hit in sorted(hits, key=lambda x: x["start"], reverse=True):
         entity_level = ENTITY_DEFAULT_C_LEVEL.get(hit["label"], c_level)
         identifier = _identifier(hit["label"], hit["value"], entity_level)
         default_action = "allow" if entity_level.upper() in {"C1", "C2"} else "mask"
         action = hit.get("action") or default_action
         mask_preview = _mask_value(hit["value"]) if action == "mask" else None
+
+        hit["identifier"] = identifier
+        value_map[identifier] = hit["value"]
 
         out = out[: hit["start"]] + identifier + out[hit["end"] :]
 
@@ -110,6 +116,21 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
 
     operation_id = uuid4().hex
     placeholder_map = {entity["identifier"]: entity["identifier"] for entity in public_entities}
+    # --- begin: persist originals to encrypted vault ---
+    _vault = Vault()
+    vault_items = []
+    for entity in entities:
+        ident = entity.get("identifier")
+        raw_value = value_map.get(ident)
+        if ident and raw_value:
+            vault_items.append({"identifier": ident, "label": entity.get("label"), "value": raw_value})
+    if vault_items:
+        try:
+            _vault.put_many(operation_id, vault_items)
+        except Exception:
+            pass
+    # --- end: persist originals to encrypted vault ---
+
     receipt_path = write_receipt(
         operation_id=operation_id,
         text=text,
@@ -124,6 +145,7 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
     return {
         "original_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "scrubbed": out,
+        "scrubbed_ids": out,
         "entities": public_entities_sorted,
         "operation_id": operation_id,
         "receipt_path": str(receipt_path),
