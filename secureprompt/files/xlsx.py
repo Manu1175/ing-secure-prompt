@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
@@ -10,6 +11,7 @@ from uuid import uuid4
 from openpyxl import load_workbook
 
 from secureprompt.entities.detectors import detect
+from secureprompt.prompt.lexicon import to_tokens as lex_tokens
 from secureprompt.receipts.store import write_receipt
 from secureprompt.scrub import pipeline as scrub_pipeline
 from secureprompt.ui.selective import selective_sanitize
@@ -90,7 +92,11 @@ def write_xlsx_redacted(
     return destination
 
 
-def _scrub_cell_text(text: str, base_c_level: str = "C4") -> Tuple[str, List[Dict[str, Any]], List[Dict[str, Any]]]:
+def _ids_to_tokens(s: str) -> str:
+    return re.sub(r"\bC[1-5]::([A-Z0-9_]+)::[0-9a-f]{8,40}\b", lambda m: f"<{m.group(1)}>", s)
+
+
+def _scrub_cell_text(text: str, base_c_level: str = "C4") -> Tuple[str, str, List[Dict[str, Any]], List[Dict[str, Any]]]:
     """Apply rule-based scrubbing to a single cell value."""
 
     hits = detect(text)
@@ -134,7 +140,12 @@ def _scrub_cell_text(text: str, base_c_level: str = "C4") -> Tuple[str, List[Dic
 
     public_entities.reverse()
     receipt_entities.reverse()
-    return transformed, public_entities, receipt_entities
+
+    tokenized_from_raw = lex_tokens(text or "")
+    tokenized_from_ids = _ids_to_tokens(transformed)
+    tokenized = tokenized_from_ids if tokenized_from_raw == (text or "") else tokenized_from_raw
+
+    return transformed, tokenized, public_entities, receipt_entities
 
 
 def scrub_workbook(path: Path, clearance: str, *, filename: Optional[str] = None) -> Dict[str, Any]:
@@ -172,16 +183,16 @@ def scrub_workbook(path: Path, clearance: str, *, filename: Optional[str] = None
         cell_ref = row["cell"]
         cell_text = row["text"]
 
-        scrubbed_cell, cell_public_entities, cell_receipt_entities = _scrub_cell_text(cell_text, base_c_level="C4")
+        _scrubbed_ids, scrubbed_tokens, cell_public_entities, cell_receipt_entities = _scrub_cell_text(cell_text, base_c_level="C4")
 
         # The persisted workbook should never contain raw sensitive values.
-        replacements[(sheet, cell_ref)] = scrubbed_cell
+        replacements[(sheet, cell_ref)] = scrubbed_tokens
         combined_original_segments.append(f"{sheet}!{cell_ref}={cell_text}")
-        combined_scrubbed_segments.append(f"{sheet}!{cell_ref}={scrubbed_cell}")
+        combined_scrubbed_segments.append(f"{sheet}!{cell_ref}={scrubbed_tokens}")
 
         sanitized_for_display = selective_sanitize(cell_text, cell_public_entities, clearance)
-        if sanitized_for_display == cell_text and scrubbed_cell != cell_text:
-            sanitized_for_display = scrubbed_cell
+        if sanitized_for_display == cell_text and scrubbed_tokens != cell_text:
+            sanitized_for_display = scrubbed_tokens
         display_sanitized_segments.append(f"{sheet}!{cell_ref}={sanitized_for_display}")
 
         for public_entity, receipt_entity in zip(cell_public_entities, cell_receipt_entities):

@@ -5,9 +5,11 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import tempfile
+import io
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from fastapi import (
     Body,
@@ -18,14 +20,14 @@ from fastapi import (
     Request,
     UploadFile,
     status,
+    Query,
 )
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
 from secureprompt.scrub.pipeline import scrub_text
-from secureprompt.ui.selective import selective_sanitize
 from secureprompt.receipts.store import read_receipt
 from secureprompt.receipts.descrub import descrub_text
 
@@ -33,6 +35,8 @@ from secureprompt.files.text import load_text
 from secureprompt.files.pdf import extract_pdf_text
 from secureprompt.files.ocr import ocr_image_to_text
 from secureprompt.files.xlsx import scrub_workbook
+from secureprompt.prompt.lexicon import iter_spans as _lex_iter_spans
+from secureprompt.audit.store import AuditStore
 
 try:  # pragma: no cover - optional helper
     from secureprompt.files.redact import write_redacted_text
@@ -60,6 +64,89 @@ ALLOWED_EXTENSIONS = TEXT_EXTENSIONS | {".pdf", ".png", ".xlsx"}
 
 templates = Jinja2Templates(directory="templates")
 
+_LABEL_PRIORITY = {
+    "DOCUMENT_TYPE": 20,
+    "YEAR": 15,
+    "LINK": 15,
+    "AMOUNT": 15,
+    "DATE": 15,
+    "IBAN": 30,
+    "BIC": 25,
+    "PAN": 40,
+    "EMAIL": 35,
+    "PHONE": 35,
+    "IPV4": 25,
+    "IPV6": 25,
+    "NATIONAL_ID": 40,
+    "NAME": 1,
+}
+
+
+def _label_token(label: str) -> str:
+    return f"<{label.strip().upper()}>"
+
+
+def _span_from_entity(entity: Dict[str, Any]) -> Optional[Tuple[int, int]]:
+    if isinstance(entity.get("start"), int) and isinstance(entity.get("end"), int):
+        return (entity["start"], entity["end"])
+    span = entity.get("span")
+    if isinstance(span, (list, tuple)) and len(span) == 2 and all(isinstance(x, int) for x in span):
+        return (span[0], span[1])
+    return None
+
+
+def _combine_and_tokenize(raw_text: str, entities: Optional[List[Dict[str, Any]]]) -> str:
+    if not raw_text:
+        return ""
+
+    spans: List[Dict[str, Any]] = []
+
+    for entity in entities or []:
+        span = _span_from_entity(entity)
+        label = (entity.get("label") or "").strip().upper()
+        if span and label:
+            start, end = span
+            if 0 <= start <= end <= len(raw_text):
+                spans.append(
+                    {
+                        "start": start,
+                        "end": end,
+                        "label": label,
+                        "priority": 100 + _LABEL_PRIORITY.get(label, 10),
+                        "src": "entity",
+                    }
+                )
+
+    for lex_span in _lex_iter_spans(raw_text):
+        label = (lex_span["label"] or "").strip().upper()
+        spans.append(
+            {
+                "start": int(lex_span["start"]),
+                "end": int(lex_span["end"]),
+                "label": label,
+                "priority": _LABEL_PRIORITY.get(label, 10),
+                "src": "lex",
+            }
+        )
+
+    spans.sort(key=lambda item: (-item["priority"], -(item["end"] - item["start"]), item["start"]))
+
+    selected: List[Dict[str, Any]] = []
+
+    def _overlaps(a: Dict[str, Any], b: Dict[str, Any]) -> bool:
+        return not (a["end"] <= b["start"] or a["start"] >= b["end"])
+
+    for span in spans:
+        if any(_overlaps(span, existing) for existing in selected):
+            continue
+        selected.append(span)
+
+    selected.sort(key=lambda item: (item["start"], item["end"]), reverse=True)
+    out = raw_text
+    for span in selected:
+        out = out[: span["start"]] + _label_token(span["label"]) + out[span["end"] :]
+    return out
+
 class ScrubRequest(BaseModel):
     text: str
     c_level: str = "C3"
@@ -69,6 +156,8 @@ class ScrubRequest(BaseModel):
 class ScrubResponse(BaseModel):
     original_hash: str
     scrubbed: str
+    scrubbed_mask: Optional[str] = None
+    scrubbed_tokens: Optional[str] = None
     entities: List[Dict[str, Any]]
     operation_id: str
     receipt_path: str
@@ -97,6 +186,8 @@ app = FastAPI(title="SecurePrompt", version="0.2.0")
 app.mount("/files", StaticFiles(directory=REDACTED_DIR), name="files")
 app.mount("/redacted", StaticFiles(directory=REDACTED_XLSX_DIR), name="redacted")
 app.mount("/receipts", StaticFiles(directory=RECEIPTS_DIR), name="receipts")
+
+AUDIT = AuditStore(Path(os.environ.get("SECUREPROMPT_AUDIT_JSONL", "data/audit.jsonl")))
 
 
 def _default_actor(role: str = "system") -> Dict[str, str]:
@@ -308,6 +399,43 @@ def health() -> Dict[str, str]:
 @app.post("/scrub", response_model=ScrubResponse)
 def api_scrub(request: Request, req: ScrubRequest = Body(...)) -> ScrubResponse:
     result = scrub_text(req.text, req.c_level)
+
+    raw_text = req.text or ""
+    tokenized = _combine_and_tokenize(raw_text, result.get("entities") or [])
+
+    result["scrubbed_mask"] = result.get("scrubbed") or ""
+    result["scrubbed_tokens"] = tokenized
+    result["scrubbed"] = tokenized
+
+    actor = (request.headers.get("X-Actor") or "api").strip()
+    client_ip = request.client.host if request.client else None
+
+    scrubbed_bytes = (tokenized or "").encode("utf-8")
+    scrubbed_hash = hashlib.sha256(scrubbed_bytes).hexdigest()
+
+    AUDIT.append({
+        "actor": actor,
+        "endpoint": "/scrub",
+        "client_ip": client_ip,
+        "c_level": req.c_level,
+        "original_hash": result.get("original_hash"),
+        "scrubbed_hash": scrubbed_hash,
+        "latency_ms": result.get("latency_ms") or result.get("latencyMs"),
+        "entities": [
+            {
+                "label": entity.get("label"),
+                "c_level": entity.get("c_level") or entity.get("cLevel"),
+                "detector": entity.get("detector"),
+                "confidence": entity.get("confidence"),
+                "action": entity.get("action"),
+                "identifier": entity.get("identifier"),
+                "start": entity.get("start") if isinstance(entity.get("start"), int) else (entity.get("span")[0] if isinstance(entity.get("span"), (list, tuple)) else None),
+                "end": entity.get("end") if isinstance(entity.get("end"), int) else (entity.get("span")[1] if isinstance(entity.get("span"), (list, tuple)) else None),
+            }
+            for entity in (result.get("entities") or [])
+        ],
+        "user_agent": request.headers.get("User-Agent"),
+    })
 
     event = {
         "event": "scrub",
@@ -613,9 +741,10 @@ async def ui_scrub(
     if not is_xlsx:
         result = scrub_text(original_text, "C4")
         entities = result.get("entities", [])
-        sanitized = selective_sanitize(original_text, entities, clearance)
-        if sanitized == original_text and result.get("scrubbed") != original_text:
-            sanitized = result["scrubbed"]
+        result["scrubbed_mask"] = result.get("scrubbed") or ""
+        result["scrubbed_tokens"] = _combine_and_tokenize(original_text or "", entities)
+        result["scrubbed"] = result["scrubbed_tokens"]
+        sanitized = result["scrubbed"]
 
         if file_name and Path(file_name).suffix.lower() in TEXT_EXTENSIONS and write_redacted_text is not None:
             target = REDACTED_DIR / file_name
@@ -686,25 +815,16 @@ async def ui_scrub_get(request: Request, clearance: str = "C3") -> HTMLResponse:
 
 
 
-@app.get("/audit", response_class=HTMLResponse)
-async def audit_dashboard(request: Request) -> HTMLResponse:
-    entries = audit_log.tail(200)
-    context = {
-        "request": request,
-        "entries": entries,
-        "has_entries": bool(entries),
-        "clearance": "C3",
-        "clearances": CLEARANCE_OPTIONS,
-    }
-    return templates.TemplateResponse(request, "audit.html", context)
+@app.get("/audit")
+def audit_list(offset: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=1000)):
+    """Return a paginated slice of the append-only audit chain."""
+    return {"offset": offset, "limit": limit, "items": AUDIT.stream(offset=offset, limit=limit)}
 
 
 @app.get("/audit/jsonl")
-def audit_download() -> FileResponse:
-    path = audit_log.jsonl_path()
-    if not path.exists():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No audit entries yet")
-    return FileResponse(path, media_type="application/json", filename=path.name)
+def audit_jsonl():
+    """Stream the raw JSONL audit file."""
+    return StreamingResponse(io.BytesIO(AUDIT.as_bytes()), media_type="application/x-ndjson")
 
 # --- BEGIN: favicon hotfix (append-only) ---
 import logging
