@@ -1,30 +1,18 @@
 {
   "rows": 397,
-  "prompt_accuracy": 0.01434548714883443,
+  "prompt_accuracy": 0.15839808726838014,
   "response_accuracy": null,
-  "total_response_entities": 2153,
-  "tp": 24,
-  "fp": 303,
-  "fn": 1649,
-  "generated_at": "2025-10-02T20:26:50Z",
+  "total_response_entities": 1420,
+  "tp": 265,
+  "fp": 471,
+  "fn": 1408,
+  "generated_at": "2025-10-04T07:56:04Z",
   "input": "PROMPTS/merged.xlsx",
   "workbook": "reports/merged_eval.xlsx",
   "api": "http://127.0.0.1:8000",
   "top_missing": [
     [
-      "STATUS",
-      80
-    ],
-    [
-      "AMOUNT",
-      73
-    ],
-    [
-      "CURRENCY",
-      54
-    ],
-    [
-      "IBAN",
+      "['STATUS', 'STATE', 'RESULT', 'OUTCOME']",
       43
     ],
     [
@@ -48,10 +36,6 @@
       32
     ],
     [
-      "TRANSFER_ID",
-      31
-    ],
-    [
       "POLICY_NAME",
       29
     ],
@@ -72,10 +56,6 @@
       23
     ],
     [
-      "YEAR",
-      22
-    ],
-    [
       "GUIDELINE_NAME",
       22
     ],
@@ -88,23 +68,34 @@
       22
     ],
     [
-      "DATE",
+      "OP_STATUS",
       21
+    ],
+    [
+      "FREQUENCY",
+      21
+    ],
+    [
+      "PAYMENT_TYPE",
+      21
+    ],
+    [
+      "AGREEMENT_ID",
+      20
+    ],
+    [
+      "AMOUNT",
+      19
+    ],
+    [
+      "AUTOMATION_STATUS",
+      19
     ]
   ],
   "diff_mode": "gold",
   "keep_topk": 0,
-  "kept_columns": [
-    "Prompt",
-    "Sanitized Prompt",
-    "Got_Sanitized_Prompt_Eval",
-    "TP",
-    "FN",
-    "FP",
-    "Missing_Tokens",
-    "Extra_Tokens",
-    "APICallMs",
-    "Entities_Count"
-  ],
-  "anomalies_sheet": true
+  "kept_columns": [],
+  "anomalies_sheet": true,
+  "eval_source": "auto",
+  "aliases_size": 12
 }

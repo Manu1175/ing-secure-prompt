@@ -58,7 +58,8 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
     for hit in sorted(hits, key=lambda x: x["start"], reverse=True):
         entity_level = ENTITY_DEFAULT_C_LEVEL.get(hit["label"], c_level)
         identifier = _identifier(hit["label"], hit["value"], entity_level)
-        action = hit.get("action", "redact")
+        default_action = "allow" if entity_level.upper() in {"C1", "C2"} else "mask"
+        action = hit.get("action") or default_action
         mask_preview = _mask_value(hit["value"]) if action == "mask" else None
 
         out = out[: hit["start"]] + identifier + out[hit["end"] :]
@@ -88,6 +89,7 @@ def scrub_text(text: str, c_level: str = "C3") -> Dict[str, Any]:
                 "confidence_sources": hit.get("confidence_sources", {}),
                 "span": [hit["start"], hit["end"]],
                 "original": hit["value"],
+                "action": action,
                 "explanation": hit.get("explanation"),
             }
         )
