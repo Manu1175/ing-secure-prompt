@@ -8,6 +8,7 @@ import os
 import re
 import tempfile
 import io
+import jinja2
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -22,7 +23,12 @@ from fastapi import (
     status,
     Query,
 )
-from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
+from fastapi.responses import (
+    FileResponse,
+    HTMLResponse,
+    StreamingResponse,
+    JSONResponse,
+)
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
@@ -55,6 +61,8 @@ REDACTED_XLSX_DIR.mkdir(parents=True, exist_ok=True)
 
 RECEIPTS_DIR = Path("data/receipts")
 RECEIPTS_DIR.mkdir(parents=True, exist_ok=True)
+
+KEEP_ORIG = os.environ.get("KEEP_ORIGINAL_IN_RECEIPTS", "").lower() not in {"", "0", "false", "no"}
 
 BASELINE_PATH = Path(os.environ.get("SECUREPROMPT_BASELINE_PATH", "reports/baseline_counts.json"))
 
@@ -181,6 +189,115 @@ class DescrubResponse(BaseModel):
 
 
 app = FastAPI(title="SecurePrompt", version="0.2.0")
+
+# ---------- De-scrub config ----------
+ALLOWED_DESCRUB_ROLES = {
+    r.strip()
+    for r in os.environ.get("SECUREPROMPT_DESCRUB_ROLES", "").split(",")
+    if r.strip()
+}
+
+
+def _load_receipt_by_op(op_id: str) -> dict:
+    base = RECEIPTS_DIR
+    p = base / f"{op_id}.json"
+    if not p.exists():
+        matches = list(base.glob(f"{op_id}*.json"))
+        if matches:
+            matches.sort()
+            p = matches[0]
+    if not p.exists():
+        raise HTTPException(status_code=404, detail=f"receipt not found for op '{op_id}'")
+    try:
+        return json.loads(p.read_text())
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"bad receipt JSON: {exc}")
+
+
+def _extract_original_payload(rec: dict) -> Optional[str]:
+    for key in ("original", "input", "raw", "text", "payload", "body"):
+        val = rec.get(key)
+        if isinstance(val, str) and val.strip():
+            return val
+    for parent_key in ("request", "data"):
+        sub = rec.get(parent_key)
+        if isinstance(sub, dict):
+            for key in ("original", "input", "raw", "text", "payload", "body"):
+                val = sub.get(key)
+                if isinstance(val, str) and val.strip():
+                    return val
+    return None
+
+
+def _maybe_store_original(
+    receipt_path: Optional[str],
+    *,
+    text: Optional[str] = None,
+    raw_text: Optional[str] = None,
+) -> None:
+    if not KEEP_ORIG or not receipt_path:
+        return
+
+    try:
+        path = Path(receipt_path)
+    except Exception:
+        return
+
+    if not path.exists():
+        fallback = RECEIPTS_DIR / path.name
+        if fallback.exists():
+            path = fallback
+        else:
+            return
+
+    try:
+        receipt = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return
+
+    if receipt.get("original"):
+        return
+
+    original_value = None
+    if text and text.strip():
+        original_value = text
+    elif raw_text and raw_text.strip():
+        original_value = raw_text
+
+    if not original_value:
+        return
+
+    receipt["original"] = original_value
+
+    try:
+        path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception:
+        pass
+
+
+@app.get("/descrub/{operation_id}")
+def descrub(operation_id: str, role: str = Query(...), just: str = Query("", max_length=200)):
+    if role not in ALLOWED_DESCRUB_ROLES:
+        raise HTTPException(status_code=403, detail="role not allowed")
+
+    rec = _load_receipt_by_op(operation_id)
+    original = _extract_original_payload(rec)
+    if not original:
+        raise HTTPException(status_code=404, detail="original payload not stored in this receipt")
+
+    return JSONResponse(
+        {
+            "operation_id": operation_id,
+            "role": role,
+            "justification": just,
+            "original": original,
+            "receipt_meta": {
+                "endpoint": rec.get("endpoint"),
+                "ts": rec.get("ts"),
+                "actor": rec.get("actor"),
+            },
+        }
+    )
 app.mount("/files", StaticFiles(directory=REDACTED_DIR), name="files")
 app.mount("/redacted", StaticFiles(directory=REDACTED_XLSX_DIR), name="redacted")
 app.mount("/receipts", StaticFiles(directory=RECEIPTS_DIR), name="receipts")
@@ -399,6 +516,7 @@ def api_scrub(request: Request, req: ScrubRequest = Body(...)) -> ScrubResponse:
     result = scrub_text(req.text, req.c_level)
 
     raw_text = req.text or ""
+    _maybe_store_original(result.get("receipt_path"), text=req.text, raw_text=raw_text)
     tokenized = _combine_and_tokenize(raw_text, result.get("entities") or [])
 
     result["scrubbed_mask"] = result.get("scrubbed") or ""
@@ -567,25 +685,59 @@ def api_metrics():
 
 
 # --- Human Audit page ---------------------------------------------------------
+DEBUG = bool(int(os.environ.get("DEBUG", "0")))
+
+
+def _templates_dir() -> Path:
+    return Path(__file__).resolve().parents[1] / "secureprompt" / "ui" / "templates"
+
+
 def _load_templates() -> Jinja2Templates:
-    candidates = [Path("templates"), Path("secureprompt/ui/templates")]
-    for candidate in candidates:
-        if candidate.exists():
-            return Jinja2Templates(directory=str(candidate))
-    candidates[0].mkdir(parents=True, exist_ok=True)
-    return Jinja2Templates(directory=str(candidates[0]))
+    tpl_dir = _templates_dir()
+    if not tpl_dir.exists():
+        tpl_dir.mkdir(parents=True, exist_ok=True)
+
+    tmpls = Jinja2Templates(directory=str(tpl_dir))
+
+    if DEBUG:
+        try:
+            tmpls.env.auto_reload = True
+        except Exception:
+            pass
+        try:
+            tmpls.env.cache.clear()
+        except Exception:
+            pass
+        try:
+            tmpls.env.cache = {}
+        except Exception:
+            pass
+        try:
+            tmpls.env.undefined = jinja2.DebugUndefined
+        except Exception:
+            pass
+
+    print(f"Templates dir: {tpl_dir}")
+    return tmpls
 
 
 templates = _load_templates()
 
+
 @app.get("/ui/audit", response_class=HTMLResponse)
 async def ui_audit(request: Request):
-    return templates.TemplateResponse("audit.html", {"request": request})
+    resp = templates.TemplateResponse("audit.html", {"request": request})
+    if DEBUG:
+        resp.headers["Cache-Control"] = "no-store, max-age=0, must-revalidate"
+        resp.headers["Pragma"] = "no-cache"
+        resp.headers["Expires"] = "0"
+    return resp
 
 
 @app.post("/files/redact-text", response_model=ScrubWithFileResponse)
 def api_redact_text(request: Request, req: ScrubRequest = Body(...)) -> ScrubWithFileResponse:
     result = scrub_text(req.text, req.c_level)
+    _maybe_store_original(result.get("receipt_path"), text=req.text)
     if write_redacted_text is None:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="File writer unavailable")
 
@@ -810,6 +962,7 @@ async def ui_scrub(
                 entities = workbook["entities"]
                 operation_id = workbook["operation_id"]
                 receipt_path = workbook["receipt_path"]
+                _maybe_store_original(receipt_path, text=original_text)
                 redacted_path = Path(workbook["redacted_path"])
                 saved_path_display = redacted_path.name
                 saved_href = f"/redacted/{operation_id}/{redacted_path.name}"
@@ -860,6 +1013,7 @@ async def ui_scrub(
 
     if not is_xlsx:
         result = scrub_text(original_text, "C4")
+        _maybe_store_original(result.get("receipt_path"), text=original_text)
         entities = result.get("entities", [])
         result["scrubbed_mask"] = result.get("scrubbed") or ""
         result["scrubbed_tokens"] = _combine_and_tokenize(original_text or "", entities)

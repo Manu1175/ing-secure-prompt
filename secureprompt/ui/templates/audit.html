@@ -11,6 +11,9 @@
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
     .muted{color:#667}.nowrap{white-space:nowrap}.warn{color:#b55} details pre{max-height:40vh;overflow:auto}
     .toolbar{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+    .btn-xs{font-size:.75rem;padding:.25rem .5rem}
+    dialog#descrub-modal{border:none;border-radius:.5rem;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:34rem}
+    #descrub-result{max-height:40vh;overflow:auto;white-space:pre-wrap}
   </style>
 </head>
 <body>
@@ -20,6 +23,8 @@
   <label>Filter <input id="filter" type="search" placeholder="label:EMAIL role:reviewer endpoint:/scrub …"></label>
   <div class="toolbar">
     <a href="/audit/jsonl" class="secondary">Download JSONL</a>
+    <button id="clear" class="secondary" title="Clear filter">Clear</button>
+    <input id="role-default" type="hidden" value="reviewer">
     <button id="refresh" class="contrast">Refresh</button>
   </div>
 </header>
@@ -27,7 +32,8 @@
 <div id="summary" style="margin:.5rem 0 1rem 0; display:none">
   <small class="muted">Summary:&nbsp;
     <span id="sum-receipts"></span>, <span id="sum-entities"></span>&nbsp;·&nbsp;
-    <span id="sum-actions"></span>
+    <span id="sum-actions"></span>&nbsp;·&nbsp;
+    <span id="sum-latency"></span>
   </small>
 </div>
 
@@ -42,14 +48,46 @@
   <tbody id="rows"></tbody>
 </table>
 
+  <dialog id="descrub-modal">
+    <article>
+      <header>
+        <strong>De-scrub</strong>
+      </header>
+      <label>Operation ID
+        <input id="dm-op" type="text" readonly>
+      </label>
+      <label>Role
+        <input id="dm-role" type="text" value="reviewer" placeholder="reviewer">
+      </label>
+      <label>Justification
+        <input id="dm-just" type="text" placeholder="why do you need the original?" required>
+      </label>
+      <footer style="display:flex;gap:.5rem;justify-content:flex-end">
+        <button id="dm-cancel" class="secondary">Cancel</button>
+        <button id="dm-run" class="contrast">Fetch</button>
+      </footer>
+      <details id="dm-details" style="margin-top:.5rem;display:none">
+        <summary>Result</summary>
+        <pre id="descrub-result" class="mono"></pre>
+      </details>
+    </article>
+  </dialog>
+
 <script>
 const $ = s => document.querySelector(s);
 const rows = $("#rows"), empty = $("#empty");
-const limitI = $("#limit"), filterI = $("#filter"), btn = $("#refresh");
+const limitI = $("#limit"), filterI = $("#filter"), btn = $("#refresh"), clearBtn = $("#clear");
 
 const chip = s => `<span class="chip">${s}</span>`;
 const esc = s => String(s||'').replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmtTs = ts => { try{ return new Date(ts).toLocaleString(); }catch{ return ts||''; } };
+// ---- robust timestamp parser (handles ISO string or number) ----
+const tsNum = (x) => {
+  const v = x?.ts ?? x?.timestamp ?? x?.time ?? x?.ts_ms ?? null;
+  if (typeof v === 'number') return v;
+  const n = Date.parse(v);
+  return Number.isFinite(n) ? n : 0;
+};
 
 function normalizeResponse(data){
   if (Array.isArray(data)) return data;
@@ -86,36 +124,59 @@ function entityChips(ents){
 function row(item){
   const ents=item.entities||[];
   const lh=(item.original_hash||'').slice(0,12), sh=(item.scrubbed_hash||'').slice(0,12);
-  const op=item.operation_id ? `<div class="mono">${esc(item.operation_id)}</div>` : '';
+  const op=item.operation_id ? `<div class="mono">op: <span class="opid">${esc(item.operation_id)}</span></div>` : '';
   const role=item.role ? `<div class="muted">role: ${esc(item.role)}</div>` : '';
   const just=item.justification ? `<div class="muted">just: ${esc(item.justification)}</div>` : '';
   const endpoint=esc(item.endpoint||''), actor=esc(item.actor||item.actor_name||'');
   const ip=esc(item.client_ip||item.client?.ip||''), clevel=esc(item.c_level||item.policy?.clearance||'—');
+
+  const showBtn = (item.endpoint==="/scrub" && item.operation_id);
+  const btn = showBtn ? `<button class="btn-xs secondary descrub-btn" data-op="${esc(item.operation_id)}">De-scrub</button>` : '';
+
   return `
     <tr>
       <td class="nowrap">${fmtTs(item.ts)}</td>
       <td><div>${actor||'—'}</div><div class="muted">${ip}</div></td>
-      <td><div class="mono">${endpoint}</div>${op}${role}${just}</td>
+      <td>
+        <div class="mono">${endpoint}</div>${op}${role}${just}
+        ${btn}
+        <div class="descrub-inline" data-inline-for="${esc(item.operation_id||'')}"></div>
+      </td>
       <td>${clevel}</td>
       <td>${entityChips(ents)}</td>
       <td class="mono"><div>orig: ${lh||'—'}</div><div>scrb: ${sh||'—'}</div></td>
-      <td><details><summary>JSON</summary><pre class="mono">${esc(JSON.stringify(item,null,2))}</pre></details></td>
+      <td>
+        <details><summary>JSON</summary>
+          <pre class="mono">${esc(JSON.stringify(item,null,2))}</pre>
+        </details>
+      </td>
     </tr>`;
 }
 
 async function loadSummary(){
   try{
     const r = await fetch('/metrics');
-    if(!r.ok) return;
+    if(!r.ok){
+      $("#summary").style.display='none';
+      return;
+    }
     const data = await r.json();
     const actions = data.by_action_no_unknown || {};
-    const chips = Object.entries(actions).map(([k,v])=>chip(`${k} ×${v}`)).join(' ');
-    document.querySelector('#sum-receipts').textContent = `receipts: ${data.receipts||0}`;
-    document.querySelector('#sum-entities').textContent = `entities: ${data.entities||0}`;
-    document.querySelector('#sum-actions').innerHTML = chips || '<span class="muted">no actions yet</span>';
-    document.querySelector('#summary').style.display='block';
+    const chips = Object.entries(actions)
+      .map(([k,v]) => chip(`${k} ×${v}`))
+      .join(' ');
+
+    $("#sum-receipts").textContent = `receipts: ${data.receipts || 0}`;
+    $("#sum-entities").textContent = `entities: ${data.entities || 0}`;
+    $("#sum-actions").innerHTML = chips || '<span class="muted">no actions yet</span>';
+
+    const p50 = data?.latency_ms?.p50 ?? 0;
+    const p90 = data?.latency_ms?.p90 ?? 0;
+    $("#sum-latency").textContent = `p50 ${p50}ms · p90 ${p90}ms`;
+
+    $("#summary").style.display='block';
   }catch{
-    document.querySelector('#summary').style.display='none';
+    $("#summary").style.display='none';
   }
 }
 
@@ -126,12 +187,72 @@ async function load(){
   const res = await fetch(`/audit?limit=${limit}&_=${Date.now()}`);
   if (!res.ok){ rows.innerHTML = `<tr><td colspan="7" class="warn">Error ${res.status}: cannot fetch /audit</td></tr>`; return; }
   const items = normalizeResponse(await res.json()).filter(i=>matchesFilter(i, filterI.value));
+  items.sort((a, b) => tsNum(b) - tsNum(a));
   if (!items.length){ rows.innerHTML=''; empty.style.display='block'; return; }
   rows.innerHTML = items.map(row).join('');
 }
 
+const cssEscape = (window.CSS && CSS.escape) ? CSS.escape : (s => String(s).replace(/["\\]/g,'\\$&'));
+const modal = document.getElementById('descrub-modal');
+const dmOp   = document.getElementById('dm-op');
+const dmRole = document.getElementById('dm-role');
+const dmJust = document.getElementById('dm-just');
+const dmRun  = document.getElementById('dm-run');
+const dmCancel = document.getElementById('dm-cancel');
+const dmDetails = document.getElementById('dm-details');
+const dmResult = document.getElementById('descrub-result');
+const roleDefault = document.getElementById('role-default');
+
+document.addEventListener('click', async (e)=>{
+  const t = e.target;
+  if (t && t.classList.contains('descrub-btn')) {
+    const op = t.getAttribute('data-op');
+    dmOp.value = op || '';
+    dmRole.value = (roleDefault?.value || 'reviewer');
+    dmJust.value = '';
+    dmDetails.style.display = 'none';
+    dmResult.textContent = '';
+    modal.showModal();
+  }
+});
+
+dmCancel.addEventListener('click', (e)=>{ e.preventDefault(); modal.close(); });
+
+dmRun.addEventListener('click', async (e)=>{
+  e.preventDefault();
+  const op = dmOp.value.trim();
+  const role = dmRole.value.trim();
+  const just = dmJust.value.trim();
+  if (!op || !role || just.length < 3) { alert('Role and a brief justification are required.'); return; }
+
+  dmDetails.style.display = 'block';
+  dmResult.textContent = 'Fetching…';
+
+  try{
+    const url = `/descrub/${encodeURIComponent(op)}?role=${encodeURIComponent(role)}&just=${encodeURIComponent(just)}`;
+    const r = await fetch(url);
+    const data = await r.json();
+    if (!r.ok) {
+      dmResult.textContent = JSON.stringify(data, null, 2);
+      return;
+    }
+    dmResult.textContent = JSON.stringify(data, null, 2);
+
+    const host = document.querySelector(`.descrub-inline[data-inline-for="${cssEscape(op)}"]`);
+    if (host) {
+      host.innerHTML = `<details open><summary>Original (de-scrub)</summary><pre class="mono">${esc(data.original||'')}</pre></details>`;
+    }
+  }catch(err){
+    dmResult.textContent = String(err||'unknown error');
+  }
+});
+
 btn.addEventListener('click', ()=>{ loadSummary(); load(); });
 filterI.addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
+clearBtn.addEventListener('click', ()=>{
+  filterI.value='';
+  load();
+});
 loadSummary();
 load();
 </script>
