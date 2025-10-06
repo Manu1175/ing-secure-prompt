@@ -13,7 +13,7 @@
 </head><body>
   <header style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
     <h3 style="margin:0">Metrics</h3>
-    <button id="refresh" class="contrast" style="margin-left:auto">Refresh</button>
+    <button id="metrics-refresh" class="contrast" style="margin-left:auto">Refresh</button>
   </header>
 
   <section class="grid">
@@ -48,7 +48,10 @@ async function load(){
   document.querySelector('#labels').innerHTML = Object.entries(labels)
     .map(([k,v])=>`<li class="row"><span>${k}</span><span>${v}</span></li>`).join('');
 }
-document.querySelector('#refresh').addEventListener('click', load);
+document.querySelector('#metrics-refresh')?.addEventListener('click', (e)=>{
+  e.preventDefault();
+  location.href = location.pathname + '?t=' + Date.now();
+});
 load();
 </script>
 </body></html>

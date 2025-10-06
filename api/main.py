@@ -69,11 +69,10 @@ KEEP_ORIG = os.environ.get("KEEP_ORIGINAL_IN_RECEIPTS", "").lower() not in {"", 
 BASELINE_PATH = Path(os.environ.get("SECUREPROMPT_BASELINE_PATH", "reports/baseline_counts.json"))
 
 ACTIONS_ALLOW = {"admin", "auditor"}
-ALLOWED_DESCRUB_ROLES = [
-    r.strip().lower()
-    for r in os.getenv("SECUREPROMPT_DESCRUB_ROLES", "auditor").split(",")
-    if r.strip()
-]
+ALLOWED_DESCRUB_ROLES = os.getenv("SECUREPROMPT_DESCRUB_ROLES", "auditor")
+_ALLOWED_DESCRUB_SET = {
+    r.strip().lower() for r in ALLOWED_DESCRUB_ROLES.split(",") if r.strip()
+}
 CLEARANCE_OPTIONS = ("C1", "C2", "C3", "C4")
 TEXT_EXTENSIONS = {".txt", ".text", ".html", ".htm", ".csv"}
 ALLOWED_EXTENSIONS = TEXT_EXTENSIONS | {".pdf", ".png", ".xlsx"}
@@ -156,12 +155,33 @@ def _scrub_examples() -> List[str]:
     return []
 
 
-def _ensure_entity_value(ent: Dict[str, Any], original: str) -> None:
-    if ent.get("value"):
-        return
-    s, e = ent.get("start"), ent.get("end")
-    if isinstance(s, int) and isinstance(e, int) and 0 <= s < e <= len(original):
-        ent["value"] = original[s:e]
+def _entity_to_dict(ent: Any) -> Dict[str, Any]:
+    if isinstance(ent, dict):
+        return dict(ent)
+    to_dict = getattr(ent, "dict", None) or getattr(ent, "model_dump", None)
+    if callable(to_dict):
+        try:
+            return to_dict()
+        except Exception:
+            pass
+    try:
+        return {
+            key: getattr(ent, key)
+            for key in dir(ent)
+            if not key.startswith("_") and not callable(getattr(ent, key))
+        }
+    except Exception:
+        return {"value": None, "text": None, "original": None}
+
+
+def _ensure_entity_value(ent: Any) -> Dict[str, Any]:
+    data = _entity_to_dict(ent)
+    data["value"] = data.get("value") or data.get("text") or data.get("original") or ""
+    return data
+
+
+def _ensure_values(entities: Optional[List[Any]]) -> List[Dict[str, Any]]:
+    return [_ensure_entity_value(ent) for ent in (entities or [])]
 
 
 def _format_entities_for_view(entities: Optional[List[Dict[str, Any]]]) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
@@ -173,9 +193,7 @@ def _format_entities_for_view(entities: Optional[List[Dict[str, Any]]]) -> Tuple
         if not isinstance(entity, dict):
             continue
         label = str(entity.get("label") or "").strip().upper()
-        value = entity.get("value")
-        if value is None:
-            value = entity.get("text") or entity.get("original") or ""
+        value = entity.get("value") or entity.get("text") or entity.get("original") or ""
         start = entity.get("start") if isinstance(entity.get("start"), int) else None
         end = entity.get("end") if isinstance(entity.get("end"), int) else None
         c_level = entity.get("c_level") or entity.get("clearance") or entity.get("c_level_required") or ""
@@ -351,11 +369,6 @@ class DescrubResponse(BaseModel):
 app = FastAPI(title="SecurePrompt", version="0.2.0")
 
 # ---------- De-scrub config ----------
-ALLOWED_DESCRUB_ROLES = {
-    r.strip()
-    for r in os.environ.get("SECUREPROMPT_DESCRUB_ROLES", "").split(",")
-    if r.strip()
-}
 
 
 def _load_receipt_by_op(op_id: str) -> dict:
@@ -435,10 +448,11 @@ def _maybe_store_original(
         pass
 
 
-@app.get("/descrub/{operation_id}")
+@app.get("/descrub/{operation_id}", operation_id="descrub_get")
 def descrub(operation_id: str, role: str = Query(...), just: str = Query("", max_length=200)):
-    if role not in ALLOWED_DESCRUB_ROLES:
-        raise HTTPException(status_code=403, detail="role not allowed")
+    role = (role or "").strip().lower()
+    if role not in _ALLOWED_DESCRUB_SET:
+        raise HTTPException(status_code=403, detail="Forbidden")
 
     rec = _load_receipt_by_op(operation_id)
     original = _extract_original_payload(rec)
@@ -682,8 +696,7 @@ def api_scrub(request: Request, req: ScrubRequest = Body(...)) -> ScrubResponse:
     result = scrub_text(req.text, req.c_level)
 
     raw_text = req.text or ""
-    for entity in result.get("entities") or []:
-        _ensure_entity_value(entity, raw_text)
+    result["entities"] = _ensure_values(result.get("entities"))
     _maybe_store_original(result.get("receipt_path"), text=req.text, raw_text=raw_text)
     tokenized = _combine_and_tokenize(raw_text, result.get("entities") or [])
 
@@ -747,15 +760,14 @@ def api_scrub(request: Request, req: ScrubRequest = Body(...)) -> ScrubResponse:
     return ScrubResponse.model_validate(result)
 
 
-@app.post("/descrub")
+@app.post("/descrub", operation_id="descrub_post")
 def api_descrub(req: DescrubRequest, request: Request):
-    allowed = {r.strip().lower() for r in os.environ.get("SECUREPROMPT_DESCRUB_ROLES", "admin,reviewer").split(",")}
     role = (
         (request.headers.get("X-Role") or getattr(req, "role", "") or "")
         .strip()
         .lower()
     )
-    if role not in allowed:
+    if role not in _ALLOWED_DESCRUB_SET:
         _emit_audit_event(
             {
                 "event": "descrub",
@@ -776,7 +788,7 @@ def api_descrub(req: DescrubRequest, request: Request):
                 "status": "denied",
             }
         )
-        raise HTTPException(status_code=422, detail="Forbidden: role not allowed")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="role not permitted to de-scrub")
 
     justification = (req.justification or "").strip()
     if not justification:
@@ -894,7 +906,7 @@ templates = _load_templates()
 
 @app.get("/ui/audit", response_class=HTMLResponse)
 async def ui_audit(request: Request):
-    roles = ALLOWED_DESCRUB_ROLES or ["auditor"]
+    roles = [r.strip().lower() for r in ALLOWED_DESCRUB_ROLES.split(",") if r.strip()] or ["auditor"]
     resp = templates.TemplateResponse("audit.html", {"request": request, "descrub_roles": roles})
     if DEBUG:
         resp.headers["Cache-Control"] = "no-store, max-age=0, must-revalidate"
@@ -961,7 +973,7 @@ def api_descrub(request: Request, req: DescrubRequest = Body(...)) -> DescrubRes
     ref = req.receipt_path or req.operation_id
 
     role = (role or "").strip().lower()
-    if role not in ALLOWED_DESCRUB_ROLES:
+    if role not in _ALLOWED_DESCRUB_SET:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="role not permitted to de-scrub")
 
     if role not in ACTIONS_ALLOW:
@@ -1243,8 +1255,7 @@ async def ui_scrub(
         scrubbed_for_hash = result.get("scrubbed")
         source_bytes = len(original_text.encode("utf-8")) if original_text else 0
 
-    for ent in entities_raw or []:
-        _ensure_entity_value(ent, original_text or "")
+    entities_raw = _ensure_values(entities_raw)
 
     counts = _entity_counts(entities_raw, clearance)
     hashes = _hashes_payload(
