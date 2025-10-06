@@ -156,6 +156,14 @@ def _scrub_examples() -> List[str]:
     return []
 
 
+def _ensure_entity_value(ent: Dict[str, Any], original: str) -> None:
+    if ent.get("value"):
+        return
+    s, e = ent.get("start"), ent.get("end")
+    if isinstance(s, int) and isinstance(e, int) and 0 <= s < e <= len(original):
+        ent["value"] = original[s:e]
+
+
 def _format_entities_for_view(entities: Optional[List[Dict[str, Any]]]) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
     formatted: List[Dict[str, Any]] = []
     counts: Counter[str] = Counter()
@@ -674,6 +682,8 @@ def api_scrub(request: Request, req: ScrubRequest = Body(...)) -> ScrubResponse:
     result = scrub_text(req.text, req.c_level)
 
     raw_text = req.text or ""
+    for entity in result.get("entities") or []:
+        _ensure_entity_value(entity, raw_text)
     _maybe_store_original(result.get("receipt_path"), text=req.text, raw_text=raw_text)
     tokenized = _combine_and_tokenize(raw_text, result.get("entities") or [])
 
@@ -1232,6 +1242,9 @@ async def ui_scrub(
         original_hash = result.get("original_hash")
         scrubbed_for_hash = result.get("scrubbed")
         source_bytes = len(original_text.encode("utf-8")) if original_text else 0
+
+    for ent in entities_raw or []:
+        _ensure_entity_value(ent, original_text or "")
 
     counts = _entity_counts(entities_raw, clearance)
     hashes = _hashes_payload(
