@@ -10,21 +10,25 @@
     .chips{display:flex;flex-wrap:wrap;gap:.25rem}.chip{font-size:.75rem;background:#eef;border-radius:999px;padding:.1rem .5rem}
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
     .muted{color:#667}.nowrap{white-space:nowrap}.warn{color:#b55} details pre{max-height:40vh;overflow:auto}
-    .toolbar{margin-left:auto;display:flex;align-items:center;gap:.75rem}
+    .toolbar{margin-left:auto;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
     .btn-xs{font-size:.75rem;padding:.25rem .5rem}
     dialog#descrub-modal{border:none;border-radius:.5rem;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:34rem}
-    #descrub-result{max-height:40vh;overflow:auto;white-space:pre-wrap}
+    #dm-original{max-height:40vh;overflow:auto;white-space:pre-wrap}
+    #descrub-result{max-height:40vh;overflow:auto}
+    .descrub-actions{margin:.5rem 0 1rem 0;display:flex;flex-direction:column;gap:.5rem}
   </style>
 </head>
 <body>
+<main id="audit-root" data-descrub-roles="{{ ','.join(descrub_roles or ['auditor']) }}">
 <header>
   <h3 style="margin:0">Audit Trail</h3>
   <label>Limit <input id="limit" type="number" min="1" value="100" style="width:7rem"></label>
   <label>Filter <input id="filter" type="search" placeholder="label:EMAIL role:reviewer endpoint:/scrub …"></label>
   <div class="toolbar">
     <a href="/audit/jsonl" class="secondary">Download JSONL</a>
+    <label>Role <input id="role-input" type="text" value="reviewer" style="width:8rem"></label>
+    <label>Justification <input id="justification" type="text" placeholder="why do you need the original?" style="min-width:16rem"></label>
     <button id="clear" class="secondary" title="Clear filter">Clear</button>
-    <input id="role-default" type="hidden" value="reviewer">
     <button id="refresh" class="contrast">Refresh</button>
   </div>
 </header>
@@ -53,6 +57,8 @@
       <header>
         <strong>De-scrub</strong>
       </header>
+      <p id="dm-meta" class="muted" style="margin:.25rem 0"></p>
+      <p id="dm-error" class="muted" style="color:#b91c1c;display:none;margin:.25rem 0"></p>
       <label>Operation ID
         <input id="dm-op" type="text" readonly>
       </label>
@@ -66,8 +72,9 @@
         <button id="dm-cancel" class="secondary">Cancel</button>
         <button id="dm-run" class="contrast">Fetch</button>
       </footer>
+      <pre id="dm-original" class="mono" style="display:none"></pre>
       <details id="dm-details" style="margin-top:.5rem;display:none">
-        <summary>Result</summary>
+        <summary>Raw response</summary>
         <pre id="descrub-result" class="mono"></pre>
       </details>
     </article>
@@ -123,30 +130,38 @@ function entityChips(ents){
 }
 function row(item){
   const ents=item.entities||[];
+  const tsLabel=fmtTs(item.ts);
   const lh=(item.original_hash||'').slice(0,12), sh=(item.scrubbed_hash||'').slice(0,12);
   const op=item.operation_id ? `<div class="mono">op: <span class="opid">${esc(item.operation_id)}</span></div>` : '';
   const role=item.role ? `<div class="muted">role: ${esc(item.role)}</div>` : '';
   const just=item.justification ? `<div class="muted">just: ${esc(item.justification)}</div>` : '';
-  const endpoint=esc(item.endpoint||''), actor=esc(item.actor||item.actor_name||'');
-  const ip=esc(item.client_ip||item.client?.ip||''), clevel=esc(item.c_level||item.policy?.clearance||'—');
+  const endpointRaw=item.endpoint||'';
+  const endpoint=esc(endpointRaw);
+  const actor=esc(item.actor||item.actor_name||'');
+  const ip=esc(item.client_ip||item.client?.ip||'');
+  const clevel=esc(item.c_level||item.policy?.clearance||'—');
 
   const showBtn = (item.endpoint==="/scrub" && item.operation_id);
-  const btn = showBtn ? `<button class="btn-xs secondary descrub-btn" data-op="${esc(item.operation_id)}">De-scrub</button>` : '';
+  const descrubBtn = showBtn ? `<button class="secondary outline descrub-btn" data-op="${esc(item.operation_id)}" style="display:none;margin-left:.5rem">De-scrub</button>` : '';
+  const inlineHost = showBtn ? `<div class="descrub-inline" data-inline-for="${esc(item.operation_id||'')}"></div>` : '';
 
   return `
     <tr>
-      <td class="nowrap">${fmtTs(item.ts)}</td>
+      <td class="nowrap">${esc(tsLabel)}</td>
       <td><div>${actor||'—'}</div><div class="muted">${ip}</div></td>
       <td>
         <div class="mono">${endpoint}</div>${op}${role}${just}
-        ${btn}
-        <div class="descrub-inline" data-inline-for="${esc(item.operation_id||'')}"></div>
       </td>
       <td>${clevel}</td>
       <td>${entityChips(ents)}</td>
       <td class="mono"><div>orig: ${lh||'—'}</div><div>scrb: ${sh||'—'}</div></td>
       <td>
         <details><summary>JSON</summary>
+          <div style="display:flex;align-items:center;gap:.5rem;margin:.5rem 0">
+            <a class="json-link" data-op="${esc(item.operation_id||'')}" href="#">JSON</a>
+            ${descrubBtn}
+          </div>
+          ${inlineHost}
           <pre class="mono">${esc(JSON.stringify(item,null,2))}</pre>
         </details>
       </td>
@@ -190,61 +205,83 @@ async function load(){
   items.sort((a, b) => tsNum(b) - tsNum(a));
   if (!items.length){ rows.innerHTML=''; empty.style.display='block'; return; }
   rows.innerHTML = items.map(row).join('');
+  updateVisibility();
 }
 
-const cssEscape = (window.CSS && CSS.escape) ? CSS.escape : (s => String(s).replace(/["\\]/g,'\\$&'));
 const modal = document.getElementById('descrub-modal');
-const dmOp   = document.getElementById('dm-op');
-const dmRole = document.getElementById('dm-role');
-const dmJust = document.getElementById('dm-just');
-const dmRun  = document.getElementById('dm-run');
-const dmCancel = document.getElementById('dm-cancel');
 const dmDetails = document.getElementById('dm-details');
 const dmResult = document.getElementById('descrub-result');
-const roleDefault = document.getElementById('role-default');
+const dmOriginal = document.getElementById('dm-original');
+const dmMeta = document.getElementById('dm-meta');
+const roleInput = document.getElementById('role-input');
+const headerJust = document.getElementById('justification');
+const dmCancel = document.getElementById('dm-cancel');
 
-document.addEventListener('click', async (e)=>{
-  const t = e.target;
-  if (t && t.classList.contains('descrub-btn')) {
-    const op = t.getAttribute('data-op');
-    dmOp.value = op || '';
-    dmRole.value = (roleDefault?.value || 'reviewer');
-    dmJust.value = '';
-    dmDetails.style.display = 'none';
-    dmResult.textContent = '';
-    modal.showModal();
-  }
+const root = document.getElementById('audit-root');
+const allowed = (root?.dataset.descrubRoles || 'auditor')
+  .split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+
+dmCancel?.addEventListener('click', (e)=>{
+  e.preventDefault();
+  modal.close();
 });
 
-dmCancel.addEventListener('click', (e)=>{ e.preventDefault(); modal.close(); });
+function setRowButtonsVisible(show){
+  document.querySelectorAll('.descrub-btn').forEach(btn => {
+    btn.style.display = show ? '' : 'none';
+  });
+}
 
-dmRun.addEventListener('click', async (e)=>{
-  e.preventDefault();
-  const op = dmOp.value.trim();
-  const role = dmRole.value.trim();
-  const just = dmJust.value.trim();
-  if (!op || !role || just.length < 3) { alert('Role and a brief justification are required.'); return; }
+function updateVisibility(){
+  const role = (roleInput?.value || '').trim().toLowerCase();
+  setRowButtonsVisible(allowed.includes('auditor') && role === 'auditor');
+}
 
-  dmDetails.style.display = 'block';
-  dmResult.textContent = 'Fetching…';
+document.addEventListener('DOMContentLoaded', updateVisibility);
+roleInput?.addEventListener('input', updateVisibility);
 
-  try{
-    const url = `/descrub/${encodeURIComponent(op)}?role=${encodeURIComponent(role)}&just=${encodeURIComponent(just)}`;
-    const r = await fetch(url);
-    const data = await r.json();
-    if (!r.ok) {
-      dmResult.textContent = JSON.stringify(data, null, 2);
-      return;
-    }
-    dmResult.textContent = JSON.stringify(data, null, 2);
+function openModalWith(text){
+  dmResult.textContent = '';
+  dmDetails.open = false;
+  dmDetails.style.display = 'none';
+  if (dmMeta) dmMeta.textContent = '';
+  dmOriginal.textContent = text || '(no original payload)';
+  modal.showModal();
+}
 
-    const host = document.querySelector(`.descrub-inline[data-inline-for="${cssEscape(op)}"]`);
-    if (host) {
-      host.innerHTML = `<details open><summary>Original (de-scrub)</summary><pre class="mono">${esc(data.original||'')}</pre></details>`;
-    }
-  }catch(err){
-    dmResult.textContent = String(err||'unknown error');
+async function runDescrub(op){
+  const role = 'auditor';
+  let just = (headerJust?.value || '').trim();
+  just = window.prompt('Justification (required):', just) || '';
+  just = just.trim();
+  if (just.length < 5){
+    alert('Please enter at least 5 characters.');
+    return;
   }
+  const res = await fetch(`/descrub/${encodeURIComponent(op)}?role=${role}&just=${encodeURIComponent(just)}`);
+  if (!res.ok){
+    let msg = `De-scrub failed (${res.status})`;
+    try {
+      const data = await res.json();
+      if (data?.detail) msg += `: ${data.detail}`;
+    } catch {}
+    alert(msg);
+    return;
+  }
+  const data = await res.json();
+  const originalPayload = data.original ?? data.descrubbed ?? '';
+  if (dmMeta) dmMeta.textContent = `Operation ${op}`;
+  openModalWith(originalPayload);
+}
+
+document.addEventListener('click', (ev)=>{
+  const btn = ev.target.closest('.descrub-btn');
+  if (!btn) return;
+  ev.preventDefault();
+  const op = btn.dataset.op;
+  if (!op) return;
+  btn.disabled = true;
+  runDescrub(op).finally(()=>{ btn.disabled = false; });
 });
 
 btn.addEventListener('click', ()=>{ loadSummary(); load(); });
@@ -256,5 +293,6 @@ clearBtn.addEventListener('click', ()=>{
 loadSummary();
 load();
 </script>
+</main>
 </body>
 </html>

@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import json
 import os
 import re
 import tempfile
 import io
 import jinja2
+from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -67,9 +69,159 @@ KEEP_ORIG = os.environ.get("KEEP_ORIGINAL_IN_RECEIPTS", "").lower() not in {"", 
 BASELINE_PATH = Path(os.environ.get("SECUREPROMPT_BASELINE_PATH", "reports/baseline_counts.json"))
 
 ACTIONS_ALLOW = {"admin", "auditor"}
+ALLOWED_DESCRUB_ROLES = [
+    r.strip().lower()
+    for r in os.getenv("SECUREPROMPT_DESCRUB_ROLES", "auditor").split(",")
+    if r.strip()
+]
 CLEARANCE_OPTIONS = ("C1", "C2", "C3", "C4")
 TEXT_EXTENSIONS = {".txt", ".text", ".html", ".htm", ".csv"}
 ALLOWED_EXTENSIONS = TEXT_EXTENSIONS | {".pdf", ".png", ".xlsx"}
+
+logger = logging.getLogger("secureprompt.ui.scrub")
+
+_FALSEY = {"", "0", "false", "no", "off"}
+
+
+def _env_bool(name: str, default: bool) -> bool:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() not in _FALSEY
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    try:
+        val = int(raw)
+    except (TypeError, ValueError):
+        return default
+    return val if val >= 0 else default
+
+
+def _env_list(name: str) -> List[str]:
+    raw = os.environ.get(name)
+    if not raw:
+        return []
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError:
+        parsed = None
+    if isinstance(parsed, list):
+        return [str(item) for item in parsed]
+    items: List[str] = []
+    for chunk in raw.replace(";", "\n").splitlines():
+        for part in chunk.split(","):
+            part = part.strip()
+            if part:
+                items.append(part)
+    return items
+
+
+def _scrub_default_c_level() -> str:
+    raw = os.environ.get("SCRUB_DEFAULT_C_LEVEL") or os.environ.get("DEFAULT_C_LEVEL")
+    if not raw:
+        return "C3"
+    candidate = raw.strip().upper()
+    return candidate if candidate in CLEARANCE_OPTIONS else "C3"
+
+
+def _scrub_upload_max_mb() -> int:
+    for key in ("SCRUB_UPLOAD_MAX_MB", "UPLOAD_MAX_MB"):
+        raw = os.environ.get(key)
+        if raw:
+            try:
+                val = int(raw)
+                if val > 0:
+                    return val
+            except ValueError:
+                continue
+    return 10
+
+
+def _scrub_workbook_allowed() -> bool:
+    for key in ("SCRUB_WORKBOOK_ALLOWED", "WORKBOOK_ALLOWED"):
+        if os.environ.get(key) is not None:
+            return _env_bool(key, True)
+    return True
+
+
+def _scrub_examples() -> List[str]:
+    for key in ("SCRUB_EXAMPLES_JSON", "SCRUB_EXAMPLES"):
+        items = _env_list(key)
+        if items:
+            return items
+    return []
+
+
+def _format_entities_for_view(entities: Optional[List[Dict[str, Any]]]) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
+    formatted: List[Dict[str, Any]] = []
+    counts: Counter[str] = Counter()
+    if not entities:
+        return formatted, {}
+    for entity in entities:
+        if not isinstance(entity, dict):
+            continue
+        label = str(entity.get("label") or "").strip().upper()
+        value = entity.get("value")
+        if value is None:
+            value = entity.get("text") or entity.get("original") or ""
+        start = entity.get("start") if isinstance(entity.get("start"), int) else None
+        end = entity.get("end") if isinstance(entity.get("end"), int) else None
+        c_level = entity.get("c_level") or entity.get("clearance") or entity.get("c_level_required") or ""
+        if label:
+            counts[label] += 1
+        formatted.append(
+            {
+                "label": label or "—",
+                "value": str(value) if value is not None else "",
+                "start": start,
+                "end": end,
+                "c_level": str(c_level) if c_level else "—",
+            }
+        )
+    return formatted, dict(counts)
+
+
+def _scrub_context(
+    request: Request,
+    clearance: str,
+    *,
+    upload_max_mb: Optional[int] = None,
+    workbook_allowed: Optional[bool] = None,
+    default_c_level: Optional[str] = None,
+    keep_original: Optional[bool] = None,
+    examples: Optional[List[str]] = None,
+    **extra: Any,
+) -> Dict[str, Any]:
+    ctx: Dict[str, Any] = {
+        "request": request,
+        "clearance": clearance,
+        "clearances": CLEARANCE_OPTIONS,
+        "default_c_level": default_c_level if default_c_level is not None else _scrub_default_c_level(),
+        "KEEP_ORIGINAL_IN_RECEIPTS": keep_original if keep_original is not None else _env_bool("KEEP_ORIGINAL_IN_RECEIPTS", False),
+        "upload_max_mb": upload_max_mb if upload_max_mb is not None else _scrub_upload_max_mb(),
+        "workbook_allowed": workbook_allowed if workbook_allowed is not None else _scrub_workbook_allowed(),
+        "examples": examples if examples is not None else _scrub_examples(),
+        "original_text": "",
+        "sanitized_text": "",
+        "operation_id": None,
+        "audit_url": None,
+        "error": None,
+        "counts": {},
+        "hashes": {},
+        "saved_href": None,
+        "saved_path": None,
+        "receipt_path": None,
+        "entities": [],
+        "entity_counts": {},
+        "baseline_ctx": None,
+    }
+    ctx.update(extra)
+    return ctx
+
 
 _LABEL_PRIORITY = {
     "DOCUMENT_TYPE": 20,
@@ -438,13 +590,16 @@ def _load_uploaded_text(path: Path, suffix: str) -> str:
     raise ValueError(f"Unsupported file type: {suffix}")
 
 
-async def _ingest_upload(upload: UploadFile) -> str:
+async def _ingest_upload(upload: UploadFile, *, max_bytes: Optional[int] = None) -> str:
     filename = upload.filename or "upload.txt"
     suffix = Path(filename).suffix.lower()
     if suffix not in ALLOWED_EXTENSIONS:
         raise ValueError("Unsupported file type. Allowed: .txt, .html, .csv, .pdf, .png, .xlsx")
 
-    data = await upload.read()
+    limit = (max_bytes + 1) if max_bytes is not None else None
+    data = await upload.read(limit)
+    if max_bytes is not None and len(data) > max_bytes:
+        raise ValueError("Upload exceeds size limit")
     if not data:
         return ""
 
@@ -458,10 +613,13 @@ async def _ingest_upload(upload: UploadFile) -> str:
         temp_path.unlink(missing_ok=True)
 
 
-async def _save_upload_to_tempfile(upload: UploadFile) -> Path:
+async def _save_upload_to_tempfile(upload: UploadFile, *, max_bytes: Optional[int] = None) -> Path:
     filename = upload.filename or "upload"
     suffix = Path(filename).suffix or ".tmp"
-    data = await upload.read()
+    limit = (max_bytes + 1) if max_bytes is not None else None
+    data = await upload.read(limit)
+    if max_bytes is not None and len(data) > max_bytes:
+        raise ValueError("Upload exceeds size limit")
     if not data:
         raise ValueError("Uploaded file is empty")
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -726,7 +884,18 @@ templates = _load_templates()
 
 @app.get("/ui/audit", response_class=HTMLResponse)
 async def ui_audit(request: Request):
-    resp = templates.TemplateResponse("audit.html", {"request": request})
+    roles = ALLOWED_DESCRUB_ROLES or ["auditor"]
+    resp = templates.TemplateResponse("audit.html", {"request": request, "descrub_roles": roles})
+    if DEBUG:
+        resp.headers["Cache-Control"] = "no-store, max-age=0, must-revalidate"
+        resp.headers["Pragma"] = "no-cache"
+        resp.headers["Expires"] = "0"
+    return resp
+
+
+@app.get("/ui/metrics", response_class=HTMLResponse)
+async def ui_metrics(request: Request):
+    resp = templates.TemplateResponse("metrics.html", {"request": request})
     if DEBUG:
         resp.headers["Cache-Control"] = "no-store, max-age=0, must-revalidate"
         resp.headers["Pragma"] = "no-cache"
@@ -780,6 +949,10 @@ def api_descrub(request: Request, req: DescrubRequest = Body(...)) -> DescrubRes
     role = (req.role or "").lower()
     clearance = (req.clearance or "C3").upper()
     ref = req.receipt_path or req.operation_id
+
+    role = (role or "").strip().lower()
+    if role not in ALLOWED_DESCRUB_ROLES:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="role not permitted to de-scrub")
 
     if role not in ACTIONS_ALLOW:
         event = {
@@ -933,12 +1106,19 @@ async def ui_scrub(
     if clearance not in CLEARANCE_OPTIONS:
         clearance = "C3"
 
+    upload_max_mb = _scrub_upload_max_mb()
+    max_bytes = upload_max_mb * 1024 * 1024
+    workbook_allowed = _scrub_workbook_allowed()
+    default_c_level = _scrub_default_c_level()
+    keep_original = _env_bool("KEEP_ORIGINAL_IN_RECEIPTS", False)
+    examples = _scrub_examples()
+
     error: Optional[str] = None
     original_text = text or ""
     saved_path_display: Optional[str] = None
     saved_href: Optional[str] = None
     file_name = upload.filename if upload and upload.filename else None
-    entities: List[Dict[str, Any]] = []
+    entities_raw: List[Dict[str, Any]] = []
     operation_id: Optional[str] = None
     receipt_path: Optional[str] = None
     sanitized: Optional[str] = None
@@ -954,12 +1134,17 @@ async def ui_scrub(
         if upload is not None and upload.filename:
             suffix = Path(upload.filename).suffix.lower()
             if suffix == ".xlsx":
+                if not workbook_allowed:
+                    raise ValueError("Workbook uploads are disabled")
                 is_xlsx = True
-                temp_path = await _save_upload_to_tempfile(upload)
-                workbook = scrub_workbook(temp_path, clearance, filename=file_name)
+                temp_path = await _save_upload_to_tempfile(upload, max_bytes=max_bytes)
+                try:
+                    workbook = scrub_workbook(temp_path, clearance, filename=file_name)
+                finally:
+                    temp_path.unlink(missing_ok=True)
                 original_text = workbook["original_display"]
                 sanitized = workbook["sanitized_display"]
-                entities = workbook["entities"]
+                entities_raw = workbook["entities"]
                 operation_id = workbook["operation_id"]
                 receipt_path = workbook["receipt_path"]
                 _maybe_store_original(receipt_path, text=original_text)
@@ -973,7 +1158,7 @@ async def ui_scrub(
                 source_mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 source_path = str(redacted_path)
             else:
-                original_text = await _ingest_upload(upload)
+                original_text = await _ingest_upload(upload, max_bytes=max_bytes)
                 source_type = "file"
                 if suffix in {".txt", ".text", ".csv", ".html", ".htm"}:
                     source_mime = "text/plain"
@@ -1009,14 +1194,27 @@ async def ui_scrub(
             "message": error,
         }
         _emit_audit_event(error_event)
-        return _render_dashboard(request, clearance=clearance, error=error)
+        if error == "Upload exceeds size limit":
+            error = f"Upload exceeds {upload_max_mb} MB limit."
+        context = _scrub_context(
+            request,
+            clearance,
+            upload_max_mb=upload_max_mb,
+            workbook_allowed=workbook_allowed,
+            default_c_level=default_c_level,
+            keep_original=keep_original,
+            examples=examples,
+            original_text=original_text,
+            error=error,
+        )
+        return templates.TemplateResponse("scrub.html", context)
 
     if not is_xlsx:
         result = scrub_text(original_text, "C4")
         _maybe_store_original(result.get("receipt_path"), text=original_text)
-        entities = result.get("entities", [])
+        entities_raw = result.get("entities", [])
         result["scrubbed_mask"] = result.get("scrubbed") or ""
-        result["scrubbed_tokens"] = _combine_and_tokenize(original_text or "", entities)
+        result["scrubbed_tokens"] = _combine_and_tokenize(original_text or "", entities_raw)
         result["scrubbed"] = result["scrubbed_tokens"]
         sanitized = result["scrubbed"]
 
@@ -1035,14 +1233,16 @@ async def ui_scrub(
         scrubbed_for_hash = result.get("scrubbed")
         source_bytes = len(original_text.encode("utf-8")) if original_text else 0
 
-    counts = _entity_counts(entities, clearance)
+    counts = _entity_counts(entities_raw, clearance)
     hashes = _hashes_payload(
         original_hash=original_hash,
         scrubbed_text=scrubbed_for_hash,
         receipt_path=receipt_path,
     )
 
-    baseline_ctx = _baseline_context(file_name=file_name, clearance=clearance, entities=entities)
+    baseline_ctx = _baseline_context(file_name=file_name, clearance=clearance, entities=entities_raw)
+
+    entities_view, entity_counts_view = _format_entities_for_view(entities_raw)
 
     event = {
         "event": "ui_scrub",
@@ -1063,21 +1263,29 @@ async def ui_scrub(
     }
     _emit_audit_event(event)
 
-    return _render_dashboard(
+    audit_url = f"/ui/audit?highlight={operation_id}" if operation_id else None
+    context = _scrub_context(
         request,
-        clearance=clearance,
-        original=original_text,
-        sanitized=sanitized,
-        entities=entities,
-        file_name=file_name,
-        saved_path=saved_path_display,
-        saved_href=saved_href,
+        clearance,
+        upload_max_mb=upload_max_mb,
+        workbook_allowed=workbook_allowed,
+        default_c_level=default_c_level,
+        keep_original=keep_original,
+        examples=examples,
+        original_text=original_text,
+        sanitized_text=sanitized or "",
+        entities=entities_view,
+        entity_counts=entity_counts_view,
         operation_id=operation_id,
         receipt_path=receipt_path,
+        audit_url=audit_url,
         counts=counts,
         hashes=hashes,
+        saved_href=saved_href,
+        saved_path=saved_path_display,
         baseline_ctx=baseline_ctx,
     )
+    return templates.TemplateResponse("scrub.html", context)
 
 
 @app.get("/ui/scrub", response_class=HTMLResponse)
@@ -1085,7 +1293,12 @@ async def ui_scrub_get(request: Request, clearance: str = "C3") -> HTMLResponse:
     selected = (clearance or "C3").upper()
     if selected not in CLEARANCE_OPTIONS:
         selected = "C3"
-    return _render_dashboard(request, clearance=selected)
+    try:
+        context = _scrub_context(request, selected)
+        return templates.TemplateResponse("scrub.html", context)
+    except Exception:
+        logger.exception("scrub ui render failed")
+        raise
 
 
 
@@ -1101,7 +1314,6 @@ def audit_jsonl():
     return StreamingResponse(io.BytesIO(AUDIT.as_bytes()), media_type="application/x-ndjson")
 
 # --- BEGIN: favicon hotfix (append-only) ---
-import logging
 from starlette.responses import Response
 
 _logger = logging.getLogger("secureprompt.favicon")

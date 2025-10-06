@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head>
+  <meta charset="utf-8"/><title>SecurePrompt · Scrub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://unpkg.com/@picocss/pico@1.5.10/css/pico.min.css" rel="stylesheet">
+  <style>
+    body{padding:1.2rem;background:#f9fafb;color:#1f2937}
+    .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .card{border-radius:12px;padding:1rem;background:#fff;box-shadow:0 10px 30px rgba(15,23,42,.06)}
+    .card header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+    .muted{color:#6b7280;font-size:.85rem}
+    textarea{min-height:8rem}
+    pre{white-space:pre-wrap;background:#f3f4f6;padding:.75rem;border-radius:.75rem}
+  </style>
+</head><body>
+  <header style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+    <h2 style="margin:0">Scrub Console</h2>
+    <span class="muted">Default clearance: {{ default_c_level|default('C3') }}</span>
+    <button id="refresh" class="secondary" style="margin-left:auto" onclick="location.reload()">Refresh</button>
+  </header>
+
+  {% if error %}
+  <article class="card" style="border-color:#f87171;background:#fef2f2;color:#7f1d1d">
+    <header style="margin-bottom:.25rem"><strong>Error</strong></header>
+    <p style="margin:0">{{ error }}</p>
+  </article>
+  {% endif %}
+
+  <section class="grid">
+    <article class="card">
+      <header>
+        <strong>Configuration</strong>
+      </header>
+      <ul style="margin:0;padding-left:1rem">
+        <li>Keep originals in receipts: {{ 'Yes' if (KEEP_ORIGINAL_IN_RECEIPTS|default(False)) else 'No' }}</li>
+        <li>Max upload size: {{ upload_max_mb|default(10) }} MB</li>
+        <li>Workbook uploads allowed: {{ 'Yes' if (workbook_allowed|default(True)) else 'No' }}</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <header>
+        <strong>Submit Text</strong>
+        <span class="muted">Clearance {{ default_c_level|default('C3') }}</span>
+      </header>
+      <form action="/ui/scrub" method="post" enctype="multipart/form-data" class="grid" style="gap:.75rem">
+        <label>Clearance
+          <select name="clearance">
+            {% for option in (clearances|default(['C1','C2','C3','C4'])) %}
+            <option value="{{ option }}" {% if option == (default_c_level|default('C3')) %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Text
+          <textarea name="text" placeholder="Paste content to scrub...">{{ original_text|default('') }}</textarea>
+        </label>
+        <label>Upload file (max {{ upload_max_mb|default(10) }} MB)
+          <input type="file" name="upload">
+        </label>
+        <small class="muted">Supported workbook uploads: {{ 'enabled' if (workbook_allowed|default(True)) else 'disabled' }}.</small>
+        <button type="submit" class="contrast">Scrub</button>
+      </form>
+    </article>
+  </section>
+
+  <section class="grid" style="margin-top:1.5rem">
+    <article class="card">
+      <header><strong>Input</strong></header>
+      <pre class="mono" style="min-height:8rem">{{ original_text|default('') }}</pre>
+    </article>
+    <article class="card">
+      <header style="display:flex;align-items:center;gap:.5rem">
+        <strong>Sanitized Output</strong>
+        {% if audit_url %}
+        <a href="{{ audit_url }}" class="secondary" style="margin-left:auto">View in Audit</a>
+        {% endif %}
+      </header>
+      <pre class="mono" style="min-height:8rem">{{ sanitized_text|default('') }}</pre>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
+        {% if saved_href %}
+        <a href="{{ saved_href }}" class="contrast" target="_blank" rel="noopener">Download redacted copy</a>
+        {% endif %}
+        {% if receipt_path %}
+        <span class="muted">Receipt: <span class="mono">{{ receipt_path }}</span></span>
+        {% endif %}
+        {% if operation_id %}
+        <span class="muted">Operation ID: <span class="mono">{{ operation_id }}</span></span>
+        {% endif %}
+      </div>
+      {% if counts %}
+      <div class="muted" style="font-size:.8rem;margin-top:.5rem">Masked entities: {{ counts.masked|default(0) }}, total entities: {{ counts.entities_total|default(0) }}</div>
+      {% endif %}
+      {% if hashes %}
+      <div class="muted" style="font-size:.75rem;margin-top:.5rem;display:grid;gap:.25rem">
+        <span>Original SHA256: <span class="mono">{{ hashes.original_sha256|default('—') }}</span></span>
+        <span>Scrubbed SHA256: <span class="mono">{{ hashes.scrubbed_sha256|default('—') }}</span></span>
+        <span>Receipt SHA256: <span class="mono">{{ hashes.receipt_sha256|default('—') }}</span></span>
+      </div>
+      {% endif %}
+    </article>
+  </section>
+
+  <article class="card" style="margin-top:1.5rem">
+    <header>
+      <strong>Detected Entities</strong>
+    </header>
+    {% set counts_map = entity_counts|default({}) %}
+    {% if counts_map %}
+    <div class="chips" style="margin-bottom:.75rem">
+      {% for label, count in counts_map.items() %}
+      <span class="chip">{{ label }} ×{{ count }}</span>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted" style="margin:0 0 .75rem 0">No entities detected for this submission.</p>
+    {% endif %}
+    <div style="overflow:auto">
+      <table role="grid" style="width:100%;min-width:24rem">
+        <thead>
+          <tr><th style="text-align:left">Label</th><th style="text-align:left">Value</th><th style="text-align:left">C-level</th></tr>
+        </thead>
+        <tbody>
+          {% for entity in entities|default([]) %}
+          <tr>
+            <td class="mono">{{ entity.label|default('—') }}</td>
+            <td class="mono">{{ entity.value|default('') }}</td>
+            <td class="mono">{{ entity.c_level|default('—') }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" class="muted">No entity details available.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <section class="card" style="margin-top:1.5rem">
+    <header><strong>Examples</strong></header>
+    {% set sample_examples = examples|default([]) %}
+    {% if sample_examples %}
+    <ul style="margin:0;padding:0;list-style:none;display:grid;gap:.75rem">
+      {% for example in sample_examples %}
+      <li>
+        <pre class="mono">{{ example }}</pre>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted">No examples configured.</p>
+    {% endif %}
+  </section>
+</body></html>
