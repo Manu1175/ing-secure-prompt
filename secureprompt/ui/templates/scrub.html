@@ -122,7 +122,7 @@
           {% for entity in entities|default([]) %}
           <tr>
             <td class="mono">{{ entity.label|default('—') }}</td>
-            <td class="mono">{{ entity.value|default('') }}</td>
+            <td class="mono">{{ entity.value or entity.text or '' }}</td>
             <td class="mono">{{ entity.c_level|default('—') }}</td>
           </tr>
           {% else %}

@@ -15,6 +15,8 @@
     dialog#descrub-modal{border:none;border-radius:.5rem;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:34rem}
     #dm-original{max-height:40vh;overflow:auto;white-space:pre-wrap}
     #descrub-result{max-height:40vh;overflow:auto}
+    .role-toggle{display:flex;align-items:center;gap:.5rem}
+    .role-toggle label{display:flex;align-items:center;gap:.25rem;font-size:.85rem}
   </style>
 </head>
 <body>
@@ -22,12 +24,16 @@
 <header>
   <h3 style="margin:0">Audit Trail</h3>
   <label>Limit <input id="limit" type="number" min="1" value="100" style="width:7rem"></label>
-  <label>Filter <input id="filter" type="search" placeholder="label:EMAIL role:reviewer endpoint:/scrub …"></label>
   <div class="toolbar">
-    <a href="/audit/jsonl" class="secondary">Download JSONL</a>
-    <label>Role <input id="role-input" type="text" value="reviewer" style="width:8rem"></label>
-    <button id="clear" class="secondary" title="Clear filter">Clear</button>
-    <button id="refresh" class="contrast">Refresh</button>
+    <a href="/audit/jsonl" download class="secondary">Download JSONL</a>
+    <div id="role-toggle" class="role-toggle">
+      <label><input type="radio" name="role" value="auditor" checked> auditor</label>
+      <label><input type="radio" name="role" value="reviewer"> reviewer</label>
+      <label><input type="radio" name="role" value="admin"> admin</label>
+    </div>
+    <input id="filter-input" type="search" placeholder="Filter (e.g., label:EMAIL role:reviewer endpoint:/scrub)">
+    <button id="clear-btn" class="secondary" title="Clear filter">Clear</button>
+    <button id="refresh-btn" class="contrast">Refresh</button>
   </div>
 </header>
 
@@ -63,10 +69,15 @@
 <script>
 const $ = s => document.querySelector(s);
 const rows = $("#rows"), empty = $("#empty");
-const limitI = $("#limit"), filterI = $("#filter"), btn = $("#refresh"), clearBtn = $("#clear");
+const limitI = $("#limit");
+const filterInput = document.getElementById('filter-input');
+const clearBtn = document.getElementById('clear-btn');
+const refreshBtn = document.getElementById('refresh-btn');
+const roleToggle = document.getElementById('role-toggle');
 
 const chip = s => `<span class="chip">${s}</span>`;
 const esc = s => String(s||'').replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const escHtml = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
 const fmtTs = ts => { try{ return new Date(ts).toLocaleString(); }catch{ return ts||''; } };
 // ---- robust timestamp parser (handles ISO string or number) ----
 const tsNum = (x) => {
@@ -121,12 +132,11 @@ function row(item){
   const ip=esc(item.client_ip||item.client?.ip||'');
   const clevel=esc(item.c_level||item.policy?.clearance||'—');
 
-  const showBtn = (item.endpoint==="/scrub" && item.operation_id);
-  const descrubBtn = showBtn ? `<button class="secondary outline descrub-btn" data-op="${esc(item.operation_id)}" style="display:none">De-scrub</button>` : '';
-  const inlineHost = showBtn ? `<div class="descrub-inline" data-inline-for="${esc(item.operation_id)}"></div>` : '';
+  const descrubBtn = `<button class="secondary outline descrub-btn" data-op="${esc(item.operation_id||'')}" style="display:none">De-scrub</button>`;
+  const inlineHost = `<div class="descrub-inline" data-inline-for="${esc(item.operation_id||'')}"></div>`;
 
   return `
-    <tr>
+    <tr data-endpoint="${esc(item.endpoint||'')}" data-op="${esc(item.operation_id||'')}">
       <td class="nowrap">${esc(tsLabel)}</td>
       <td><div>${actor||'—'}</div><div class="muted">${ip}</div></td>
       <td>
@@ -136,17 +146,22 @@ function row(item){
       <td>${entityChips(ents)}</td>
       <td class="mono"><div>orig: ${lh||'—'}</div><div>scrb: ${sh||'—'}</div></td>
       <td>
+        ${descrubBtn}
+        ${inlineHost}
+        <a class="json-link" href="#" data-json-for="${esc(item.operation_id||'')}">JSON ›</a>
         <details><summary>JSON</summary>
-          <div style="display:flex;align-items:center;gap:.5rem;margin:.5rem 0">
-            <a class="json-link" data-op="${esc(item.operation_id||'')}" href="#">JSON</a>
-            ${descrubBtn}
-          </div>
-          ${inlineHost}
           <pre class="mono">${esc(JSON.stringify(item,null,2))}</pre>
         </details>
       </td>
     </tr>`;
 }
+
+function renderRows(items){
+  rows.innerHTML = items.map(row).join('');
+  updateRowButtons();
+}
+
+window.renderRows = renderRows;
 
 async function loadSummary(){
   try{
@@ -178,29 +193,34 @@ async function loadSummary(){
 async function load(){
   rows.innerHTML = '<tr><td colspan="7">Loading…</td></tr>';
   empty.style.display='none';
-  const limit = Number(limitI.value)||100;
+  const limit = Number(limitI?.value)||100;
   const res = await fetch(`/audit?limit=${limit}&_=${Date.now()}`);
   if (!res.ok){ rows.innerHTML = `<tr><td colspan="7" class="warn">Error ${res.status}: cannot fetch /audit</td></tr>`; return; }
-  const items = normalizeResponse(await res.json()).filter(i=>matchesFilter(i, filterI.value));
+  const filterVal = (filterInput?.value || '');
+  const items = normalizeResponse(await res.json()).filter(i=>matchesFilter(i, filterVal));
   items.sort((a, b) => tsNum(b) - tsNum(a));
   if (!items.length){ rows.innerHTML=''; empty.style.display='block'; return; }
-  rows.innerHTML = items.map(row).join('');
-  updateRowButtons();
+  renderRows(items);
 }
 
 const root = document.getElementById('audit-root');
 const allowed = (root?.dataset.descrubRoles || 'auditor')
   .split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
-const roleInput = document.getElementById('role-input');
+const currentRole = () => (
+  roleToggle?.querySelector('input[name="role"]:checked')?.value || ''
+).toLowerCase();
 
 function updateRowButtons(){
-  const role = (roleInput?.value || '').trim().toLowerCase();
-  const show = allowed.includes('auditor') && role === 'auditor';
-  document.querySelectorAll('.descrub-btn').forEach(b => { b.style.display = show ? '' : 'none'; });
+  const showAuditor = allowed.includes('auditor') && currentRole() === 'auditor';
+  document.querySelectorAll('.descrub-btn').forEach(btn => {
+    const tr = btn.closest('tr');
+    const ep = tr?.getAttribute('data-endpoint') || '';
+    btn.style.display = (showAuditor && ep === '/scrub') ? '' : 'none';
+  });
 }
 
 document.addEventListener('DOMContentLoaded', updateRowButtons);
-roleInput?.addEventListener('input', updateRowButtons);
+roleToggle?.addEventListener('change', updateRowButtons);
 
 const modal = document.getElementById('descrub-modal');
 const modalText = document.getElementById('descrub-modal-text');
@@ -235,29 +255,41 @@ document.addEventListener('click', async (ev)=>{
   btn.disabled = true;
   try{
     const res = await fetch(`/descrub/${encodeURIComponent(op)}?role=auditor&just=${encodeURIComponent(just)}`);
-    const data = await res.json();
+    let data = null;
+    try { data = await res.json(); } catch (err) { data = null; }
+    const host = document.querySelector(`.descrub-inline[data-inline-for="${cssEscape(op)}"]`);
     if (!res.ok){
-      alert(data?.detail ? `De-scrub failed: ${data.detail}` : `De-scrub failed (${res.status})`);
+      const message = data?.detail ? String(data.detail) : `HTTP ${res.status}`;
+      if (host) {
+        host.innerHTML = `<div class="error">De-scrub failed: ${escHtml(message)}</div>`;
+      } else {
+        alert(`De-scrub failed: ${message}`);
+      }
       return;
     }
-    const original = data.original ?? data.descrubbed ?? '';
-    const host = document.querySelector(`.descrub-inline[data-inline-for="${cssEscape(op)}"]`);
+    const original = (data && (data.original ?? data.descrubbed)) || '';
     if (host) {
-      const escHtml = s => String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
       host.innerHTML = `<details open><summary>Original (de-scrub)</summary><pre class="mono">${escHtml(original)}</pre></details>`;
     }
     openModalWith(original);
   }catch(err){
-    alert(`De-scrub failed: ${err}`);
+    const message = err?.message ? String(err.message) : String(err);
+    const host = document.querySelector(`.descrub-inline[data-inline-for="${cssEscape(op)}"]`);
+    if (host) {
+      host.innerHTML = `<div class="error">De-scrub failed: ${escHtml(message)}</div>`;
+    } else {
+      alert(`De-scrub failed: ${message}`);
+    }
   } finally {
     btn.disabled = false;
   }
 });
 
-btn.addEventListener('click', ()=>{ loadSummary(); load(); });
-filterI.addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
-clearBtn.addEventListener('click', ()=>{
-  filterI.value='';
+refreshBtn?.addEventListener('click', (e)=>{ e.preventDefault(); loadSummary(); load(); });
+filterInput?.addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
+clearBtn?.addEventListener('click', (e)=>{
+  e.preventDefault();
+  if (filterInput) filterInput.value='';
   load();
 });
 loadSummary();
