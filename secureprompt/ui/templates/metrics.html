@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head>
+  <meta charset="utf-8"/><title>SecurePrompt · Metrics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://unpkg.com/@picocss/pico@1.5.10/css/pico.min.css" rel="stylesheet">
+  <style>
+    body{padding:1.2rem} .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .card{padding:1rem;border:1px solid #e5e7eb;border-radius:12px;background:#fff}
+    .title{font-size:.9rem;color:#667;margin-bottom:.4rem} .big{font-size:1.8rem;font-weight:600}
+    .list{margin:.5rem 0 0 0;padding:0;list-style:none} .row{display:flex;justify-content:space-between}
+    .chip{display:inline-block;background:#eef;border-radius:999px;padding:.1rem .5rem;margin:.15rem;font-size:.75rem}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+  </style>
+</head><body>
+  <header style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+    <h3 style="margin:0">Metrics</h3>
+    <button id="refresh" class="contrast" style="margin-left:auto">Refresh</button>
+  </header>
+
+  <section class="grid">
+    <div class="card"><div class="title">Receipts</div><div id="receipts" class="big">—</div></div>
+    <div class="card"><div class="title">Entities</div><div id="entities" class="big">—</div></div>
+    <div class="card"><div class="title">Latency (ms)</div><div class="row">
+      <div><div class="title" style="margin:0">p50</div><div id="p50" class="big">—</div></div>
+      <div><div class="title" style="margin:0">p90</div><div id="p90" class="big">—</div></div>
+    </div></div>
+    <div class="card"><div class="title">Actions</div><div id="actions"></div></div>
+  </section>
+
+  <section class="card" style="margin-top:1rem">
+    <div class="title">Top labels</div>
+    <ul id="labels" class="list mono"></ul>
+  </section>
+
+<script>
+async function load(){
+  const res = await fetch('/metrics'); if(!res.ok) return;
+  const m = await res.json();
+  document.querySelector('#receipts').textContent = (m.receipts??0).toLocaleString();
+  document.querySelector('#entities').textContent = (m.entities??0).toLocaleString();
+  document.querySelector('#p50').textContent = m.latency_ms?.p50 ?? '—';
+  document.querySelector('#p90').textContent = m.latency_ms?.p90 ?? '—';
+
+  const actions = m.by_action_no_unknown && Object.keys(m.by_action_no_unknown).length ? m.by_action_no_unknown : m.by_action || {};
+  document.querySelector('#actions').innerHTML = Object.entries(actions)
+    .map(([k,v])=>`<span class="chip">${k} ×${v}</span>`).join(' ') || '<span class="chip">none yet</span>';
+
+  const labels = m.by_label || {};
+  document.querySelector('#labels').innerHTML = Object.entries(labels)
+    .map(([k,v])=>`<li class="row"><span>${k}</span><span>${v}</span></li>`).join('');
+}
+document.querySelector('#refresh').addEventListener('click', load);
+load();
+</script>
+</body></html>
