@@ -64,7 +64,7 @@
 
   <section class="grid" style="margin-top:1.5rem">
     <article class="card">
-      <header><strong>Input</strong></header>
+      <header><strong>Input</strong> <small>v={{ build_id }}</small></header>
       <pre class="mono" style="min-height:8rem">{{ original_text|default('') }}</pre>
     </article>
     <article class="card">
@@ -100,8 +100,9 @@
   </section>
 
   <article class="card" style="margin-top:1.5rem">
-    <header>
+    <header style="display:flex;align-items:center;gap:.5rem">
       <strong>Detected Entities</strong>
+      <small>v={{ build_id }}</small>
     </header>
     {% set counts_map = entity_counts|default({}) %}
     {% if counts_map %}
@@ -122,7 +123,7 @@
           {% for entity in entities|default([]) %}
           <tr>
             <td class="mono">{{ entity.label|default('—') }}</td>
-            <td class="mono">{{ entity.value or entity.text or '' }}</td>
+            <td class="mono">{{ entity.value or entity.text or entity.original }}</td>
             <td class="mono">{{ entity.c_level|default('—') }}</td>
           </tr>
           {% else %}
