@@ -1,0 +1,15 @@
+{
+  "default_model": "gpt-5-codex",
+  "max_tokens": 900,
+  "concurrency": 1,
+  "min_delay_ms": 2000,
+  "truncate_input": true,
+  "stream": false,
+  "include": [
+    "api/main.py",
+    "secureprompt/ui/templates/audit.html",
+    "secureprompt/ui/templates/scrub.html"
+  ],
+  "exclude_file": ".codegptignore",
+  "patch_only": true
+}

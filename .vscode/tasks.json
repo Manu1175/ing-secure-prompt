@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "test-fast",
+      "label": "Codex: minimal patch",
       "type": "shell",
-      "command": "set -a && [ -f .env ] && source .env; set +a; source .venv/bin/activate; pytest -vv -s -rA",
+      "command": "./scripts/codex-edit.sh --files api/main.py --prompt 'Minimal diff for /descrub 403 check.'",
       "problemMatcher": []
     }
   ]

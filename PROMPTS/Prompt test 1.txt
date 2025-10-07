@@ -1,0 +1,7 @@
+On-call — Outreach Platform
+Primary: Mary Sims — +32 42 361 650 — mary.sims@example.com — CorpKey NV26ZI
+Backup: John Graham — +32 31 603 900 — john.graham@example.com — CorpKey DI91EX
+Start: next business day.
+URL: https://example.com/reset?id=123
+IBAN: BE71 0961 2345 6769
+Address: 24 Main Street, 1000 Brussels, Belgium
