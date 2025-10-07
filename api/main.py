@@ -7,12 +7,14 @@ import logging
 import json
 import os
 import re
+import time
 import tempfile
 import io
 import jinja2
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from fastapi import (
     Body,
@@ -67,6 +69,8 @@ RECEIPTS_DIR.mkdir(parents=True, exist_ok=True)
 KEEP_ORIG = os.environ.get("KEEP_ORIGINAL_IN_RECEIPTS", "").lower() not in {"", "0", "false", "no"}
 
 BASELINE_PATH = Path(os.environ.get("SECUREPROMPT_BASELINE_PATH", "reports/baseline_counts.json"))
+
+UI_BUILD_ID = os.getenv("UI_BUILD_ID") or datetime.now().strftime("%Y%m%d-%H%M%S")
 
 ACTIONS_ALLOW = {"admin", "auditor"}
 ALLOWED_DESCRUB_ROLES = os.getenv("SECUREPROMPT_DESCRUB_ROLES", "auditor")
@@ -161,7 +165,7 @@ def _entity_to_dict(ent: Any) -> Dict[str, Any]:
     to_dict = getattr(ent, "dict", None) or getattr(ent, "model_dump", None)
     if callable(to_dict):
         try:
-            return to_dict()
+            return dict(to_dict())
         except Exception:
             pass
     try:
@@ -171,17 +175,112 @@ def _entity_to_dict(ent: Any) -> Dict[str, Any]:
             if not key.startswith("_") and not callable(getattr(ent, key))
         }
     except Exception:
-        return {"value": None, "text": None, "original": None}
+        return {}
 
 
-def _ensure_entity_value(ent: Any) -> Dict[str, Any]:
+def _best_offsets(d: Dict[str, Any]) -> Optional[Tuple[int, int]]:
+    s, e = d.get("start"), d.get("end")
+    if isinstance(s, int) and isinstance(e, int) and e >= s:
+        return (s, e)
+    span = d.get("span") or d.get("position") or d.get("range")
+    if isinstance(span, dict):
+        s, e = span.get("start"), span.get("end")
+        if isinstance(s, int) and isinstance(e, int) and e >= s:
+            return (s, e)
+        sl, ln = span.get("start"), span.get("length")
+        if isinstance(sl, int) and isinstance(ln, int) and ln >= 0:
+            return (sl, sl + ln)
+    idx = d.get("indices") or d.get("index")
+    if isinstance(idx, (list, tuple)) and len(idx) >= 2:
+        s, e = idx[0], idx[1]
+        if isinstance(s, int) and isinstance(e, int) and e >= s:
+            return (s, e)
+    off, ln = d.get("offset"), d.get("length")
+    if isinstance(off, int) and isinstance(ln, int) and ln >= 0:
+        return (off, off + ln)
+    pos = d.get("pos")
+    if isinstance(pos, dict):
+        off, ln = pos.get("start"), pos.get("length")
+        if isinstance(off, int) and isinstance(ln, int) and ln >= 0:
+            return (off, off + ln)
+    return None
+
+
+def _slice_safe(src: str, start: int, end: int) -> str:
+    start = max(0, min(len(src), start))
+    end = max(start, min(len(src), end))
+    return src[start:end]
+
+
+_PATTERNS = {
+    "EMAIL": re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"),
+    "IBAN": re.compile(r"\b[A-Z]{2}\d{2}[A-Z0-9]{1,30}\b"),
+    "PHONE": re.compile(r"\+?\d[\d\s\-()]{6,}\d"),
+}
+
+
+def _first_nonempty(*vals: Any) -> str:
+    for v in vals:
+        if v is None:
+            continue
+        if isinstance(v, (list, tuple, set)) and v:
+            return str(next(iter(v)))
+        s = str(v)
+        if s.strip():
+            return s
+    return ""
+
+
+def _prepare_backfill_pool(text: Optional[str]) -> Dict[str, List[str]]:
+    pool: Dict[str, List[str]] = {}
+    if not isinstance(text, str) or not text:
+        return pool
+    for label, pattern in _PATTERNS.items():
+        pool[label] = pattern.findall(text)
+    return pool
+
+
+def _ensure_entity_value(ent: Any, source_text: Optional[str], pool: Dict[str, List[str]]) -> Dict[str, Any]:
     data = _entity_to_dict(ent)
-    data["value"] = data.get("value") or data.get("text") or data.get("original") or ""
+    label = str(data.get("label") or "").upper()
+
+    value = _first_nonempty(
+        data.get("value"),
+        data.get("text"),
+        data.get("original"),
+        data.get("raw"),
+        data.get("match"),
+        data.get("preview"),
+        data.get("content"),
+        data.get("detected"),
+        data.get("group"),
+        data.get("source"),
+    )
+
+    if not value and isinstance(source_text, str):
+        off = _best_offsets(data)
+        if off:
+            value = _slice_safe(source_text, *off)
+
+    if not value and label in pool and pool[label]:
+        value = pool[label].pop(0)
+
+    data["value"] = value or ""
     return data
 
 
-def _ensure_values(entities: Optional[List[Any]]) -> List[Dict[str, Any]]:
-    return [_ensure_entity_value(ent) for ent in (entities or [])]
+def _ensure_values(entities: Iterable[Any], source_text: Optional[str]) -> List[Dict[str, Any]]:
+    pool = _prepare_backfill_pool(source_text)
+    out = [_ensure_entity_value(ent, source_text, pool) for ent in (entities or [])]
+    blanks = sum(1 for ent in out if not ent.get("value"))
+    if blanks:
+        label_counts: Dict[str, int] = {}
+        for ent in out:
+            if not ent.get("value"):
+                label = str(ent.get("label") or "?")
+                label_counts[label] = label_counts.get(label, 0) + 1
+        print(f"[entities] {len(out)-blanks} filled, {blanks} still blank @ {int(time.time())} labels={label_counts}")
+    return out
 
 
 def _format_entities_for_view(entities: Optional[List[Dict[str, Any]]]) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
@@ -448,6 +547,20 @@ def _maybe_store_original(
         pass
 
 
+@app.get("/debug/template-info")
+def debug_template_info():
+    searchpath = getattr(getattr(templates, "directory", None), "directory", None) or getattr(templates.env.loader, "searchpath", None)
+    cache_obj = getattr(templates.env, "cache", {}) or {}
+    return {
+        "build_id": UI_BUILD_ID,
+        "templates_dir": searchpath,
+        "auto_reload": getattr(templates.env, "auto_reload", None),
+        "cache_size": len(cache_obj),
+        "descrub_roles_env": os.getenv("SECUREPROMPT_DESCRUB_ROLES"),
+        "_ALLOWED_DESCRUB_SET": sorted(_ALLOWED_DESCRUB_SET),
+    }
+
+
 @app.get("/descrub/{operation_id}", operation_id="descrub_get")
 def descrub(operation_id: str, role: str = Query(...), just: str = Query("", max_length=200)):
     role = (role or "").strip().lower()
@@ -682,6 +795,7 @@ def _render_dashboard(
         "counts": counts,
         "hashes": hashes,
         "baseline_ctx": baseline_ctx,
+        "build_id": UI_BUILD_ID,
     }
     return templates.TemplateResponse(request, "dashboard.html", context)
 
@@ -696,7 +810,7 @@ def api_scrub(request: Request, req: ScrubRequest = Body(...)) -> ScrubResponse:
     result = scrub_text(req.text, req.c_level)
 
     raw_text = req.text or ""
-    result["entities"] = _ensure_values(result.get("entities"))
+    result["entities"] = _ensure_values(result.get("entities"), raw_text)
     _maybe_store_original(result.get("receipt_path"), text=req.text, raw_text=raw_text)
     tokenized = _combine_and_tokenize(raw_text, result.get("entities") or [])
 
@@ -903,11 +1017,31 @@ def _load_templates() -> Jinja2Templates:
 
 templates = _load_templates()
 
+try:
+    templates.env.auto_reload = True
+    templates.env.cache = {}
+except Exception:
+    pass
+
+
+@app.middleware("http")
+async def _no_cache_html(request: Request, call_next):
+    response = await call_next(request)
+    ctype = response.headers.get("content-type", "")
+    if "text/html" in ctype:
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 
 @app.get("/ui/audit", response_class=HTMLResponse)
 async def ui_audit(request: Request):
     roles = [r.strip().lower() for r in ALLOWED_DESCRUB_ROLES.split(",") if r.strip()] or ["auditor"]
-    resp = templates.TemplateResponse("audit.html", {"request": request, "descrub_roles": roles})
+    resp = templates.TemplateResponse(
+        "audit.html",
+        {"request": request, "descrub_roles": roles, "build_id": UI_BUILD_ID},
+    )
     if DEBUG:
         resp.headers["Cache-Control"] = "no-store, max-age=0, must-revalidate"
         resp.headers["Pragma"] = "no-cache"
@@ -917,7 +1051,10 @@ async def ui_audit(request: Request):
 
 @app.get("/ui/metrics", response_class=HTMLResponse)
 async def ui_metrics(request: Request):
-    resp = templates.TemplateResponse("metrics.html", {"request": request})
+    resp = templates.TemplateResponse(
+        "metrics.html",
+        {"request": request, "build_id": UI_BUILD_ID},
+    )
     if DEBUG:
         resp.headers["Cache-Control"] = "no-store, max-age=0, must-revalidate"
         resp.headers["Pragma"] = "no-cache"
@@ -1255,7 +1392,9 @@ async def ui_scrub(
         scrubbed_for_hash = result.get("scrubbed")
         source_bytes = len(original_text.encode("utf-8")) if original_text else 0
 
-    entities_raw = _ensure_values(entities_raw)
+    entities_raw = _ensure_values(entities_raw, original_text)
+    if not is_xlsx and isinstance(result, dict):
+        result["entities"] = entities_raw
 
     counts = _entity_counts(entities_raw, clearance)
     hashes = _hashes_payload(
@@ -1319,6 +1458,7 @@ async def ui_scrub_get(request: Request, clearance: str = "C3") -> HTMLResponse:
         selected = "C3"
     try:
         context = _scrub_context(request, selected)
+        context["build_id"] = UI_BUILD_ID
         return templates.TemplateResponse("scrub.html", context)
     except Exception:
         logger.exception("scrub ui render failed")

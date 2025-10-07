@@ -23,17 +23,19 @@
 <main id="audit-root" data-descrub-roles="{{ ','.join(descrub_roles or ['auditor']) }}">
 <header>
   <h3 style="margin:0">Audit Trail</h3>
-  <label>Limit <input id="limit" type="number" min="1" value="100" style="width:7rem"></label>
   <div class="toolbar">
-    <a href="/audit/jsonl" download class="secondary">Download JSONL</a>
+    <strong>Audit</strong>
+    <small id="ui-build">v={{ build_id }} · ROLE_TOGGLE_SENTINEL</small>
     <div id="role-toggle" class="role-toggle">
       <label><input type="radio" name="role" value="auditor" checked> auditor</label>
       <label><input type="radio" name="role" value="reviewer"> reviewer</label>
       <label><input type="radio" name="role" value="admin"> admin</label>
     </div>
+    <label style="margin:0">Limit <input id="limit" type="number" min="1" value="100" style="width:7rem"></label>
     <input id="filter-input" type="search" placeholder="Filter (e.g., label:EMAIL role:reviewer endpoint:/scrub)">
     <button id="clear-btn" class="secondary" title="Clear filter">Clear</button>
     <button id="refresh-btn" class="contrast">Refresh</button>
+    <a href="/audit/jsonl" download class="secondary">Download JSONL</a>
   </div>
 </header>
 
