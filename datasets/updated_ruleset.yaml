@@ -64,18 +64,30 @@ rules:
 
 - column: Term
   priority: 2
-  recommended_classification: C4
+  recommended_classification: C2
   detection:
     type: keyword
     keywords:
-    - SSN
-    - VAT
-    - IBAN
-    - account
-    - card
-    - password
-    - pin
-  placeholder: '{{TERM}}'
+    - Account Holder
+    - Accrued Interest
+    - Amortization
+    - KYC
+    - AML
+    - Virtual Machine
+    - CapEx
+    - OpEx
+    - Iaas
+    - Product Specification
+    - Operational Status
+    - Deployment Date
+    - Interest Rate
+    - Credit Score
+    - Compliance Check
+    - Risk Assessment
+    - Loan-To-Value
+    - Overdraft
+    - Digital Identity
+  placeholder: '{{BANKING_TERM}}'
 
 - column: Category
   priority: 3
@@ -83,12 +95,21 @@ rules:
   detection:
     type: keyword
     keywords:
-    - finance
-    - it
-    - hr
-    - legal
-    - marketing
-    - product
+    - Finance
+    - Customer Onboarding
+    - Hr
+    - Compliance
+    - Risk Management
+    - Loan Management
+    - Customer Service
+    - Sustainability
+    - Governance
+    - Operational
+    - Financial
+    - Regulatory
+    - Technical
+    - Security
+    - Credit
   placeholder: '{{CATEGORY}}'
 
 - column: Definition
@@ -135,9 +156,9 @@ rules:
     pattern: \b\d{4}[-/]\d{1,2}[-/]\d{1,2}\b|\b\d{1,2}[-/]\d{1,2}[-/]\d{2,4}\b
   placeholder: '{{DATE}}'
 
-- column: Person Name
+- column: Name
   priority: 2
-  recommended_classification: C4
+  recommended_classification: C3
   detection:
     type: regex
     pattern: \b[A-Z][a-z]+(?:\s[A-Z][a-z]+)*\b
@@ -153,21 +174,24 @@ rules:
 
 - column: Status
   priority: 3
-  recommended_classification: C2
+  recommended_classification: C3
   detection:
     type: keyword
     keywords:
-    - active
-    - inactive
-    - archived
-    - draft
-    - published
-    - pending
-    - completed
-    - failed
-    - in progress
-    - cancelled
-  placeholder: '{{STATUS}}'
+    - Active
+    - Inactive
+    - Cancelled
+    - Completed
+    - Failed
+    - Pending
+    - Installed
+    - Retired
+    - Expired
+    - Terminated
+    - Deprecated
+    - Under Review
+    - Advisory
+    placeholder: '{{STATUS}}'
 
 - column: Operational Status
   priority: 3
@@ -175,15 +199,13 @@ rules:
   detection:
     type: keyword
     keywords:
-    - operational
-    - degraded
-    - down
-    - maintenance
-    - retired
-    - offline
-    - decommissioned
-    - active
-    - planned
+    - Active
+    - Inactive
+    - Maintenance
+    - Retired
+    - Running
+    - Operational
+    - Non-Operational
   placeholder: '{{OPERATIONAL_STATUS}}'
 
 - column: Environment
@@ -192,11 +214,10 @@ rules:
   detection:
     type: keyword
     keywords:
-    - dev
-    - test
-    - uat
-    - prod
-    - staging
+    - Development
+    - Test
+    - Production
+    - Acceptance
   placeholder: '{{ENV}}'
 
 - column: IT Custodian
@@ -219,18 +240,13 @@ rules:
   priority: 3
   recommended_classification: C2
   detection:
-    type: keyword
-    keywords:
-    - default
-    - prod
-    - dev
-    - network
-    - security
+    type: regex
+    pattern: ^T\d{5}$
   placeholder: '{{CONFIG_GROUP}}'
 
 - column: Cost Center
   priority: 2
-  recommended_classification: C4
+  recommended_classification: C2
   detection:
     type: regex
     pattern: \b[A-Z0-9\-]{3,12}\b
@@ -254,17 +270,13 @@ rules:
 
 - column: Currency
   priority: 2
-  recommended_classification: C1
+  recommended_classification: C3
   detection:
     type: keyword
     keywords:
     - USD
     - EUR
     - GBP
-    - CHF
-    - JPY
-    - AUD
-    - CAD
   placeholder: '{{CURRENCY}}'
 
 - column: Address
@@ -277,7 +289,7 @@ rules:
 
 - column: Street Name
   priority: 5
-  recommended_classification: C4
+  recommended_classification: C3
   detection:
     type: regex
     pattern: \b[A-Z][a-z]+(?:\s[A-Z][a-z]+)*\b
@@ -301,7 +313,7 @@ rules:
 
 - column: IBAN
   priority: 1
-  recommended_classification: C4
+  recommended_classification: C3
   detection:
     type: regex
     pattern: \b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b
@@ -309,7 +321,7 @@ rules:
 
 - column: Start Date
   priority: 2
-  recommended_classification: C2
+  recommended_classification: C3
   detection:
     type: regex
     pattern: \b\d{4}[-/]\d{2}[-/]\d{2}\b
@@ -317,7 +329,7 @@ rules:
 
 - column: End Date
   priority: 2
-  recommended_classification: C2
+  recommended_classification: C3
   detection:
     type: regex
     pattern: \b\d{4}[-/]\d{2}[-/]\d{2}\b
@@ -329,7 +341,7 @@ rules:
   detection:
     type: regex
     pattern: \b\d{4}[-/]\d{2}[-/]\d{2}\b|\b\d{1,2}[-/]\d{1,2}[-/]\d{2,4}\b
-  placeholder: '{{DOB}}'
+  placeholder: '{{DATE_BIRTH}}'
 
 - column: PIN
   priority: 2
@@ -393,11 +405,10 @@ rules:
   detection:
     type: keyword
     keywords:
-    - male
-    - female
+    - Male
+    - Female
     - non-binary
     - other
-    - prefer not to say
   placeholder: '{{GENDER}}'
 
 - column: Marital Status
@@ -419,13 +430,13 @@ rules:
   detection:
     type: keyword
     keywords:
-    - belgian
-    - french
-    - german
-    - american
-    - british
-    - spanish
-    - italian
+    - Belgium
+    - France
+    - German
+    - American
+    - British
+    - Spanish
+    - Italian
   placeholder: '{{CITIZENSHIP}}'
 
 - column: Ethnic Origin
@@ -434,12 +445,13 @@ rules:
   detection:
     type: keyword
     keywords:
-    - asian
-    - african
-    - european
-    - latino
-    - arab
-    - indigenous
+    - Arab
+    - Asian
+    - Black
+    - Hispanic
+    - Mixed
+    - Other
+    - White
   placeholder: '{{ETHNIC_ORIGIN}}'
 
 - column: Biometric Data
@@ -448,12 +460,10 @@ rules:
   detection:
     type: keyword
     keywords:
-    - fingerprint
-    - iris
-    - retina
-    - voice
-    - face
-    - biometric
+    - FaceID
+    - Iris
+    - Voice
+    - Fingerprint
   placeholder: '{{BIOMETRIC}}'
 
 - column: Health
@@ -462,12 +472,11 @@ rules:
   detection:
     type: keyword
     keywords:
-    - cancer
-    - diabetes
-    - HIV
-    - cancer survivor
-    - mental health
-    - disability
+    - Chronic Illness
+    - Disability
+    - Good
+    - Mental health
+    - Other
   placeholder: '{{HEALTH}}'
 
 - column: Religious Beliefs
@@ -476,12 +485,13 @@ rules:
   detection:
     type: keyword
     keywords:
-    - christian
-    - muslim
-    - jewish
-    - hindu
-    - buddhist
-    - atheist
+    - Christian
+    - Muslim
+    - Jewish
+    - Hindu
+    - Buddhist
+    - None
+    - Other
   placeholder: '{{RELIGION}}'
 
 - column: Sexual Orientation
@@ -490,10 +500,9 @@ rules:
   detection:
     type: keyword
     keywords:
-    - heterosexual
-    - homosexual
-    - bisexual
-    - lesbian
-    - gay
-    - queer
+    - Heterosexual
+    - Homosexual
+    - Bisexual
+    - Asexual
+    - Other
   placeholder: '{{SEXUAL_ORIENTATION}}'
