@@ -1,6 +1,6 @@
 {
   "codegpt.provider": "openai",
-  "codegpt.openaiApiKey": "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",
+  "codegpt.openaiApiKey": "sk-proj",
   "codegpt.model": "gpt-5.1-mini"
   "python.envFile": "${workspaceFolder}/.env",
   "python.terminal.useEnvFile": true,
